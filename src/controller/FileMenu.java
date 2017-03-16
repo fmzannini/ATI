@@ -12,7 +12,7 @@ import javafx.scene.control.MenuItem;
 public class FileMenu extends Menu {
 	
 	@FXML
-	private MenuItem loadImage;
+	private Menu loadImage;
 	
 	@FXML
 	private MenuItem saveImage;
@@ -29,12 +29,8 @@ public class FileMenu extends Menu {
 	}
 
 	public void initialize(InterfaceViewController controller) {
-		loadImage.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(final ActionEvent event) {
-				//llamada a la función de carga
-			}
-		});
+		loadImage = new LoadImageMenu();
+		((LoadImageMenu)loadImage).initialize();
 		saveImage.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(final ActionEvent event) {

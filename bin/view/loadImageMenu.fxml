@@ -1,0 +1,7 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="Menu" xmlns:fx="http://javafx.com/fxml" text="Load">
+	<MenuItem text="Raw Image" fx:id="rawImage"/>
+	<MenuItem text="BMP Image" fx:id="bmpImage"/>
+</fx:root>
