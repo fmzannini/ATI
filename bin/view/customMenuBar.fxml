@@ -1,9 +1,0 @@
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import controller.*?>
-
-<fx:root type="MenuBar" xmlns:fx="http://javafx.com/fxml">
-	<FileMenu fx:id="fileMenu"></FileMenu>
-	<CreateMenu fx:id="createMenu"></CreateMenu>
-	<TransformMenu fx:id="transformMenu"></TransformMenu>
-</fx:root>

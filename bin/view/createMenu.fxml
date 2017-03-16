@@ -1,9 +1,0 @@
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
-<fx:root type="Menu" xmlns:fx="http://javafx.com/fxml" text="Create">
-	<MenuItem text="White Circle" fx:id="whiteCircle"/>
-	<MenuItem text="White Square" fx:id="whiteSquare"/>
-	<MenuItem text="Gray Gradient" fx:id="grayGradient"/>
-	<MenuItem text="Color Gradient" fx:id="colorGradient"/>
-</fx:root>
