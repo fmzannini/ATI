@@ -128,7 +128,7 @@ public class ImageGray implements Image{
 	}
 	
 	public BufferedImage showImage(){
-		BufferedImage bi=new BufferedImage(this.width,this.height,BufferedImage.TYPE_INT_RGB);
+		BufferedImage bi=new BufferedImage(this.width,this.height,BufferedImage.TYPE_BYTE_GRAY);
 		WritableRaster wr=bi.getRaster();
 		for(int i=0;i<this.width;i++){
 			for(int j=0;j<this.height;j++){
@@ -137,5 +137,25 @@ public class ImageGray implements Image{
 		}
 		return bi;
 	}
+	
+	
+	public int getQtyPixels(){
+		return width*height;
+	}
+	
+	/*Devuelve el valor promedio de los pixeles*/
+	public double getMeanValuePixels(){
+		double avg=0;
+		
+		for(int i=0;i<width;i++){
+			for(int j=0;j<height;j++){
+				avg+=this.image[i][j];
+			}
+		}
+		avg /= this.getQtyPixels();
+		
+		return avg;
+	}
+
 
 }

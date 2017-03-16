@@ -135,4 +135,25 @@ public class ImageColor implements Image{
 	}
 	
 	
+	public int getQtyPixels(){
+		return width*height;
+	}
+	
+	/*Devuelve el valor promedio para cada banda de color*/
+	public double[] getMeanValuePixels(){
+		double[] avg=new double[RGB_QTY];
+		
+		for(int i=0;i<width;i++){
+			for(int j=0;j<height;j++){
+				for(int k=0;k<RGB_QTY;k++)
+					avg[k]+=this.image[i][j][k];
+			}
+		}
+		for(int k=0;k<RGB_QTY;k++)
+			avg[k] /= this.getQtyPixels();
+		
+		return avg;
+	}
+	
+	
 }

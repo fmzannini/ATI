@@ -1,29 +1,56 @@
 package model.file;
 
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import model.image.ImageGray;
-
 public class ImageFileManager {
-/*FALTA AGREGAR LA LIBRERIA */
-	public static void main(String[] args) throws IOException {
-		
-		final BufferedImage bi = ImageIO.read(new File(System.getProperty("user.dir")+"/TEST.PGM"));
-		System.out.println(bi.getHeight());
-		ImageGray img=new ImageGray(bi,false);
-		
-		ImageGray reg=img.getRegion(new Point(10,10),new Point(50,50));
-		
-		BufferedImage bireg=reg.showImage();
-		System.out.println(bireg.getHeight());
-		File file=new File(System.getProperty("user.dir")+"/img.pgm");
 
-		ImageIO.write(bireg, "pgm", file);
-		System.out.println(file.getAbsolutePath());
+	private File file;
+	
+	public ImageFileManager(File file){
+		this.file=file;
 	}
+
+	
+	public BufferedImage readImage() throws IOException{
+		return ImageIO.read(file);
+	}
+	
+	public BufferedImage readImageBMP() throws IOException{
+		return ImageIO.read(file);
+	}
+	public BufferedImage readImagePGM() throws IOException{
+		return ImageIO.read(file);
+	}
+	public BufferedImage readImagePPM() throws IOException{
+		return ImageIO.read(file);
+	}
+	public BufferedImage readImageRAW(int width, int height) throws IOException{
+		RawFormat rawFormat=new RawFormat(file, width, height);
+		return rawFormat.read();
+	}
+	
+	
+	public void writeImage(BufferedImage img, String format) throws IOException{
+		ImageIO.write(img,format,file);
+	}
+	
+	public void writeImageBMP(BufferedImage img) throws IOException{
+		ImageIO.write(img,"bmp",file);
+	}
+	public void writeImagePGM(BufferedImage img) throws IOException{
+		ImageIO.write(img,"pnm",file);
+	}
+	public void writeImagePPM(BufferedImage img) throws IOException{
+		ImageIO.write(img,"pnm",file);
+	}
+	public void writeImageRAW(BufferedImage img) throws IOException{
+		RawFormat rawFormat=new RawFormat(file, img.getWidth(), img.getHeight());
+		rawFormat.write(img);
+	}
+
+	
 }
