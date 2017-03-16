@@ -12,7 +12,10 @@ public class CustomMenuBar extends MenuBar {
 	private FileMenu fileMenu;
 
 	@FXML
-	private NewMenu newMenu;
+	private CreateMenu createMenu;
+	
+	@FXML
+	private TransformMenu transformMenu;
 
 	public CustomMenuBar() {
 		super();
@@ -29,7 +32,8 @@ public class CustomMenuBar extends MenuBar {
 
 	public void initialize(InterfaceViewController controller) {
 		fileMenu.initialize(controller);
-		newMenu.initialize();
+		createMenu.initialize();
+		transformMenu.initialize();
 	}
 
 }
