@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.File;
 import java.io.IOException;
 
 import javafx.event.ActionEvent;
@@ -8,11 +9,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.stage.FileChooser;
 
 public class FileMenu extends Menu {
 	
+//	@FXML
+//	private Menu loadImage;
+	
 	@FXML
-	private Menu loadImage;
+	private MenuItem loadImage;
 	
 	@FXML
 	private MenuItem saveImage;
@@ -29,12 +34,24 @@ public class FileMenu extends Menu {
 	}
 
 	public void initialize(InterfaceViewController controller) {
-		loadImage = new LoadImageMenu();
-		((LoadImageMenu)loadImage).initialize();
+		loadImage.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(final ActionEvent event) {
+//				loadImage = new LoadImageMenu();
+//				((LoadImageMenu)loadImage).initialize(controller);
+//				File file = new File("/Users/FMZ/Documents/workspace/ATI/resources/a.png");
+//				controller.loadImage(file);
+				FileChooser fileChooser = new FileChooser();
+				fileChooser.setTitle("Open Resource File");
+				File file = fileChooser.showOpenDialog(ATIApplication.primaryStage);
+				controller.loadImage(file);
+			}
+		});
 		saveImage.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(final ActionEvent event) {
-				//llamada a la función de guardado
+				File file = new File("/Users/FMZ/Documents/workspace/ATI/resources/a.png");
+				controller.loadImage(file);
 			}
 		});
 	}

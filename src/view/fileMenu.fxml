@@ -2,9 +2,10 @@
 <?import javafx.scene.layout.*?>
 
 <fx:root type="Menu" xmlns:fx="http://javafx.com/fxml" text="File">
-	<Menu text="Load Image" fx:id="loadImage">
+	<!-- <Menu text="Load Image" fx:id="loadImage">
 		<MenuItem text="Raw Image" fx:id="rawImage"/>
 		<MenuItem text="BMP Image" fx:id="bmpImage"/>
-	</Menu>	
+	</Menu> -->
+	<MenuItem text="Load Image" fx:id="loadImage"/>
 	<MenuItem text="Save Image" fx:id="saveImage"/>
 </fx:root>
