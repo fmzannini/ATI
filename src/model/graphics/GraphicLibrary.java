@@ -2,21 +2,28 @@
 package model.graphics;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 public class GraphicLibrary {
-	public static BufferedImage generateCircle(double radius){
-		int diameter=(int)Math.ceil(2*radius);
-		BufferedImage bi=new BufferedImage(diameter, diameter, BufferedImage.TYPE_BYTE_BINARY);
-		Graphics graphics=bi.getGraphics();
-		graphics.drawOval(0,0, diameter-1, diameter-1);
-		return bi;
+	
+	private Graphics2D graphics;
+	
+	
+	public GraphicLibrary(Graphics2D graphics) {
+		this.graphics = graphics;
 	}
-	public static BufferedImage generateSquare(double length){
+
+	public void drawCircle(Point center, double radius){
+		int diameter=(int)Math.ceil(2*radius);
+		
+		graphics.drawOval(center.x-diameter/2,center.y-diameter/2, diameter-1, diameter-1);
+	}
+	
+	public void drawSquare(Point center, double length){
 		int size=(int) length;
-		BufferedImage bi=new BufferedImage(size, size, BufferedImage.TYPE_BYTE_BINARY);
-		Graphics graphics=bi.getGraphics();
-		graphics.drawRect(0, 0, size-1, size-1);
-		return bi;
+		
+		graphics.drawRect(center.x-size/2, center.y-size/2, size-1, size-1);
 	}
 }

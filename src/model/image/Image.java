@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 public interface Image {
 
 	public static final int RGB_QTY=3;
+	public static final int HSV_QTY = 3;
 
 	
 	public int getWidth();

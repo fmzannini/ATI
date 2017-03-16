@@ -10,6 +10,9 @@ import java.io.IOException;
 
 public class RawFormat {
 	
+	private static final int RGB_QTY = 3;
+	
+	
 	private File file;
 	private int width;
 	private int height;
@@ -42,8 +45,17 @@ public class RawFormat {
 		
 		for(int i=0;i<height;i++){
 			for(int j=0;j<width;j++){
-				int pixel=raster.getSample(j, i, 0);
-				fos.write(pixel);
+				if(img.getType()==BufferedImage.TYPE_BYTE_GRAY){
+					int pixel=raster.getSample(j, i, 0);
+					fos.write(pixel);
+				}else{
+					double pixel=0;
+					for(int k=0;k<RGB_QTY;k++){
+						pixel += raster.getSample(j, i, k);
+					}
+					pixel /= RGB_QTY;
+					fos.write((int)pixel);
+				}
 			}
 		}
 		
