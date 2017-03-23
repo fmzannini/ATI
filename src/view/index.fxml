@@ -14,6 +14,11 @@
     	<CustomMenuBar fx:id='customMenuBar'></CustomMenuBar>
     </top>
     <center>
-    	<ImageView fx:id="mainImage"/>
+    <GridPane xmlns:fx="http://javafx.com/fxml" alignment="center">
+    	<ImageView fx:id="mainImage" 
+	    	GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+	    <ImageView fx:id="secondaryImage"
+			GridPane.columnIndex="1" GridPane.rowIndex="0"/>	    	
+    </GridPane>
     </center>
 </BorderPane>

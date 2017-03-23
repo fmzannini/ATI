@@ -7,5 +7,8 @@
 		<MenuItem text="BMP Image" fx:id="bmpImage"/>
 	</Menu> -->
 	<MenuItem text="Load Image" fx:id="loadImage"/>
+	<MenuItem text="Load Secondary Image" fx:id="loadSecondaryImage"/>
 	<MenuItem text="Save Image" fx:id="saveImage"/>
+	<MenuItem text="Copy Region" fx:id="copyRegion"/>
+	
 </fx:root>

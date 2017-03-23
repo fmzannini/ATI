@@ -37,6 +37,11 @@ public class ImageColorRGB extends ImageColor {
 	}
 
 	@Override
+	public ImageType getType() {
+		return ImageType.IMAGE_RGB;
+	}
+	
+	@Override
 	public Image getRegion(Point origin, Point end) {
 		return new ImageColorRGB(super.getRegionMatrix(origin, end));
 	}
@@ -79,7 +84,7 @@ public class ImageColorRGB extends ImageColor {
 			for(int j=0;j<height;j++){
 				double[] pixelRGB=this.getPixel(i, j);
 				float[] pixelHSV=new float[HSV_QTY];
-				Color.RGBtoHSB((int)pixelRGB[RED_BAND], (int)pixelRGB[GREEN_BAND], (int)pixelRGB[BLUE_BAND], pixelHSV);
+				pixelHSV=Color.RGBtoHSB((int)pixelRGB[RED_BAND], (int)pixelRGB[GREEN_BAND], (int)pixelRGB[BLUE_BAND], pixelHSV);
 				
 				double[] pixelHSV_double=new double[HSV_QTY];
 				for(int k=0;k<HSV_QTY;k++){

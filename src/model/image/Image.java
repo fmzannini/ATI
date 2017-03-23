@@ -7,7 +7,9 @@ public interface Image {
 
 	public static final int RGB_QTY=3;
 	public static final int HSV_QTY = 3;
+	public enum ImageType{ IMAGE_GRAY, IMAGE_RGB, IMAGE_HSV};
 
+	public ImageType getType();
 	
 	public int getWidth();
 	public int getHeight();

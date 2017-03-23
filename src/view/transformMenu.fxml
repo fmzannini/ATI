@@ -3,4 +3,5 @@
 
 <fx:root type="Menu" xmlns:fx="http://javafx.com/fxml" text="Transform">
 	<MenuItem text="RGB to HSV" fx:id="rgbToHSV"/>
+	<MenuItem text="Set pixel value" fx:id="setPixel"/>
 </fx:root>

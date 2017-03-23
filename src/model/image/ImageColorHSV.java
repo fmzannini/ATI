@@ -18,6 +18,11 @@ public class ImageColorHSV extends ImageColor {
 	}
 
 	@Override
+	public ImageType getType() {
+		return ImageType.IMAGE_HSV;
+	}
+	
+	@Override
 	public Image getRegion(Point origin, Point end) {
 		return new ImageColorHSV(super.getRegionMatrix(origin, end));
 	}
@@ -39,6 +44,18 @@ public class ImageColorHSV extends ImageColor {
 			}
 		}
 		return imgColor;
+	}
+	
+	@Override
+	public ImageGray getBandOnlyGray(int band) {
+		ImageGray img = super.getBandOnlyGray(band);
+		double[][] pixels=img.getImage();
+		for(int i=0;i<img.getWidth();i++){
+			for(int j=0;j<img.getHeight();j++){
+				pixels[i][j]=pixels[i][j]*255;
+			}
+		}
+		return img;
 	}
 	
 	public ImageColorRGB passToRGB(){

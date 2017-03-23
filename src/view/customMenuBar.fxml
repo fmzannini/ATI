@@ -6,4 +6,6 @@
 	<FileMenu fx:id="fileMenu"></FileMenu>
 	<CreateMenu fx:id="createMenu"></CreateMenu>
 	<TransformMenu fx:id="transformMenu"></TransformMenu>
+	<InformationMenu fx:id="informationMenu"></InformationMenu>
+	
 </fx:root>

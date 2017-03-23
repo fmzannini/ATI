@@ -57,6 +57,11 @@ public class ImageGray implements Image{
 		this.height = image[0].length;
 	}
 	
+	@Override
+	public ImageType getType() {
+		return ImageType.IMAGE_GRAY;
+	}
+	
 	public double getPixel(Point p){
 		return this.getPixel(p.x, p.y);
 	}	

@@ -17,6 +17,9 @@ public class CustomMenuBar extends MenuBar {
 	@FXML
 	private TransformMenu transformMenu;
 
+	@FXML
+	private InformationMenu informationMenu;
+
 	public CustomMenuBar() {
 		super();
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/customMenuBar.fxml"));
@@ -33,7 +36,8 @@ public class CustomMenuBar extends MenuBar {
 	public void initialize(InterfaceViewController controller) {
 		fileMenu.initialize(controller);
 		createMenu.initialize();
-		transformMenu.initialize();
+		transformMenu.initialize(controller);
+		informationMenu.initialize(controller);
 	}
 
 }
