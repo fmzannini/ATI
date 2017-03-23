@@ -1,6 +1,8 @@
 package model.image;
 
 import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 
 public abstract class ImageColor implements Image{
 	
@@ -136,7 +138,5 @@ public abstract class ImageColor implements Image{
 		}
 		return imgGray;
 	}
-	
-	
 	
 }

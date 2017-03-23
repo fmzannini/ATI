@@ -156,6 +156,17 @@ public class ImageGray implements Image{
 		
 		return avg;
 	}
+	
+	public BufferedImage getNegative() {
+		BufferedImage bi=new BufferedImage(this.width,this.height,BufferedImage.TYPE_BYTE_GRAY);
+		WritableRaster wr=bi.getRaster();
+		for(int i=0;i<this.width;i++){
+			for(int j=0;j<this.height;j++){
+				wr.setSample(i, j, GRAY_BAND, - this.image[i][j] + 255 -1);
+			}
+		}
+		return bi;
+	}
 
 
 }

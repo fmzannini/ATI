@@ -37,10 +37,6 @@ public class FileMenu extends Menu {
 		loadImage.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(final ActionEvent event) {
-//				loadImage = new LoadImageMenu();
-//				((LoadImageMenu)loadImage).initialize(controller);
-//				File file = new File("/Users/FMZ/Documents/workspace/ATI/resources/a.png");
-//				controller.loadImage(file);
 				FileChooser fileChooser = new FileChooser();
 				fileChooser.setTitle("Open Resource File");
 				File file = fileChooser.showOpenDialog(ATIApplication.primaryStage);
