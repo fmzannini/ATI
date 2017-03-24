@@ -27,15 +27,15 @@ public class NegativeTest {
 	}
 
 	public BufferedImage getNegativeGray() throws IOException {
-		File file = new File(System.getProperty("user.dir") + "/resources/a.png");
+		File file = new File(System.getProperty("user.dir") + "/resources/girl.png");
 		BufferedImage bi = (new ImageFileManager(file)).readImage();
-		ImageGray image = new ImageGray(bi, true);
+		ImageGray image = new ImageGray(bi, false);
 
 		return image.getNegative();
 	}
 	
 	public BufferedImage getNegativeColor() throws IOException {
-		File file = new File(System.getProperty("user.dir") + "/resources/a.png");
+		File file = new File(System.getProperty("user.dir") + "/resources/prueba.png");
 		BufferedImage bi = (new ImageFileManager(file)).readImage();
 		ImageColorRGB image = new ImageColorRGB(bi);
 
