@@ -17,10 +17,8 @@
     <GridPane xmlns:fx="http://javafx.com/fxml" alignment="center">
     	<ImageView fx:id="mainImage" 
 	    	GridPane.columnIndex="0" GridPane.rowIndex="0/">
-	    <Button fx:id="primaryHistogram" text="Calcular Histograma" />
 	    <ImageView fx:id="secondaryImage"
-			GridPane.columnIndex="2" GridPane.rowIndex="0"/>	
-		<Button fx:id="secondaryHistogram" text="Calcular Histograma" />
+			GridPane.columnIndex="2" GridPane.rowIndex="0"/>
     </GridPane>
     </center>
 </BorderPane>

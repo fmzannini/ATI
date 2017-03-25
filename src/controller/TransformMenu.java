@@ -8,7 +8,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -18,7 +17,6 @@ import model.image.Image;
 import model.image.ImageColorHSV;
 import model.image.ImageColorRGB;
 import model.image.ImageGray;
-import plot.Histogram;
 
 public class TransformMenu extends Menu {
 
@@ -33,12 +31,6 @@ public class TransformMenu extends Menu {
 
 	@FXML
 	private MenuItem thresholding;
-
-	@FXML
-	private Button primaryHistogram;
-
-	@FXML
-	private Button secondaryHistogram;
 
 	public TransformMenu() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/transformMenu.fxml"));
@@ -211,26 +203,6 @@ public class TransformMenu extends Menu {
 				}
 				}
 				controller.refreshSecondaryImage();
-			}
-
-		});
-
-		primaryHistogram.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				Image img = controller.getImage();
-
-				if (img == null) {
-					return;
-				}
-
-				Histogram histogram = new Histogram();
-				switch (img.getType()) {
-				case IMAGE_GRAY:
-					histogram.scaleGrayPlot((ImageGray) img);
-					break;
-				}
 			}
 
 		});
