@@ -2,8 +2,8 @@
 <?import javafx.scene.layout.*?>
 
 <fx:root type="Menu" xmlns:fx="http://javafx.com/fxml" text="Create">
-	<MenuItem text="White Circle" fx:id="whiteCircle"/>
-	<MenuItem text="White Square" fx:id="whiteSquare"/>
-	<MenuItem text="Gray Gradient" fx:id="grayGradient"/>
-	<MenuItem text="Color Gradient" fx:id="colorGradient"/>
+	<MenuItem text="Círculo blanco" fx:id="whiteCircle"/>
+	<MenuItem text="Cuadrado blanco" fx:id="whiteSquare"/>
+	<MenuItem text="Gradiente de grises" fx:id="grayGradient"/>
+	<MenuItem text="Gradiente de colores" fx:id="colorGradient"/>
 </fx:root>

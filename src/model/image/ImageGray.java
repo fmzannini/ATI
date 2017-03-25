@@ -167,26 +167,22 @@ public class ImageGray implements Image {
 		return avg;
 	}
 
-	public BufferedImage getNegative() {
-		BufferedImage bi = new BufferedImage(this.width, this.height, BufferedImage.TYPE_BYTE_GRAY);
-		WritableRaster wr = bi.getRaster();
+	public ImageGray getNegative() {
 		for (int i = 0; i < this.width; i++) {
 			for (int j = 0; j < this.height; j++) {
-				wr.setSample(i, j, GRAY_BAND, -this.image[i][j] + 255 - 1);
+				this.image[i][j] = -this.image[i][j] + 255 - 1;
 			}
 		}
-		return bi;
+		return this;
 	}
 
-	public BufferedImage applyThresholding(int t) {
-		BufferedImage bi = new BufferedImage(this.width, this.height, BufferedImage.TYPE_BYTE_GRAY);
-		WritableRaster wr = bi.getRaster();
+	public ImageGray applyThresholding(int t) {
 		for (int i = 0; i < this.width; i++) {
 			for (int j = 0; j < this.height; j++) {
-				wr.setSample(i, j, GRAY_BAND, this.image[i][j] >= t ? 255.0 : 0.0);
+				this.image[i][j] = this.image[i][j] >= t ? 255.0 : 0.0;
 			}
 		}
-		return bi;
+		return this;
 	}
 
 	public BufferedImage sum(ImageGray image) {

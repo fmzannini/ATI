@@ -2,6 +2,8 @@
 <?import javafx.scene.layout.*?>
 
 <fx:root type="Menu" xmlns:fx="http://javafx.com/fxml" text="Transform">
-	<MenuItem text="RGB to HSV" fx:id="rgbToHSV"/>
-	<MenuItem text="Set pixel value" fx:id="setPixel"/>
+	<MenuItem text="RGB a HSV" fx:id="rgbToHSV"/>
+	<MenuItem text="Elegir color de un pixel" fx:id="setPixel"/>
+	<MenuItem text="Negativo" fx:id="negative"/>
+	<MenuItem text="Umbralización" fx:id="thresholding"/>
 </fx:root>

@@ -1,6 +1,5 @@
 package controller;
 
-import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
@@ -9,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -18,6 +18,7 @@ import model.image.Image;
 import model.image.ImageColorHSV;
 import model.image.ImageColorRGB;
 import model.image.ImageGray;
+import plot.Histogram;
 
 public class TransformMenu extends Menu {
 
@@ -26,6 +27,18 @@ public class TransformMenu extends Menu {
 
 	@FXML
 	private MenuItem setPixel;
+
+	@FXML
+	private MenuItem negative;
+
+	@FXML
+	private MenuItem thresholding;
+
+	@FXML
+	private Button primaryHistogram;
+
+	@FXML
+	private Button secondaryHistogram;
 
 	public TransformMenu() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/transformMenu.fxml"));
@@ -43,102 +56,102 @@ public class TransformMenu extends Menu {
 			@Override
 			public void handle(final ActionEvent event) {
 				// llamada a la función transformar de RGB a HSV
-				Image img=controller.getImage();
-				if(img==null)
+				Image img = controller.getImage();
+				if (img == null)
 					return;
-				if(! (img instanceof ImageColorRGB) )
+				if (!(img instanceof ImageColorRGB))
 					return;
-				ImageColorRGB imgRGB=(ImageColorRGB)img;
-				try{
-					saveBand("red_band",imgRGB.getBandOnlyGray(0));
-					saveBand("green_band",imgRGB.getBandOnlyGray(1));
-					saveBand("blue_band",imgRGB.getBandOnlyGray(2));
-				}catch(IOException e){
+				ImageColorRGB imgRGB = (ImageColorRGB) img;
+				try {
+					saveBand("red_band", imgRGB.getBandOnlyGray(0));
+					saveBand("green_band", imgRGB.getBandOnlyGray(1));
+					saveBand("blue_band", imgRGB.getBandOnlyGray(2));
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
-				ImageColorHSV imgHSV=imgRGB.passToHSV();
-				try{
-					saveBand("hue_band",imgHSV.getBandOnlyGray(0));
-					saveBand("saturation_band",imgHSV.getBandOnlyGray(1));
-					saveBand("value_band",imgHSV.getBandOnlyGray(2));
-				}catch(IOException e){
+
+				ImageColorHSV imgHSV = imgRGB.passToHSV();
+				try {
+					saveBand("hue_band", imgHSV.getBandOnlyGray(0));
+					saveBand("saturation_band", imgHSV.getBandOnlyGray(1));
+					saveBand("value_band", imgHSV.getBandOnlyGray(2));
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 
 			private void saveBand(String filename, ImageGray band) throws IOException {
-				File file=new File(System.getProperty("user.dir")+"/"+filename+".pgm");
-				ImageFileManager ifm=new ImageFileManager(file);
+				File file = new File(System.getProperty("user.dir") + "/" + filename + ".pgm");
+				ImageFileManager ifm = new ImageFileManager(file);
 				ifm.writeImagePGM(band.showImage());
 			}
 		});
-		
+
 		setPixel.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				Image img=controller.getImage();
-				
-				Dialog<String> dialog=new TextInputDialog();
+				Image img = controller.getImage();
+
+				Dialog<String> dialog = new TextInputDialog();
 				dialog.setTitle("Set pixel");
 				dialog.setHeaderText("Type x and y,for example: 5,10");
-				Optional<String> result=dialog.showAndWait();
-				if(!result.isPresent())
+				Optional<String> result = dialog.showAndWait();
+				if (!result.isPresent())
 					return;
-				String input=result.get();
-				String[] inputs=input.split(",");
-				int x=Integer.parseInt(inputs[0]);
-				int y=Integer.parseInt(inputs[1]);
+				String input = result.get();
+				String[] inputs = input.split(",");
+				int x = Integer.parseInt(inputs[0]);
+				int y = Integer.parseInt(inputs[1]);
 
-				if(x>=img.getWidth()||y>=img.getHeight())
+				if (x >= img.getWidth() || y >= img.getHeight())
 					return;
-				
-				switch(img.getType()){
+
+				switch (img.getType()) {
 				case IMAGE_GRAY:
-					Dialog<String> dialogGray=new TextInputDialog();
+					Dialog<String> dialogGray = new TextInputDialog();
 					dialogGray.setTitle("Set pixel");
 					dialogGray.setHeaderText("Type value, for example: 250.23");
-					Optional<String> resultGray=dialogGray.showAndWait();
-					if(!resultGray.isPresent())
+					Optional<String> resultGray = dialogGray.showAndWait();
+					if (!resultGray.isPresent())
 						return;
-					String inputGray=resultGray.get();
-					double value=Double.parseDouble(inputGray);
-					
-					ImageGray imgGray=(ImageGray)img;
-					imgGray.setPixel(x,y,value);
+					String inputGray = resultGray.get();
+					double value = Double.parseDouble(inputGray);
+
+					ImageGray imgGray = (ImageGray) img;
+					imgGray.setPixel(x, y, value);
 					break;
 				case IMAGE_RGB:
-					Dialog<String> dialogRGB=new TextInputDialog();
+					Dialog<String> dialogRGB = new TextInputDialog();
 					dialogRGB.setTitle("Set pixel");
 					dialogRGB.setHeaderText("Type value rgb,for example: 150,200,50");
-					Optional<String> resultRGB=dialogRGB.showAndWait();
-					if(!resultRGB.isPresent())
+					Optional<String> resultRGB = dialogRGB.showAndWait();
+					if (!resultRGB.isPresent())
 						return;
-					String inputRGB=resultRGB.get();
-					String[] inputsRGB=inputRGB.split(",");
-					double[] rgb=new double[3];
-					rgb[0]=Double.parseDouble(inputsRGB[0]);
-					rgb[1]=Double.parseDouble(inputsRGB[1]);
-					rgb[2]=Double.parseDouble(inputsRGB[2]);
-					
-					ImageColorRGB imgRGB=(ImageColorRGB)img;
+					String inputRGB = resultRGB.get();
+					String[] inputsRGB = inputRGB.split(",");
+					double[] rgb = new double[3];
+					rgb[0] = Double.parseDouble(inputsRGB[0]);
+					rgb[1] = Double.parseDouble(inputsRGB[1]);
+					rgb[2] = Double.parseDouble(inputsRGB[2]);
+
+					ImageColorRGB imgRGB = (ImageColorRGB) img;
 					imgRGB.setPixel(x, y, rgb);
 					break;
 				case IMAGE_HSV:
-					Dialog<String> dialogHSV=new TextInputDialog();
+					Dialog<String> dialogHSV = new TextInputDialog();
 					dialogHSV.setTitle("Set pixel");
 					dialogHSV.setHeaderText("Type value hsv,for example: 0.5,0.3,0.7");
-					Optional<String> resultHSV=dialogHSV.showAndWait();
-					if(!resultHSV.isPresent())
+					Optional<String> resultHSV = dialogHSV.showAndWait();
+					if (!resultHSV.isPresent())
 						return;
-					String inputHSV=resultHSV.get();
-					String[] inputsHSV=inputHSV.split(",");
-					double[] hsv=new double[3];
-					hsv[0]=Double.parseDouble(inputsHSV[0]);
-					hsv[1]=Double.parseDouble(inputsHSV[1]);
-					hsv[2]=Double.parseDouble(inputsHSV[2]);
+					String inputHSV = resultHSV.get();
+					String[] inputsHSV = inputHSV.split(",");
+					double[] hsv = new double[3];
+					hsv[0] = Double.parseDouble(inputsHSV[0]);
+					hsv[1] = Double.parseDouble(inputsHSV[1]);
+					hsv[2] = Double.parseDouble(inputsHSV[2]);
 
-					ImageColorHSV imgHSV=(ImageColorHSV)img;
+					ImageColorHSV imgHSV = (ImageColorHSV) img;
 					imgHSV.setPixel(x, y, hsv);
 					break;
 				}
@@ -146,6 +159,82 @@ public class TransformMenu extends Menu {
 				controller.refreshImage();
 			}
 		});
+
+		negative.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				Image img = controller.getImage();
+				controller.setSecondaryImage(img);
+
+				switch (img.getType()) {
+				case IMAGE_GRAY: {
+					ImageGray imgGray = (ImageGray) img;
+					imgGray = imgGray.getNegative();
+					break;
+				}
+				case IMAGE_RGB: {
+					ImageColorRGB imgRGB = (ImageColorRGB) img;
+					imgRGB = imgRGB.getNegative();
+					break;
+				}
+				}
+				controller.refreshSecondaryImage();
+			}
+
+		});
+
+		thresholding.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				Image img = controller.getImage();
+				controller.setSecondaryImage(img);
+
+				Dialog<String> dialog = new TextInputDialog();
+				dialog.setTitle("Elegir valor de Umbralización");
+				dialog.setHeaderText("Elegir un valor entre 0 y 255");
+				Optional<String> result = dialog.showAndWait();
+				if (!result.isPresent())
+					return;
+				String input = result.get();
+				double threshold = Double.parseDouble(input);
+				if (threshold > 255.0 || threshold < 0) {
+					return;
+				}
+
+				switch (img.getType()) {
+				case IMAGE_GRAY: {
+					ImageGray imgGray = (ImageGray) img;
+					imgGray = imgGray.applyThresholding((int) threshold);
+					break;
+				}
+				}
+				controller.refreshSecondaryImage();
+			}
+
+		});
+
+		primaryHistogram.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				Image img = controller.getImage();
+
+				if (img == null) {
+					return;
+				}
+
+				Histogram histogram = new Histogram();
+				switch (img.getType()) {
+				case IMAGE_GRAY:
+					histogram.scaleGrayPlot((ImageGray) img);
+					break;
+				}
+			}
+
+		});
+
 	}
 
 }
