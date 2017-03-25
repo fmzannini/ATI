@@ -96,5 +96,17 @@ public class ImageColorRGB extends ImageColor {
 		return imgColor;
 	}
 
+	public BufferedImage getNegative() {
+		BufferedImage bi=new BufferedImage(this.getWidth(),this.getHeight(),BufferedImage.TYPE_3BYTE_BGR);
+		WritableRaster wr=bi.getRaster();
+		for(int i=0;i<this.getWidth();i++){
+			for(int j=0;j<this.getHeight();j++){
+				wr.setSample(i, j, RED_BAND, - this.getImage()[i][j][RED_BAND] + 255 -1);
+				wr.setSample(i, j, GREEN_BAND, - this.getImage()[i][j][GREEN_BAND] + 255 -1);
+				wr.setSample(i, j, BLUE_BAND, - this.getImage()[i][j][BLUE_BAND] + 255 -1);
+			}
+		}
+		return bi;
+	}
 
 }
