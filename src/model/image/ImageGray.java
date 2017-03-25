@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 
+import utils.DynamicRangeCompression;
 import utils.LinearTransformation;
 
 public class ImageGray implements Image {
@@ -175,48 +176,79 @@ public class ImageGray implements Image {
 	public BufferedImage applyThresholding(int t) {
 		BufferedImage bi = new BufferedImage(this.width, this.height, BufferedImage.TYPE_BYTE_GRAY);
 		WritableRaster wr = bi.getRaster();
-		for(int i=0;i<this.width;i++){
-			for(int j=0;j<this.height;j++){
+		for (int i = 0; i < this.width; i++) {
+			for (int j = 0; j < this.height; j++) {
 				wr.setSample(i, j, GRAY_BAND, this.image[i][j] >= t ? 255.0 : 0.0);
 			}
 		}
 		return bi;
 	}
-	
+
 	public BufferedImage sum(ImageGray image) {
 		if (image.getHeight() != this.height || image.getWidth() != this.width) {
 			throw new IllegalArgumentException();
 		}
-		for(int i=0;i<this.width;i++){
-			for(int j=0;j<this.height;j++){
+		for (int i = 0; i < this.width; i++) {
+			for (int j = 0; j < this.height; j++) {
 				this.image[i][j] = this.image[i][j] + image.getImage()[i][j];
 			}
 		}
 		return LinearTransformation.grayImage(this);
 	}
-	
+
+	public BufferedImage multiply(int n) {
+		for (int i = 0; i < this.width; i++) {
+			for (int j = 0; j < this.height; j++) {
+				this.image[i][j] = this.image[i][j] * n;
+			}
+		}
+		return DynamicRangeCompression.grayImage(this);
+	}
+
 	public BufferedImage multiply(ImageGray image) {
 		if (image.getHeight() != this.height || image.getWidth() != this.width) {
 			throw new IllegalArgumentException();
 		}
-		for(int i=0;i<this.width;i++){
-			for(int j=0;j<this.height;j++){
+		for (int i = 0; i < this.width; i++) {
+			for (int j = 0; j < this.height; j++) {
 				this.image[i][j] = this.image[i][j] * image.getImage()[i][j];
 			}
 		}
 		return LinearTransformation.grayImage(this);
 	}
-	
+
 	public BufferedImage substract(ImageGray image) {
 		if (image.getHeight() != this.height || image.getWidth() != this.width) {
 			throw new IllegalArgumentException();
 		}
-		for(int i=0;i<this.width;i++){
-			for(int j=0;j<this.height;j++){
+		for (int i = 0; i < this.width; i++) {
+			for (int j = 0; j < this.height; j++) {
 				this.image[i][j] = this.image[i][j] - image.getImage()[i][j];
 			}
 		}
 		return LinearTransformation.grayImage(this);
+	}
+
+	public BufferedImage increaseContrast(double r1, double r2, double s1, double s2) {
+		BufferedImage bi = new BufferedImage(this.width, this.height, BufferedImage.TYPE_BYTE_GRAY);
+		WritableRaster wr = bi.getRaster();
+		for (int i = 0; i < this.width; i++) {
+			for (int j = 0; j < this.height; j++) {
+				if (this.image[i][j] < r1) {
+					wr.setSample(i, j, GRAY_BAND, calculateContrast(this.image[i][j], 0, r1, 0, s1));	
+				} else if (this.image[i][j] >= r1 || this.image[i][j] <= r2) {
+					wr.setSample(i, j, GRAY_BAND, calculateContrast(this.image[i][j], r1, r2, s1, s2));
+				} else {
+					wr.setSample(i, j, GRAY_BAND, calculateContrast(this.image[i][j], r2, 255, s2, 255));
+				}
+				
+			}
+		}
+		return bi;
+	}
+
+	private double calculateContrast(double pixel, double r1, double r2, double s1, double s2) {
+		return ((s2 - s2) / (r2 - r1)) * pixel + s1 - ((s2 - s2) / (r2 - r1)) * r1;
 	}
 
 }
