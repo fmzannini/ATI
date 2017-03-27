@@ -99,9 +99,9 @@ public class ImageColorRGB extends ImageColor {
 	public ImageColorRGB getNegative() {
 		for(int i=0;i<this.getWidth();i++){
 			for(int j=0;j<this.getHeight();j++){
-				this.getImage()[RED_BAND][i][j] = - this.getImage()[i][j][RED_BAND] + 255 -1;
-				this.getImage()[GREEN_BAND][i][j] = - this.getImage()[i][j][GREEN_BAND] + 255 -1;
-				this.getImage()[BLUE_BAND][i][j] = - this.getImage()[i][j][BLUE_BAND] + 255 -1;
+				this.getImage()[i][j][RED_BAND] = - this.getImage()[i][j][RED_BAND] + 255 -1;
+				this.getImage()[i][j][GREEN_BAND] = - this.getImage()[i][j][GREEN_BAND] + 255 -1;
+				this.getImage()[i][j][BLUE_BAND] = - this.getImage()[i][j][BLUE_BAND] + 255 -1;
 			}
 		}
 		return this;

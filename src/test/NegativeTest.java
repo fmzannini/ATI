@@ -13,20 +13,20 @@ public class NegativeTest {
 	public static void main(String[] args) {
 		NegativeTest test = new NegativeTest();
 		try {
-			BufferedImage i = test.getNegativeGray();
-			File file = new File(System.getProperty("user.dir") + "/negativeGray.ppm");
-			new ImageFileManager(file).writeImagePPM(i);
+//			BufferedImage i = test.getNegativeGray();
+//			File file = new File(System.getProperty("user.dir") + "/negativeGray.ppm");
+//			new ImageFileManager(file).writeImagePPM(i);
 			
-			i = test.getNegativeColor();
-			file = new File(System.getProperty("user.dir") + "/negativeColor.ppm");
-			new ImageFileManager(file).writeImagePPM(i);
+			ImageColorRGB i = test.getNegativeColor();
+			File file = new File(System.getProperty("user.dir") + "/negativeColor.ppm");
+			new ImageFileManager(file).writeImagePPM(i.showImage());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public BufferedImage getNegativeGray() throws IOException {
+	public ImageGray getNegativeGray() throws IOException {
 		File file = new File(System.getProperty("user.dir") + "/resources/girl.png");
 		BufferedImage bi = (new ImageFileManager(file)).readImage();
 		ImageGray image = new ImageGray(bi, false);
@@ -34,7 +34,7 @@ public class NegativeTest {
 		return image.getNegative();
 	}
 	
-	public BufferedImage getNegativeColor() throws IOException {
+	public ImageColorRGB getNegativeColor() throws IOException {
 		File file = new File(System.getProperty("user.dir") + "/resources/prueba.png");
 		BufferedImage bi = (new ImageFileManager(file)).readImage();
 		ImageColorRGB image = new ImageColorRGB(bi);
