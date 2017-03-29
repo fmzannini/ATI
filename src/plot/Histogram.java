@@ -54,6 +54,41 @@ public class Histogram {
 		}
 	}
 
+	
+	public void grayScalePlot(ImageGray image, String filename) {
+		double[] data = new double[image.getHeight() * image.getWidth()];
+
+		double[][] matrix = image.getImage();
+		int k = 0;
+		for (int i = 0; i < image.getWidth(); i++) {
+			for (int j = 0; j < image.getHeight(); j++) {
+				double key = Math.floor(matrix[i][j] + 0.5);
+				data[k] = key;
+				k++;
+			}
+		}
+
+		final HistogramDataset dataset = new HistogramDataset();
+		dataset.setType(HistogramType.FREQUENCY);
+		dataset.addSeries("Color del pixel", data, 256);
+
+		JFreeChart histogram = ChartFactory.createHistogram("Distribución de colores", "Color del pixel", "Cantidad",
+				dataset, PlotOrientation.VERTICAL, false, true, false);
+
+		int width = 640; /* Width of the image */
+		int height = 480; /* Height of the image */
+		File gray = new File(filename+".jpeg");
+		System.out.println("file:"+gray.getAbsolutePath());
+
+		try {
+			ChartUtilities.saveChartAsJPEG(gray, histogram, width, height);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	
 	public void colorScalePlot(ImageColor image) {
 		double[] redBand = new double[image.getHeight() * image.getWidth()];
 		double[] greenBand = new double[image.getHeight() * image.getWidth()];
