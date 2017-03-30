@@ -12,16 +12,16 @@ public class SumImageTest {
 	public static void main(String[] args) {
 		SumImageTest test = new SumImageTest();
 		try {
-			BufferedImage i = test.sumImages();
+			ImageGray i = test.sumImages();
 			File file = new File(System.getProperty("user.dir") + "/sumImages.ppm");
-			new ImageFileManager(file).writeImagePPM(i);
+			new ImageFileManager(file).writeImagePPM(i.showImage());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	public BufferedImage sumImages() throws IOException {
+	public ImageGray sumImages() throws IOException {
 		File file1 = new File(System.getProperty("user.dir") + "/resources/image1.png");
 		BufferedImage bi = (new ImageFileManager(file1)).readImage();
 		ImageGray image1 = new ImageGray(bi, false);

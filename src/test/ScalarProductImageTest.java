@@ -12,16 +12,16 @@ public class ScalarProductImageTest {
 	public static void main(String[] args) {
 		ScalarProductImageTest test = new ScalarProductImageTest();
 		try {
-			BufferedImage i = test.multiplyImage(5);
+			ImageGray i = test.multiplyImage(5);
 			File file = new File(System.getProperty("user.dir") + "/multiplyByScalarImage.ppm");
-			new ImageFileManager(file).writeImagePPM(i);
+			new ImageFileManager(file).writeImagePPM(i.showImage());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	public BufferedImage multiplyImage(int n) throws IOException {
+	public ImageGray multiplyImage(int n) throws IOException {
 		File file = new File(System.getProperty("user.dir") + "/resources/image1.png");
 		BufferedImage bi = (new ImageFileManager(file)).readImage();
 		ImageGray image= new ImageGray(bi, false);

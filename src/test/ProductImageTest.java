@@ -12,16 +12,16 @@ public class ProductImageTest {
 	public static void main(String[] args) {
 		ProductImageTest test = new ProductImageTest();
 		try {
-			BufferedImage i = test.multiplyImages();
+			ImageGray i = test.multiplyImages();
 			File file = new File(System.getProperty("user.dir") + "/multiplyImages.ppm");
-			new ImageFileManager(file).writeImagePPM(i);
+			new ImageFileManager(file).writeImagePPM(i.showImage());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	public BufferedImage multiplyImages() throws IOException {
+	public ImageGray multiplyImages() throws IOException {
 		File file1 = new File(System.getProperty("user.dir") + "/resources/image1.png");
 		BufferedImage bi = (new ImageFileManager(file1)).readImage();
 		ImageGray image1 = new ImageGray(bi, false);
