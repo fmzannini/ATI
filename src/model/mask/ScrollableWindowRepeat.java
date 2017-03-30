@@ -72,7 +72,7 @@ public class ScrollableWindowRepeat implements ScrollableWindow {
 		if(center == null)
 			center=new Point(0,0);
 		else{
-			if(center.x>img.getWidth()){
+			if(center.x>=img.getWidth()-1){
 				center=new Point(0,center.y+1);
 			}else{
 				center=new Point(center.x+1,center.y);				
