@@ -2,14 +2,14 @@ package model.random;
 
 import java.util.Random;
 
-public class UniformRandom implements RandomGenerator{
+public class UniformRandom implements RandomGenerator {
 	private Random gen;
-	
-	public UniformRandom(){
-		this.gen=new Random();
+
+	public UniformRandom() {
+		this.gen = new Random();
 	}
-	
-	public double rand(){
+
+	public double rand() {
 		return gen.nextDouble();
 	}
 }

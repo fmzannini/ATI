@@ -30,6 +30,9 @@ public class FileMenu extends Menu {
 	
 	@FXML
 	private MenuItem saveImage;
+	
+	@FXML
+	private MenuItem saveSecondaryImage;
 
 	@FXML
 	private MenuItem copyRegion;
@@ -69,10 +72,20 @@ public class FileMenu extends Menu {
 		saveImage.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(final ActionEvent event) {
-				//File file = new File("/Users/FMZ/Documents/workspace/ATI/resources/a.png");
-				//controller.loadImage(file);
-
 				Image img=controller.getImage();
+				
+				FileChooser fileChooser = new FileChooser();
+				fileChooser.setTitle("Save Resource File");
+				File file = fileChooser.showSaveDialog(ATIApplication.primaryStage);
+				saveImage(file,img);
+
+			}
+		});
+		
+		saveSecondaryImage.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(final ActionEvent event) {
+				Image img=controller.getSecondaryImage();
 				
 				FileChooser fileChooser = new FileChooser();
 				fileChooser.setTitle("Save Resource File");

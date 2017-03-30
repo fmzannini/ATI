@@ -9,6 +9,7 @@
 	<MenuItem text="Load Image" fx:id="loadImage"/>
 	<MenuItem text="Load Secondary Image" fx:id="loadSecondaryImage"/>
 	<MenuItem text="Save Image" fx:id="saveImage"/>
+	<MenuItem text="Save Secondary Image" fx:id="saveSecondaryImage"/>
 	<MenuItem text="Copy Region" fx:id="copyRegion"/>
 	
 </fx:root>

@@ -220,12 +220,14 @@ public class TransformMenu extends Menu {
 
 				switch (img.getType()) {
 				case IMAGE_GRAY: {
-					ImageGray imgGray = (ImageGray) img;
+					ImageGray imgGray = (ImageGray) img.copy();
+					controller.setSecondaryImage(imgGray);
 					imgGray = imgGray.applyThresholding((int) threshold);
 					break;
 				}
 				case IMAGE_RGB: {
-					ImageColorRGB imgRGB = (ImageColorRGB) img;
+					ImageColorRGB imgRGB = (ImageColorRGB) img.copy();
+					controller.setSecondaryImage(imgRGB);
 					imgRGB = imgRGB.applyThresholding((int) threshold);
 					break;
 				}
@@ -256,7 +258,8 @@ public class TransformMenu extends Menu {
 
 				switch (img.getType()) {
 				case IMAGE_GRAY: {
-					ImageGray imgGray = (ImageGray) img;
+					ImageGray imgGray = (ImageGray) img.copy();
+					controller.setSecondaryImage(imgGray);
 					imgGray = imgGray.multiply(scalar);
 					break;
 				}
@@ -283,7 +286,8 @@ public class TransformMenu extends Menu {
 
 				switch (img.getType()) {
 				case IMAGE_GRAY: {
-					ImageGray imgGray = (ImageGray) img;
+					ImageGray imgGray = (ImageGray) img.copy();
+					controller.setSecondaryImage(imgGray);
 					imgGray = imgGray.power(gamma);
 					break;
 				}
@@ -326,7 +330,8 @@ public class TransformMenu extends Menu {
 
 				switch (img.getType()) {
 				case IMAGE_GRAY: {
-					ImageGray imgGray = (ImageGray) img;
+					ImageGray imgGray = (ImageGray) img.copy();
+					controller.setSecondaryImage(imgGray);
 					imgGray = imgGray.increaseContrast(r1, r2, s1, s2);
 					break;
 				}
@@ -345,7 +350,8 @@ public class TransformMenu extends Menu {
 
 				switch (img.getType()) {
 				case IMAGE_GRAY: {
-					ImageGray imgGray = (ImageGray) img;
+					ImageGray imgGray = (ImageGray) img.copy();
+					controller.setSecondaryImage(imgGray);
 					double[] data = HistogramEqualization.equalizeGrayImageHistogram(imgGray);
 					imgGray = HistogramEqualization.applyHistogramEqualization(imgGray, data);
 					break;
@@ -365,8 +371,8 @@ public class TransformMenu extends Menu {
 			public void handle(ActionEvent event) {
 				Image img1 = controller.getImage();
 				Image img2 = controller.getSecondaryImage();
-				ImageGray result = (ImageGray) img1;
-				controller.setResultImage(img1);
+				ImageGray result = (ImageGray) img1.copy();
+				controller.setSecondaryImage(result);
 
 				if (img2 == null) {
 					return;
@@ -376,7 +382,8 @@ public class TransformMenu extends Menu {
 				case IMAGE_GRAY: {
 					ImageGray imgGray1 = (ImageGray) img1;
 					ImageGray imgGray2 = (ImageGray) img2;
-					img1 = imgGray1.sum(imgGray2);
+					result = imgGray1.sum(imgGray2);
+					controller.setMainImage(result);
 					break;
 				}
 				case IMAGE_RGB: {
@@ -384,6 +391,7 @@ public class TransformMenu extends Menu {
 				}
 				}
 				controller.refreshResultImage();
+				controller.refreshImage();
 			}
 
 		});

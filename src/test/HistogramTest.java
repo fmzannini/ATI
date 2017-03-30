@@ -38,11 +38,11 @@ public class HistogramTest {
 	}
 
 	public static void getGrayScaleHistogram() {
-		File file = new File(System.getProperty("user.dir") + "/resources/prueba.png");
+		File file = new File(System.getProperty("user.dir") + "/resources/girl.png");
 		BufferedImage bi;
 		try {
 			bi = (new ImageFileManager(file)).readImage();
-			ImageGray image = new ImageGray(bi, true);
+			ImageGray image = new ImageGray(bi, false);
 
 			Histogram histogram = new Histogram();
 			histogram.grayScalePlot(image, "test");
