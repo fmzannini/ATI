@@ -17,34 +17,34 @@ public class TestMask {
 		MeanMask mm=new MeanMask(new ScrollableWindowRepeat(img, n, n));
 		ImageGray result=mm.applyMask();
 
-		return new ImageGray(LinearTransformation.grayImage(result),false);
+		return new ImageGray(LinearTransformation.grayImage(result).getImage());
 	}
 	
 	public ImageGray testMedianMask(ImageGray img, int n){
 		MedianMask mm=new MedianMask(new ScrollableWindowRepeat(img, n, n));
 		ImageGray result=mm.applyMask();
 
-		return new ImageGray(LinearTransformation.grayImage(result),false);
+		return new ImageGray(LinearTransformation.grayImage(result).getImage());
 	}
 	public ImageGray testMedianWeightsMask(ImageGray img){
 		MedianWeightsMask mm=new MedianWeightsMask(new ScrollableWindowRepeat(img, 3, 3));
 		ImageGray result=mm.applyMask();
 	
-		return new ImageGray(LinearTransformation.grayImage(result),false);
+		return new ImageGray(LinearTransformation.grayImage(result).getImage());
 		
 	}
 	public ImageGray testGaussianMask(ImageGray img, int n,double sigma){
 		GaussianMask gm=new GaussianMask(new ScrollableWindowRepeat(img, n,n),sigma);
 		ImageGray result=gm.applyMask();
 	
-		return new ImageGray(LinearTransformation.grayImage(result),false);
+		return new ImageGray(LinearTransformation.grayImage(result).getImage());
 	}
 	
 	public ImageGray testHighPassMask(ImageGray img){
 		HighPassMask hpm=new HighPassMask(new ScrollableWindowRepeat(img, 3,3));
 		ImageGray result=hpm.applyMask();
 		
-		return new ImageGray(LinearTransformation.grayImage(result),false);
+		return new ImageGray(LinearTransformation.grayImage(result).getImage());
 	}
 	
 	public static void main(String[] args) throws IOException {
