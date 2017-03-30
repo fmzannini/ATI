@@ -7,5 +7,7 @@
 	<CreateMenu fx:id="createMenu"></CreateMenu>
 	<TransformMenu fx:id="transformMenu"></TransformMenu>
 	<InformationMenu fx:id="informationMenu"></InformationMenu>
+	<NoiseMenu fx:id="noiseMenu"></NoiseMenu>
+	<MaskMenu fx:id="maskMenu"></MaskMenu>
 	
 </fx:root>

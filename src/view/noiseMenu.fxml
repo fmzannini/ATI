@@ -1,0 +1,9 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="Menu" xmlns:fx="http://javafx.com/fxml" text="Noise">
+	<MenuItem text="Ruido Gaussiano Aditivo" fx:id="noiseGaussAdditive"/>
+	<MenuItem text="Ruido Rayleigh Multiplicativo" fx:id="noiseRayleighMultiplicative"/>
+	<MenuItem text="Ruido Exponencial Multiplicativo" fx:id="noiseExponentialMultiplicative"/>
+	<MenuItem text="Ruido Sal y Pimienta" fx:id="noiseSaltAndPepper"/>
+</fx:root>
