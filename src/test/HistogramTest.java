@@ -45,7 +45,7 @@ public class HistogramTest {
 			ImageGray image = new ImageGray(bi, true);
 
 			Histogram histogram = new Histogram();
-			histogram.grayScalePlot(image);
+			histogram.grayScalePlot(image, "test");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

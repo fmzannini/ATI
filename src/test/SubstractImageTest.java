@@ -12,16 +12,16 @@ public class SubstractImageTest {
 	public static void main(String[] args) {
 		SubstractImageTest test = new SubstractImageTest();
 		try {
-			BufferedImage i = test.substractImages();
+			ImageGray i = test.substractImages();
 			File file = new File(System.getProperty("user.dir") + "/substractImages.ppm");
-			new ImageFileManager(file).writeImagePPM(i);
+			new ImageFileManager(file).writeImagePPM(i.showImage());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	public BufferedImage substractImages() throws IOException {
+	public ImageGray substractImages() throws IOException {
 		File file1 = new File(System.getProperty("user.dir") + "/resources/image1.png");
 		BufferedImage bi = (new ImageFileManager(file1)).readImage();
 		ImageGray image1 = new ImageGray(bi, false);

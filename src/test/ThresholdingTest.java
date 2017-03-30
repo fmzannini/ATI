@@ -12,9 +12,9 @@ public class ThresholdingTest {
 	public static void main(String[] args) {
 		ThresholdingTest test = new ThresholdingTest();
 		try {
-			BufferedImage i = test.applyThreshold(120).showImage();
+			ImageGray i = test.applyThreshold(120);
 			File file = new File(System.getProperty("user.dir") + "/threshold.ppm");
-			new ImageFileManager(file).writeImagePPM(i);
+			new ImageFileManager(file).writeImagePPM(i.showImage());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -25,6 +25,6 @@ public class ThresholdingTest {
 		File file = new File(System.getProperty("user.dir") + "/resources/prueba.png");
 		BufferedImage bi = (new ImageFileManager(file)).readImage();
 		ImageGray image = new ImageGray(bi, true);
-		return image.applyThresholding(t).showImage();
+		return image.applyThresholding(t);
 	}
 }
