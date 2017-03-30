@@ -17,6 +17,7 @@ import model.image.Image;
 import model.image.ImageColorHSV;
 import model.image.ImageColorRGB;
 import model.image.ImageGray;
+import utils.HistogramEqualization;
 
 public class TransformMenu extends Menu {
 
@@ -31,6 +32,9 @@ public class TransformMenu extends Menu {
 
 	@FXML
 	private MenuItem thresholding;
+	
+	@FXML
+	private MenuItem equalize;
 
 	public TransformMenu() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/transformMenu.fxml"));
@@ -199,6 +203,29 @@ public class TransformMenu extends Menu {
 				case IMAGE_GRAY: {
 					ImageGray imgGray = (ImageGray) img;
 					imgGray = imgGray.applyThresholding((int) threshold);
+					break;
+				}
+				}
+				controller.refreshSecondaryImage();
+			}
+
+		});
+		
+		equalize.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				Image img = controller.getImage();
+				controller.setSecondaryImage(img);
+
+				switch (img.getType()) {
+				case IMAGE_GRAY: {
+					ImageGray imgGray = (ImageGray) img;
+					double[] data = HistogramEqualization.equalizeGrayImageHistogram(imgGray);
+					imgGray = HistogramEqualization.applyHistogramEqualization(imgGray, data);
+					break;
+				}
+				case IMAGE_RGB: {
 					break;
 				}
 				}

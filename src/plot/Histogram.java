@@ -23,17 +23,7 @@ public class Histogram {
 	}
 
 	public void grayScalePlot(ImageGray image) {
-		double[] data = new double[image.getHeight() * image.getWidth()];
-
-		double[][] matrix = image.getImage();
-		int k = 0;
-		for (int i = 0; i < image.getWidth(); i++) {
-			for (int j = 0; j < image.getHeight(); j++) {
-				double key = Math.floor(matrix[i][j] + 0.5);
-				data[k] = key;
-				k++;
-			}
-		}
+		double[] data = getImageDataSet(image);
 
 		final HistogramDataset dataset = new HistogramDataset();
 		dataset.setType(HistogramType.FREQUENCY);
@@ -52,6 +42,20 @@ public class Histogram {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public double[] getImageDataSet(ImageGray image) {
+		double[] data = new double[image.getHeight() * image.getWidth()];
+		double[][] matrix = image.getImage();
+		int k = 0;
+		for (int i = 0; i < image.getWidth(); i++) {
+			for (int j = 0; j < image.getHeight(); j++) {
+				double key = Math.floor(matrix[i][j] + 0.5);
+				data[k] = key;
+				k++;
+			}
+		}
+		return data;
 	}
 
 	public void colorScalePlot(ImageColor image) {
@@ -108,54 +112,5 @@ public class Histogram {
 			e.printStackTrace();
 		}
 	}
-
-	public double[] equalizeGrayImageHistogram(ImageGray image) {
-		// Get initial pixel value frequency into array
-		int[] pixelFrequency = getPixelFrequency(image);
-
-		// Calculate relative frequency
-		double[] pixelRelativeFrequency = new double[256];
-		int totalPixels = image.getHeight() * image.getWidth();
-		double minFrequency = 1.0;
-		for (int i = 0; i < pixelRelativeFrequency.length; i++) {
-			pixelRelativeFrequency[i] = pixelFrequency[i] / totalPixels;
-
-			// saving minimum relative frequency for later
-			if (pixelRelativeFrequency[i] < minFrequency) {
-				minFrequency = pixelRelativeFrequency[i];
-			}
-		}
-
-		// Transform relative frequency to fit in interval [0, 256]
-		for (int i = 0; i < pixelRelativeFrequency.length; i++) {
-			double si = pixelRelativeFrequency[i];
-			pixelRelativeFrequency[i] = Math
-					.floor(((si - minFrequency) * pixelRelativeFrequency.length / (1 - minFrequency)) + 0.5);
-		}
-		
-		return pixelRelativeFrequency;
-	}
-
-	private int[] getPixelFrequency(ImageGray image) {
-		int[] pixelFrequency = new int[256];
-		for (int i = 0; i < image.getWidth(); i++) {
-			for (int j = 0; j < image.getHeight(); j++) {
-				int pixelValue = (int) Math.floor(image.getImage()[i][j] + 0.5);
-				pixelFrequency[pixelValue]++;
-			}
-		}
-		return pixelFrequency;
-	}
-
-	public ImageGray applyHistogramEqualization(ImageGray image, double[] equalizedHistogramDataset) {
-		double[][] equalizedImage = image.getImage();
-		for (int i = 0; i < image.getWidth(); i++) {
-			for (int j = 0; j < image.getHeight(); j++) {
-				int pixelValue = (int) Math.floor(equalizedImage[i][j] + 0.5);
-				equalizedImage[i][j] = equalizedHistogramDataset[pixelValue];
-			}
-		}
-		
-		return new ImageGray(equalizedImage);
-	}
+	
 }

@@ -6,4 +6,5 @@
 	<MenuItem text="Elegir color de un pixel" fx:id="setPixel"/>
 	<MenuItem text="Negativo" fx:id="negative"/>
 	<MenuItem text="Umbralización" fx:id="thresholding"/>
+	<MenuItem text="Equalización" fx:id="equalize"/>
 </fx:root>

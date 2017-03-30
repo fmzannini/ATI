@@ -12,7 +12,7 @@ public class ScalarProductImageTest {
 	public static void main(String[] args) {
 		ScalarProductImageTest test = new ScalarProductImageTest();
 		try {
-			BufferedImage i = test.multiplyImage(30);
+			BufferedImage i = test.multiplyImage(5);
 			File file = new File(System.getProperty("user.dir") + "/multiplyByScalarImage.ppm");
 			new ImageFileManager(file).writeImagePPM(i);
 		} catch (IOException e) {
