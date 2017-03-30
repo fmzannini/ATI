@@ -24,7 +24,6 @@ public class MedianWeightsMask extends Mask {
 	@Override
 	protected double applyMask(double[][] region) {
 		List<Double> list=new LinkedList<Double>();
-		
 		for(int i=0;i<region.length;i++){
 			for(int j=0;j<region[0].length;j++){
 				for(int k=0;k<this.weights[i][j];k++){
@@ -32,6 +31,8 @@ public class MedianWeightsMask extends Mask {
 				}
 			}
 		}
+		
+		list.sort(null);
 		
 		if(list.size()%2==0){
 			double median1=list.get((list.size()/2-1));

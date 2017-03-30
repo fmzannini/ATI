@@ -23,6 +23,12 @@ public class CustomMenuBar extends MenuBar {
 	@FXML
 	private HistogramMenu histogramMenu;
 
+	@FXML
+	private NoiseMenu noiseMenu;
+
+	@FXML
+	private MaskMenu maskMenu;
+	
 	public CustomMenuBar() {
 		super();
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/customMenuBar.fxml"));
@@ -42,6 +48,8 @@ public class CustomMenuBar extends MenuBar {
 		transformMenu.initialize(controller);
 		informationMenu.initialize(controller);
 		histogramMenu.initialize(controller);
+		noiseMenu.initialize(controller);
+		maskMenu.initialize(controller);
 	}
 
 }
