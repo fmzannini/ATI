@@ -56,8 +56,8 @@ public class Histogram {
 			}
 		}
 		return data;
-	}
-
+}
+	
 	public void colorScalePlot(ImageColor image) {
 		double[] redBand = new double[image.getHeight() * image.getWidth()];
 		double[] greenBand = new double[image.getHeight() * image.getWidth()];

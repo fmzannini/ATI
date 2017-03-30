@@ -25,6 +25,6 @@ public class ThresholdingTest {
 		File file = new File(System.getProperty("user.dir") + "/resources/prueba.png");
 		BufferedImage bi = (new ImageFileManager(file)).readImage();
 		ImageGray image = new ImageGray(bi, true);
-		return image.applyThresholding(t);
+		return image.applyThresholding(t).showImage();
 	}
 }
