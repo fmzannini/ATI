@@ -148,6 +148,16 @@ public class ImageGray implements Image {
 		}
 		return bi;
 	}
+	
+	public Image copy() {
+		double[][] matrix = new double[this.width][this.height];
+		for (int i = 0; i < this.width; i++) {
+			for (int j = 0; j < this.height; j++) {
+				matrix[i][j] = this.image[i][j];
+			}
+		}
+		return new ImageGray(matrix);
+	}
 
 	public int getQtyPixels() {
 		return width * height;
@@ -185,7 +195,7 @@ public class ImageGray implements Image {
 		return this;
 	}
 
-	public BufferedImage sum(ImageGray image) {
+	public ImageGray sum(ImageGray image) {
 		if (image.getHeight() != this.height || image.getWidth() != this.width) {
 			throw new IllegalArgumentException();
 		}
@@ -197,7 +207,7 @@ public class ImageGray implements Image {
 		return LinearTransformation.grayImage(this);
 	}
 
-	public BufferedImage multiply(int n) {
+	public ImageGray multiply(int n) {
 		for (int i = 0; i < this.width; i++) {
 			for (int j = 0; j < this.height; j++) {
 				this.image[i][j] = this.image[i][j] * n;
@@ -206,7 +216,7 @@ public class ImageGray implements Image {
 		return DynamicRangeCompression.grayImage(this);
 	}
 
-	public BufferedImage multiply(ImageGray image) {
+	public ImageGray multiply(ImageGray image) {
 		if (image.getHeight() != this.height || image.getWidth() != this.width) {
 			throw new IllegalArgumentException();
 		}
@@ -218,7 +228,7 @@ public class ImageGray implements Image {
 		return LinearTransformation.grayImage(this);
 	}
 
-	public BufferedImage substract(ImageGray image) {
+	public ImageGray substract(ImageGray image) {
 		if (image.getHeight() != this.height || image.getWidth() != this.width) {
 			throw new IllegalArgumentException();
 		}
@@ -229,23 +239,31 @@ public class ImageGray implements Image {
 		}
 		return LinearTransformation.grayImage(this);
 	}
+	
+	public ImageGray power(double gamma) {
+		double c = Math.pow(255, 1 - gamma);
+		for (int i = 0; i < this.width; i++) {
+			for (int j = 0; j < this.height; j++) {
+				this.image[i][j] = c * Math.pow(this.image[i][j], gamma);
+			}
+		}
+		return DynamicRangeCompression.grayImage(this);
+	}
 
-	public BufferedImage increaseContrast(double r1, double r2, double s1, double s2) {
-		BufferedImage bi = new BufferedImage(this.width, this.height, BufferedImage.TYPE_BYTE_GRAY);
-		WritableRaster wr = bi.getRaster();
+	public ImageGray increaseContrast(double r1, double r2, double s1, double s2) {
 		for (int i = 0; i < this.width; i++) {
 			for (int j = 0; j < this.height; j++) {
 				if (this.image[i][j] < r1) {
-					wr.setSample(i, j, GRAY_BAND, calculateContrast(this.image[i][j], 0, r1, 0, s1));	
+					this.image[i][j] = calculateContrast(this.image[i][j], 0, r1, 0, s1);	
 				} else if (this.image[i][j] >= r1 || this.image[i][j] <= r2) {
-					wr.setSample(i, j, GRAY_BAND, calculateContrast(this.image[i][j], r1, r2, s1, s2));
+					this.image[i][j] = calculateContrast(this.image[i][j], r1, r2, s1, s2);
 				} else {
-					wr.setSample(i, j, GRAY_BAND, calculateContrast(this.image[i][j], r2, 255, s2, 255));
+					this.image[i][j] = calculateContrast(this.image[i][j], r2, 255, s2, 255);
 				}
 				
 			}
 		}
-		return bi;
+		return this;
 	}
 
 	private double calculateContrast(double pixel, double r1, double r2, double s1, double s2) {

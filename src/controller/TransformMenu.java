@@ -34,7 +34,25 @@ public class TransformMenu extends Menu {
 	private MenuItem thresholding;
 	
 	@FXML
+	private MenuItem scalarMultiplication;
+	
+	@FXML
+	private MenuItem gammaPower;
+	
+	@FXML
+	private MenuItem increaseContrast;
+	
+	@FXML
 	private MenuItem equalize;
+	
+	@FXML
+	private MenuItem sumImages;
+
+	@FXML
+	private MenuItem multiplyImages;
+	
+	@FXML
+	private MenuItem substractImages;
 
 	public TransformMenu() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/transformMenu.fxml"));
@@ -205,6 +223,112 @@ public class TransformMenu extends Menu {
 					imgGray = imgGray.applyThresholding((int) threshold);
 					break;
 				}
+				case IMAGE_RGB: {
+					ImageColorRGB imgRGB = (ImageColorRGB) img;
+					imgRGB = imgRGB.applyThresholding((int) threshold);
+					break;
+				}
+				}
+				controller.refreshSecondaryImage();
+			}
+
+		});
+		
+		scalarMultiplication.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				Image img = controller.getImage();
+				controller.setSecondaryImage(img);
+
+				Dialog<String> dialog = new TextInputDialog();
+				dialog.setTitle("Elegir Escalar");
+				dialog.setHeaderText("Elegir un valor entero mayor a 1");
+				Optional<String> result = dialog.showAndWait();
+				if (!result.isPresent())
+					return;
+				String input = result.get();
+				int scalar = Integer.parseInt(input);
+				if (scalar < 1) {
+					return;
+				}
+
+				switch (img.getType()) {
+				case IMAGE_GRAY: {
+					ImageGray imgGray = (ImageGray) img;
+					imgGray = imgGray.multiply(scalar);
+					break;
+				}
+				}
+				controller.refreshSecondaryImage();
+			}
+
+		});
+		
+		gammaPower.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				Image img = controller.getImage();
+				controller.setSecondaryImage(img);
+
+				Dialog<String> dialog = new TextInputDialog();
+				dialog.setTitle("Elegir un valor para Gamma");
+				Optional<String> result = dialog.showAndWait();
+				if (!result.isPresent())
+					return;
+				String input = result.get();
+				double gamma = Double.parseDouble(input);
+
+				switch (img.getType()) {
+				case IMAGE_GRAY: {
+					ImageGray imgGray = (ImageGray) img;
+					imgGray = imgGray.power(gamma);
+					break;
+				}
+				}
+				controller.refreshSecondaryImage();
+			}
+
+		});
+		
+		increaseContrast.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				Image img = controller.getImage();
+				controller.setSecondaryImage(img);
+
+				//Obtaining r1 and r2
+				Dialog<String> dialog = new TextInputDialog();
+				dialog.setTitle("Seleccionar parámetros");
+				dialog.setHeaderText("Indicar parámetros de r1 y r2. Por ejemplo: 50,180");
+				Optional<String> result = dialog.showAndWait();
+				if (!result.isPresent())
+					return;
+				String input = result.get();
+				String[] inputs = input.split(",");
+				int r1 = Integer.parseInt(inputs[0]);
+				int r2 = Integer.parseInt(inputs[1]);
+				
+				//Obtaining s1 and s2
+				Dialog<String> dialog2 = new TextInputDialog();
+				dialog.setTitle("Seleccionar parámetros");
+				dialog.setHeaderText("Indicar parámetros de s1 y s2. Por ejemplo: 10,200");
+				Optional<String> result2 = dialog2.showAndWait();
+				if (!result.isPresent())
+					return;
+				String input2 = result2.get();
+				String[] inputs2 = input2.split(",");
+				int s1 = Integer.parseInt(inputs2[0]);
+				int s2 = Integer.parseInt(inputs2[1]);
+
+				switch (img.getType()) {
+				case IMAGE_GRAY: {
+					ImageGray imgGray = (ImageGray) img;
+					imgGray = imgGray.increaseContrast(r1, r2, s1, s2);
+					break;
+				}
 				}
 				controller.refreshSecondaryImage();
 			}
@@ -230,6 +354,89 @@ public class TransformMenu extends Menu {
 				}
 				}
 				controller.refreshSecondaryImage();
+			}
+
+		});
+		
+		sumImages.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				Image img1 = controller.getImage();
+				Image img2 = controller.getSecondaryImage();
+				ImageGray result = (ImageGray) img1;
+				controller.setResultImage(img1);
+				
+				if (img2 == null) {
+					return;
+				}
+				
+				switch (img1.getType()) {
+				case IMAGE_GRAY: {
+					ImageGray imgGray1 = (ImageGray) img1;
+					ImageGray imgGray2 = (ImageGray) img2;
+					img1 = imgGray1.sum(imgGray2);
+					break;
+				}
+				case IMAGE_RGB: {
+					break;
+				}
+				}
+				controller.refreshResultImage();
+			}
+
+		});
+		
+		multiplyImages.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				Image img1 = controller.getImage();
+				Image img2 = controller.getSecondaryImage();
+				if (img2 == null) {
+					return;
+				}
+				
+				switch (img1.getType()) {
+				case IMAGE_GRAY: {
+					ImageGray imgGray1 = (ImageGray) img1;
+					ImageGray imgGray2 = (ImageGray) img2;
+					ImageGray result = imgGray1.multiply(imgGray2);
+					controller.setResultImage(result);
+					break;
+				}
+				case IMAGE_RGB: {
+					break;
+				}
+				}
+				controller.refreshResultImage();
+			}
+
+		});
+		
+		substractImages.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				Image img1 = controller.getImage();
+				Image img2 = controller.getSecondaryImage();
+				if (img2 == null) {
+					return;
+				}
+				
+				switch (img1.getType()) {
+				case IMAGE_GRAY: {
+					ImageGray imgGray1 = (ImageGray) img1;
+					ImageGray imgGray2 = (ImageGray) img2;
+					ImageGray result = imgGray1.substract(imgGray2);
+					controller.setResultImage(result);
+					break;
+				}
+				case IMAGE_RGB: {
+					break;
+				}
+				}
+				controller.refreshResultImage();
 			}
 
 		});

@@ -6,5 +6,11 @@
 	<MenuItem text="Elegir color de un pixel" fx:id="setPixel"/>
 	<MenuItem text="Negativo" fx:id="negative"/>
 	<MenuItem text="Umbralización" fx:id="thresholding"/>
+	<MenuItem text="Multiplicar por un escalar" fx:id="scalarMultiplication"/>
+	<MenuItem text="Función Gamma" fx:id="gammaPower"/>
+	<MenuItem text="Aumento de contraste" fx:id="increaseContrast"/>
 	<MenuItem text="Equalización" fx:id="equalize"/>
+	<MenuItem text="Suma de Imágenes" fx:id="sumImages"/>
+	<MenuItem text="Multiplicación de Imágenes" fx:id="multiplyImages"/>
+	<MenuItem text="Resta de Imágenes" fx:id="substractImages"/>
 </fx:root>

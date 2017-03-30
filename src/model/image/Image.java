@@ -20,4 +20,6 @@ public interface Image {
 	
 	public BufferedImage showImage();
 	
+//	public Image copy();
+	
 }

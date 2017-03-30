@@ -9,7 +9,7 @@ public class DynamicRangeCompression {
 
 	private static final int GRAY_BAND = 0;
 
-	public static BufferedImage grayImage(ImageGray originalImage) {
+	public static ImageGray grayImage(ImageGray originalImage) {
 		double[][] image = originalImage.getImage();
 		double max = 0.0;
 		double min = 255.0;
@@ -23,15 +23,12 @@ public class DynamicRangeCompression {
 		}
 
 		// applying dynamic range compression
-		BufferedImage bi = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(),
-				BufferedImage.TYPE_BYTE_GRAY);
-		WritableRaster wr = bi.getRaster();
 		for (int i = 0; i < originalImage.getWidth(); i++) {
 			for (int j = 0; j < originalImage.getHeight(); j++) {
-				wr.setSample(i, j, GRAY_BAND, (255 / (Math.log(1 + max))) * Math.log(1 + image[i][j]));
+				image[i][j] = (255 / (Math.log(1 + max))) * Math.log(1 + image[i][j]);
 			}
 		}
-		return bi;
+		return new ImageGray(image);
 	}
 
 }

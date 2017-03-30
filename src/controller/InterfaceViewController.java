@@ -32,11 +32,16 @@ public class InterfaceViewController implements Initializable {
 
 	@FXML
 	private ImageView secondaryImage;
+	
+	@FXML
+	private ImageView resultImage;
 
 	private Image img;
 	private Image secondaryImg;
+	private Image resultImg;
 	private BufferedImage bufImg;
 	private BufferedImage bufSecondaryImg;
+	private BufferedImage bufResultImg;
 	private Selection selection = new Selection();
 
 	@Override
@@ -93,6 +98,7 @@ public class InterfaceViewController implements Initializable {
 			}
 			refreshImage();
 			secondaryImage.setImage(null);
+			resultImage.setImage(null);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -107,7 +113,11 @@ public class InterfaceViewController implements Initializable {
 	public Image getSecondaryImage() {
 		return secondaryImg;
 	}
-
+	
+	public Image getResultImage() {
+		return resultImg;
+	}
+	
 	private class Selection {
 		Point firstClick;
 		Point secondClick;
@@ -177,9 +187,18 @@ public class InterfaceViewController implements Initializable {
 		bufSecondaryImg = secondaryImg.showImage();
 		secondaryImage.setImage(SwingFXUtils.toFXImage(bufSecondaryImg, null));
 	}
+	
+	public void refreshResultImage() {
+		bufResultImg = resultImg.showImage();
+		resultImage.setImage(SwingFXUtils.toFXImage(bufResultImg, null));
+	}
 
 	public void setSecondaryImage(Image secondaryImg) {
 		this.secondaryImg = secondaryImg;
+	}
+	
+	public void setResultImage(Image resultImg) {
+		this.resultImg = resultImg;
 	}
 
 	public void loadSecondaryImage(File file) {
