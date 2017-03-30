@@ -22,7 +22,7 @@ public class Histogram {
 	public Histogram() {
 	}
 
-	public void grayScalePlot(ImageGray image) {
+	public void grayScalePlot(ImageGray image, String name) {
 		double[] data = getImageDataSet(image);
 
 		final HistogramDataset dataset = new HistogramDataset();
@@ -34,7 +34,7 @@ public class Histogram {
 
 		int width = 640; /* Width of the image */
 		int height = 480; /* Height of the image */
-		File gray = new File("grayHistogram.jpeg");
+		File gray = new File(name + ".jpeg");
 
 		try {
 			ChartUtilities.saveChartAsJPEG(gray, histogram, width, height);

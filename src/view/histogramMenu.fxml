@@ -1,0 +1,7 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="Menu" xmlns:fx="http://javafx.com/fxml" text="Histograma">
+	<MenuItem text="Histograma Principal" fx:id="mainHistogram"/>
+	<MenuItem text="Histograma Secundario" fx:id="secondaryHistogram"/>
+</fx:root>

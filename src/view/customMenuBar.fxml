@@ -7,5 +7,6 @@
 	<CreateMenu fx:id="createMenu"></CreateMenu>
 	<TransformMenu fx:id="transformMenu"></TransformMenu>
 	<InformationMenu fx:id="informationMenu"></InformationMenu>
-	
+	<HistogramMenu fx:id="histogramMenu"></HistogramMenu>
+	<ResultsMenu fx:id="resultsMenu"></ResultsMenu>
 </fx:root>

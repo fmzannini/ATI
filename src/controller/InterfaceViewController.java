@@ -193,6 +193,10 @@ public class InterfaceViewController implements Initializable {
 		resultImage.setImage(SwingFXUtils.toFXImage(bufResultImg, null));
 	}
 
+	public void setMainImage(Image img) {
+		this.img = img;
+	}
+	
 	public void setSecondaryImage(Image secondaryImg) {
 		this.secondaryImg = secondaryImg;
 	}

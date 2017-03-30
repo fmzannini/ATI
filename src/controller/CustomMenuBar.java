@@ -19,6 +19,9 @@ public class CustomMenuBar extends MenuBar {
 
 	@FXML
 	private InformationMenu informationMenu;
+	
+	@FXML
+	private HistogramMenu histogramMenu;
 
 	public CustomMenuBar() {
 		super();
@@ -38,6 +41,7 @@ public class CustomMenuBar extends MenuBar {
 		createMenu.initialize();
 		transformMenu.initialize(controller);
 		informationMenu.initialize(controller);
+		histogramMenu.initialize(controller);
 	}
 
 }

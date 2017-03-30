@@ -256,7 +256,7 @@ public class ImageGray implements Image {
 				if (this.image[i][j] < r1) {
 					this.image[i][j] = calculateContrast(this.image[i][j], 0, r1, 0, s1);	
 				} else if (this.image[i][j] >= r1 || this.image[i][j] <= r2) {
-					this.image[i][j] = calculateContrast(this.image[i][j], r1, r2, s1, s2);
+					this.image[i][j] = calculateContrast(this.image[i][j], r1, s1, r2, s2);
 				} else {
 					this.image[i][j] = calculateContrast(this.image[i][j], r2, 255, s2, 255);
 				}
@@ -267,7 +267,7 @@ public class ImageGray implements Image {
 	}
 
 	private double calculateContrast(double pixel, double r1, double r2, double s1, double s2) {
-		return ((s2 - s2) / (r2 - r1)) * pixel + s1 - ((s2 - s2) / (r2 - r1)) * r1;
+		return ((s2 - s1) / (r2 - r1)) * pixel + s1 - ((s2 - s2) / (r2 - r1)) * r1;
 	}
 
 }

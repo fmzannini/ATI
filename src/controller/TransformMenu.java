@@ -32,25 +32,25 @@ public class TransformMenu extends Menu {
 
 	@FXML
 	private MenuItem thresholding;
-	
+
 	@FXML
 	private MenuItem scalarMultiplication;
-	
+
 	@FXML
 	private MenuItem gammaPower;
-	
+
 	@FXML
 	private MenuItem increaseContrast;
-	
+
 	@FXML
 	private MenuItem equalize;
-	
+
 	@FXML
 	private MenuItem sumImages;
 
 	@FXML
 	private MenuItem multiplyImages;
-	
+
 	@FXML
 	private MenuItem substractImages;
 
@@ -179,11 +179,11 @@ public class TransformMenu extends Menu {
 			@Override
 			public void handle(ActionEvent event) {
 				Image img = controller.getImage();
-				controller.setSecondaryImage(img);
 
 				switch (img.getType()) {
 				case IMAGE_GRAY: {
-					ImageGray imgGray = (ImageGray) img;
+					ImageGray imgGray = (ImageGray) img.copy();
+					controller.setSecondaryImage(imgGray);
 					imgGray = imgGray.getNegative();
 					break;
 				}
@@ -194,6 +194,7 @@ public class TransformMenu extends Menu {
 				}
 				}
 				controller.refreshSecondaryImage();
+				controller.refreshImage();
 			}
 
 		});
@@ -233,7 +234,7 @@ public class TransformMenu extends Menu {
 			}
 
 		});
-		
+
 		scalarMultiplication.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -264,7 +265,7 @@ public class TransformMenu extends Menu {
 			}
 
 		});
-		
+
 		gammaPower.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -291,7 +292,7 @@ public class TransformMenu extends Menu {
 			}
 
 		});
-		
+
 		increaseContrast.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -299,7 +300,7 @@ public class TransformMenu extends Menu {
 				Image img = controller.getImage();
 				controller.setSecondaryImage(img);
 
-				//Obtaining r1 and r2
+				// Obtaining r1 and r2
 				Dialog<String> dialog = new TextInputDialog();
 				dialog.setTitle("Seleccionar parámetros");
 				dialog.setHeaderText("Indicar parámetros de r1 y r2. Por ejemplo: 50,180");
@@ -310,8 +311,8 @@ public class TransformMenu extends Menu {
 				String[] inputs = input.split(",");
 				int r1 = Integer.parseInt(inputs[0]);
 				int r2 = Integer.parseInt(inputs[1]);
-				
-				//Obtaining s1 and s2
+
+				// Obtaining s1 and s2
 				Dialog<String> dialog2 = new TextInputDialog();
 				dialog.setTitle("Seleccionar parámetros");
 				dialog.setHeaderText("Indicar parámetros de s1 y s2. Por ejemplo: 10,200");
@@ -334,7 +335,7 @@ public class TransformMenu extends Menu {
 			}
 
 		});
-		
+
 		equalize.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -357,7 +358,7 @@ public class TransformMenu extends Menu {
 			}
 
 		});
-		
+
 		sumImages.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -366,11 +367,11 @@ public class TransformMenu extends Menu {
 				Image img2 = controller.getSecondaryImage();
 				ImageGray result = (ImageGray) img1;
 				controller.setResultImage(img1);
-				
+
 				if (img2 == null) {
 					return;
 				}
-				
+
 				switch (img1.getType()) {
 				case IMAGE_GRAY: {
 					ImageGray imgGray1 = (ImageGray) img1;
@@ -386,7 +387,7 @@ public class TransformMenu extends Menu {
 			}
 
 		});
-		
+
 		multiplyImages.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -396,7 +397,7 @@ public class TransformMenu extends Menu {
 				if (img2 == null) {
 					return;
 				}
-				
+
 				switch (img1.getType()) {
 				case IMAGE_GRAY: {
 					ImageGray imgGray1 = (ImageGray) img1;
@@ -413,7 +414,7 @@ public class TransformMenu extends Menu {
 			}
 
 		});
-		
+
 		substractImages.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -423,7 +424,7 @@ public class TransformMenu extends Menu {
 				if (img2 == null) {
 					return;
 				}
-				
+
 				switch (img1.getType()) {
 				case IMAGE_GRAY: {
 					ImageGray imgGray1 = (ImageGray) img1;

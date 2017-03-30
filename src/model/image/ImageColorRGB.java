@@ -119,5 +119,17 @@ public class ImageColorRGB extends ImageColor {
 		}
 		return this;
 	}
+	
+	public Image copy() {
+		double[][][] matrix = new double[this.getWidth()][this.getHeight()][3];
+		for (int i = 0; i < this.getWidth(); i++) {
+			for (int j = 0; j < this.getHeight(); j++) {
+				matrix[i][j][RED_BAND] = this.getImage()[i][j][RED_BAND];
+				matrix[i][j][GREEN_BAND] = this.getImage()[i][j][GREEN_BAND];
+				matrix[i][j][BLUE_BAND] = this.getImage()[i][j][BLUE_BAND];
+			}
+		}
+		return new ImageColorRGB(matrix);
+	}
 
 }

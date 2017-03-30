@@ -78,6 +78,18 @@ public class ImageColorHSV extends ImageColor {
 		}
 		return imgColor;
 	}
+	
+	public Image copy() {
+		double[][][] matrix = new double[this.getWidth()][this.getHeight()][3];
+		for (int i = 0; i < this.getWidth(); i++) {
+			for (int j = 0; j < this.getHeight(); j++) {
+				matrix[i][j][HUE_BAND] = this.getImage()[i][j][HUE_BAND];
+				matrix[i][j][SATURATION_BAND] = this.getImage()[i][j][SATURATION_BAND];
+				matrix[i][j][BRIGHTNESS_BAND] = this.getImage()[i][j][BRIGHTNESS_BAND];
+			}
+		}
+		return new ImageColorRGB(matrix);
+	}
 
 
 }
