@@ -11,6 +11,10 @@ public class Mask {
 		this.scroll=scroll;
 	}
 	
+	protected double[][] getWeights() {
+		return weights;
+	}
+	
 	public ImageGray applyMask(){
 		while(scroll.hasNext()){
 				double[][] region=scroll.nextRegion();

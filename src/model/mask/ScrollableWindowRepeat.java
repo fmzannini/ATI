@@ -9,12 +9,13 @@ public class ScrollableWindowRepeat implements ScrollableWindow {
 	private ImageGray img;
 	private int widthWindow;
 	private int heightWindow;
+
+	private Point[] displacements;
+	private Point middleWindow;
 	
 	private ImageGray result;
 	
 	private Point center;
-	private Point[] displacements;
-	private Point middleWindow;
 	
 	//Se asume tamaño cuadrado impar
 	public ScrollableWindowRepeat(ImageGray img, int widthWindow, int heightWindow) {
@@ -35,6 +36,28 @@ public class ScrollableWindowRepeat implements ScrollableWindow {
 			}
 		}
 	}
+	
+	@Override
+	public int getWidthWindow() {
+		return this.widthWindow;
+	}
+	@Override
+	public int getHeightWindow() {
+		return this.heightWindow;
+	}
+	@Override
+	public Point getMiddlePoint() {
+		return middleWindow;
+	}
+	@Override
+	public Point[] getDisplacements() {
+		return displacements;
+	}
+
+
+	
+	
+	
 	@Override
 	public boolean hasNext() {
 		if(center!=null && center.x>=img.getWidth()-1 && center.y>=img.getHeight()-1)
