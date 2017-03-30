@@ -67,15 +67,15 @@ public class ScrollableWindowRepeat implements ScrollableWindow {
 
 	@Override
 	public double[][] nextRegion() {
-		double[][] region = new double[this.widthWindow][this.heightWindow];
-
-		if (center == null)
-			center = new Point(0, 0);
-		else {
-			if (center.x > img.getWidth()) {
-				center = new Point(0, center.y + 1);
-			} else {
-				center = new Point(center.x + 1, center.y);
+		double[][] region=new double[this.widthWindow][this.heightWindow];
+		
+		if(center == null)
+			center=new Point(0,0);
+		else{
+			if(center.x>=img.getWidth()-1){
+				center=new Point(0,center.y+1);
+			}else{
+				center=new Point(center.x+1,center.y);				
 			}
 		}
 

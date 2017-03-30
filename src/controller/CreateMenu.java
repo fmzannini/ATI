@@ -15,6 +15,8 @@ import model.graphics.Gradient;
 import model.graphics.ImageTest;
 import model.image.ImageColorRGB;
 import model.image.ImageGray;
+import model.noise.ImageNoiseTest;
+import model.random.ImageRandomTest;
 
 public class CreateMenu extends Menu {
 	
@@ -29,6 +31,9 @@ public class CreateMenu extends Menu {
 	
 	@FXML
 	private MenuItem colorGradient;
+
+	@FXML
+	private MenuItem imageTestNoise;
 
 	public CreateMenu() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/createMenu.fxml"));
@@ -105,6 +110,13 @@ public class CreateMenu extends Menu {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			}
+		});
+		imageTestNoise.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				ImageRandomTest irt=new ImageRandomTest();
+				irt.test();
 			}
 		});
 		

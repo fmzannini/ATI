@@ -372,7 +372,6 @@ public class TransformMenu extends Menu {
 				Image img1 = controller.getImage();
 				Image img2 = controller.getSecondaryImage();
 				ImageGray result = (ImageGray) img1.copy();
-				controller.setSecondaryImage(result);
 
 				if (img2 == null) {
 					return;
@@ -383,7 +382,7 @@ public class TransformMenu extends Menu {
 					ImageGray imgGray1 = (ImageGray) img1;
 					ImageGray imgGray2 = (ImageGray) img2;
 					result = imgGray1.sum(imgGray2);
-					controller.setMainImage(result);
+					controller.setResultImage(result);
 					break;
 				}
 				case IMAGE_RGB: {
@@ -391,7 +390,6 @@ public class TransformMenu extends Menu {
 				}
 				}
 				controller.refreshResultImage();
-				controller.refreshImage();
 			}
 
 		});
@@ -402,6 +400,7 @@ public class TransformMenu extends Menu {
 			public void handle(ActionEvent event) {
 				Image img1 = controller.getImage();
 				Image img2 = controller.getSecondaryImage();
+				
 				if (img2 == null) {
 					return;
 				}

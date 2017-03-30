@@ -20,7 +20,7 @@
 	    <ImageView fx:id="secondaryImage"
 			GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 		<ImageView fx:id="resultImage"
-			GridPane.columnIndex="1" GridPane.rowIndex="0"/>	    	
+			GridPane.columnIndex="0" GridPane.rowIndex="2"/>	    	
     </GridPane>
     </center>
 </BorderPane>

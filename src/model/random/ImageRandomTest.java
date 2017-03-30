@@ -1,13 +1,29 @@
 package model.random;
 
+import java.io.File;
+import java.io.IOException;
+
+import model.file.ImageFileManager;
 import model.image.ImageGray;
 import plot.Histogram;
 import utils.LinearTransformation;
 
 public class ImageRandomTest {
-
 	private static final int WIDTH = 100;
 	private static final int HEIGHT = 100;
+
+	public void test() {
+		double psi = 10;
+		test(new RayleighRandom(psi), "/testRayleigh");
+
+		double mu = 0;
+		double sigma = 1;
+		test(new NormalRandom(mu, sigma), "/testNormal");
+
+		double lambda = 10;
+		test(new ExponentialRandom(lambda), "/testExponential");
+
+	}
 
 	private static void test(RandomGenerator random, String filename) {
 		ImageGray img = new ImageGray(WIDTH, HEIGHT);
@@ -18,21 +34,21 @@ public class ImageRandomTest {
 		}
 		img = new ImageGray(LinearTransformation.grayImage(img).getImage());
 
+		ImageFileManager ifm = new ImageFileManager(new File(System.getProperty("user.dir")+"/"+filename + ".pgm"));
+		try {
+			ifm.writeImagePGM(img.showImage());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		Histogram histogram = new Histogram();
-		histogram.grayScalePlot(img, filename);
+		histogram.grayScalePlot(img, filename + "-histogram");
 	}
 
 	public static void main(String[] args) {
-		double psi = 10;
-		test(new RayleighRandom(psi), System.getProperty("user.dir") + "/testRayleigh");
-
-		double mu = 0;
-		double sigma = 1;
-		test(new NormalRandom(mu, sigma), System.getProperty("user.dir") + "/testNormal");
-
-		double lambda = 10;
-		test(new ExponentialRandom(lambda), System.getProperty("user.dir") + "/testExponential");
-
+		ImageRandomTest irt = new ImageRandomTest();
+		irt.test();
 	}
 
 }

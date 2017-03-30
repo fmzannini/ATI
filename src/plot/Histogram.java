@@ -10,6 +10,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.statistics.HistogramType;
 
+import model.file.ImageFileManager;
 import model.image.ImageColor;
 import model.image.ImageGray;
 
@@ -34,7 +35,7 @@ public class Histogram {
 
 		int width = 640; /* Width of the image */
 		int height = 480; /* Height of the image */
-		File gray = new File(name + ".jpeg");
+		File gray = new File(System.getProperty("user.dir") +"/" + name + ".jpeg");
 
 		try {
 			ChartUtilities.saveChartAsJPEG(gray, histogram, width, height);
@@ -56,8 +57,8 @@ public class Histogram {
 			}
 		}
 		return data;
-}
-	
+	}
+
 	public void colorScalePlot(ImageColor image) {
 		double[] redBand = new double[image.getHeight() * image.getWidth()];
 		double[] greenBand = new double[image.getHeight() * image.getWidth()];
@@ -112,5 +113,5 @@ public class Histogram {
 			e.printStackTrace();
 		}
 	}
-	
+
 }

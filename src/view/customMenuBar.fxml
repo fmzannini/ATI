@@ -9,4 +9,6 @@
 	<InformationMenu fx:id="informationMenu"></InformationMenu>
 	<HistogramMenu fx:id="histogramMenu"></HistogramMenu>
 	<ResultsMenu fx:id="resultsMenu"></ResultsMenu>
+	<NoiseMenu fx:id="noiseMenu"></NoiseMenu>
+	<MaskMenu fx:id="maskMenu"></MaskMenu>
 </fx:root>

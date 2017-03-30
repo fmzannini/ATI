@@ -6,4 +6,5 @@
 	<MenuItem text="Cuadrado blanco" fx:id="whiteSquare"/>
 	<MenuItem text="Gradiente de grises" fx:id="grayGradient"/>
 	<MenuItem text="Gradiente de colores" fx:id="colorGradient"/>
+	<MenuItem text="Imágenes sintéticas de ruido" fx:id="imageTestNoise"/>
 </fx:root>

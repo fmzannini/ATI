@@ -42,6 +42,7 @@ public class HistogramMenu extends Menu {
 				case IMAGE_GRAY: {
 					ImageGray grayImage = (ImageGray) image;
 					h.grayScalePlot(grayImage, "mainImageHistogram");
+					break;
 				}
 				}
 			}

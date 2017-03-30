@@ -194,15 +194,15 @@ public class InterfaceViewController implements Initializable {
 	}
 
 	public void setMainImage(Image img) {
-		this.img = img;
+		this.img = img.copy();
 	}
 	
 	public void setSecondaryImage(Image secondaryImg) {
-		this.secondaryImg = secondaryImg;
+		this.secondaryImg = secondaryImg.copy();
 	}
 	
 	public void setResultImage(Image resultImg) {
-		this.resultImg = resultImg;
+		this.resultImg = resultImg.copy();
 	}
 
 	public void loadSecondaryImage(File file) {
@@ -238,6 +238,7 @@ public class InterfaceViewController implements Initializable {
 				secondaryImg = ifm.readImage();
 				break;
 			}
+			this.setSecondaryImage(new ImageGray(secondaryImg, false));
 			secondaryImage.setImage(SwingFXUtils.toFXImage(secondaryImg, null));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

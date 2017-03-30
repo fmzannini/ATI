@@ -95,7 +95,7 @@ public class ImageGray implements Image {
 		return new ImageGray(region);
 	}
 
-	public void setRegion(ImageGray region, Point origin, Point end) {
+	public void setRegion(ImageGray region, Point origin) {
 		int width = region.getWidth();
 		int height = region.getHeight();
 		double[][] pixels = region.getImage();
