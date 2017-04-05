@@ -33,8 +33,9 @@ public class ResultsMenu extends Menu {
 				if(controller.getSecondaryImage() == null) {
 					return;
 				}
-				controller.setSecondaryImage(controller.getImage());
+				controller.setMainImage(controller.getSecondaryImage());
 				controller.refreshSecondaryImage();
+				controller.refreshImage();
 			}
 		});
 	}

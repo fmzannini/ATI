@@ -132,4 +132,15 @@ public class ImageColorRGB extends ImageColor {
 		return new ImageColorRGB(matrix);
 	}
 
+	public void setBand(ImageGray band, int k) {
+		double[][] pixels=band.getImage();
+		for(int i=0;i<band.getWidth();i++){
+			for(int j=0;j<band.getHeight();j++){
+				double[] currentValue=this.getPixel(i, j);
+				currentValue[k]=pixels[i][j];
+				this.setPixel(i, j, currentValue);
+			}
+		}
+	}
+
 }
