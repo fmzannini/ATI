@@ -20,6 +20,8 @@ import model.mask.HighPassMask;
 import model.mask.MeanMask;
 import model.mask.MedianMask;
 import model.mask.MedianWeightsMask;
+import model.mask.PrewittOpX;
+import model.mask.PrewittOpY;
 import model.mask.ScrollableWindowRepeat;
 
 public class MaskMenu extends Menu{
@@ -34,7 +36,9 @@ public class MaskMenu extends Menu{
 	private MenuItem maskGauss;
 	@FXML
 	private MenuItem maskHighPass;
-
+	@FXML
+	private MenuItem prewittOp;
+	
 	public MaskMenu() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/maskMenu.fxml"));
 		fxmlLoader.setRoot(this);
@@ -236,6 +240,57 @@ public class MaskMenu extends Menu{
 				ImageGray imgWithMask=gm.applyMask();
 				imgGray.setRegion(imgWithMask, new Point(0,0));
 			}
+		});
+		prewittOp.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Image img=controller.getImage();
+				if(img==null)
+					return;
+				Image copyX=img.copy();
+				Image copyY=img.copy();
+				
+				switch(img.getType()){
+				case IMAGE_GRAY:
+					ImageGray imgGrayX=(ImageGray)copyX;
+					ImageGray imgGrayY=(ImageGray)copyY;
+
+					applyPrewittOpX(imgGrayX);
+					applyPrewittOpY(imgGrayY);
+
+					break;
+				case IMAGE_RGB:
+					ImageColorRGB imgColorX=(ImageColorRGB) copyX;
+					ImageColorRGB imgColorY=(ImageColorRGB) copyY;
+
+					for(int i=0;i<ImageColorRGB.RGB_QTY;i++){
+						ImageGray bandX=imgColorX.getBandOnlyGray(i);
+						applyPrewittOpX(bandX);
+						imgColorX.setBand(bandX,i);
+						ImageGray bandY=imgColorY.getBandOnlyGray(i);
+						applyPrewittOpX(bandY);
+						imgColorY.setBand(bandY,i);
+					}
+					break;
+				}
+				controller.setSecondaryImage(copyY);
+				controller.refreshSecondaryImage();
+				controller.setResultImage(copyX);
+				controller.refreshResultImage();
+				controller.refreshImage();
+			}
+
+			private void applyPrewittOpX(ImageGray imgGray) {
+				PrewittOpX pox=new PrewittOpX(new ScrollableWindowRepeat(imgGray, 3, 3));
+				ImageGray imgWithMask=pox.applyMask();
+				imgGray.setRegion(imgWithMask, new Point(0,0));
+			}
+			private void applyPrewittOpY(ImageGray imgGray) {
+				PrewittOpY poy=new PrewittOpY(new ScrollableWindowRepeat(imgGray, 3, 3));
+				ImageGray imgWithMask=poy.applyMask();
+				imgGray.setRegion(imgWithMask, new Point(0,0));
+			}
+
 		});
 	}
 	private String[] getInputs(String title,String header,String pattern){
