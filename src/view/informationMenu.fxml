@@ -1,0 +1,7 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="Menu" xmlns:fx="http://javafx.com/fxml" text="Information">
+	<MenuItem text="Información de la región" fx:id="infoOfRegion"/>
+	<MenuItem text="Obtener el valor de un pixel" fx:id="getPixel"/>
+</fx:root>

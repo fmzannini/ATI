@@ -1,0 +1,15 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="Menu" xmlns:fx="http://javafx.com/fxml" text="File">
+	<!-- <Menu text="Load Image" fx:id="loadImage">
+		<MenuItem text="Raw Image" fx:id="rawImage"/>
+		<MenuItem text="BMP Image" fx:id="bmpImage"/>
+	</Menu> -->
+	<MenuItem text="Load Image" fx:id="loadImage"/>
+	<MenuItem text="Load Secondary Image" fx:id="loadSecondaryImage"/>
+	<MenuItem text="Save Image" fx:id="saveImage"/>
+	<MenuItem text="Save Secondary Image" fx:id="saveSecondaryImage"/>
+	<MenuItem text="Copy Region" fx:id="copyRegion"/>
+	
+</fx:root>

@@ -1,0 +1,6 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="Menu" xmlns:fx="http://javafx.com/fxml" text="Resultados">
+	<MenuItem text="Usar imagen secundaria cómo principal" fx:id="secondaryToMain"/>
+</fx:root>
