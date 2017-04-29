@@ -6,4 +6,6 @@
 	<MenuItem text="Ruido Rayleigh Multiplicativo" fx:id="noiseRayleighMultiplicative"/>
 	<MenuItem text="Ruido Exponencial Multiplicativo" fx:id="noiseExponentialMultiplicative"/>
 	<MenuItem text="Ruido Sal y Pimienta" fx:id="noiseSaltAndPepper"/>
+	<MenuItem text="Ruido de Difusión Isotrópica" fx:id="isotropicDiffusion"/>
+	<MenuItem text="Ruido de Difusión Anisotrópica" fx:id="anisotropicDiffusion"/>
 </fx:root>

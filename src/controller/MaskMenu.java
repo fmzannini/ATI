@@ -20,8 +20,6 @@ import model.mask.HighPassMask;
 import model.mask.MeanMask;
 import model.mask.MedianMask;
 import model.mask.MedianWeightsMask;
-import model.mask.PrewittOpX;
-import model.mask.PrewittOpY;
 import model.mask.ScrollableWindowRepeat;
 
 public class MaskMenu extends Menu{
@@ -281,14 +279,14 @@ public class MaskMenu extends Menu{
 			}
 
 			private void applyPrewittOpX(ImageGray imgGray) {
-				PrewittOpX pox=new PrewittOpX(new ScrollableWindowRepeat(imgGray, 3, 3));
-				ImageGray imgWithMask=pox.applyMask();
-				imgGray.setRegion(imgWithMask, new Point(0,0));
+//				PrewittOpX pox=new PrewittOpX(new ScrollableWindowRepeat(imgGray, 3, 3));
+//				ImageGray imgWithMask=pox.applyMask();
+//				imgGray.setRegion(imgWithMask, new Point(0,0));
 			}
 			private void applyPrewittOpY(ImageGray imgGray) {
-				PrewittOpY poy=new PrewittOpY(new ScrollableWindowRepeat(imgGray, 3, 3));
-				ImageGray imgWithMask=poy.applyMask();
-				imgGray.setRegion(imgWithMask, new Point(0,0));
+//				PrewittOpY poy=new PrewittOpY(new ScrollableWindowRepeat(imgGray, 3, 3));
+//				ImageGray imgWithMask=poy.applyMask();
+//				imgGray.setRegion(imgWithMask, new Point(0,0));
 			}
 
 		});
