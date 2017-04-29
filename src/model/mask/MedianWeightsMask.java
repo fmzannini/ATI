@@ -1,6 +1,6 @@
 package model.mask;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MedianWeightsMask extends Mask {
@@ -23,7 +23,7 @@ public class MedianWeightsMask extends Mask {
 	}
 	@Override
 	protected double applyMask(double[][] region) {
-		List<Double> list=new LinkedList<Double>();
+		List<Double> list=new ArrayList<Double>(region.length*region[0].length);
 		for(int i=0;i<region.length;i++){
 			for(int j=0;j<region[0].length;j++){
 				for(int k=0;k<this.weights[i][j];k++){

@@ -1,13 +1,12 @@
 package model.noise;
 
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -21,58 +20,128 @@ public abstract class Noise {
 		this.density = density;
 	}
 
-	/*
-	 * protected List<Point> generatePoints(int width, int height, int
-	 * noiseSize) { UniformRandom gen=new UniformRandom(); Set<Point> points=new
-	 * HashSet<Point>(); while(points.size()<noiseSize){ int
-	 * x=(int)(width*gen.rand()); int y=(int)(height*gen.rand()); Point p=new
-	 * Point(x,y); if(!points.contains(p)){ points.add(p); } } List<Point>
-	 * ans=new LinkedList<Point>(); ans.addAll(points); return ans; }
-	 */
-
-	protected List<Point> generatePoints(int width, int height, int noiseSize) {
+	protected List<Point> generatePoints(int width, int height, int noiseSize) {		
 		UniformRandom gen=new UniformRandom();
-		Comparator<Point> comp=new Comparator<Point>() {
-			@Override
-			public int compare(Point o1, Point o2) {
-				return (o1.y==o2.y)?(o1.x-o2.x):(o1.y-o2.y);
-			}
-		};
-		Map<Integer,Set<Point>> skippedMap=new HashMap<Integer,Set<Point>>();
-		for(int i=0;i<height;i++)
-			skippedMap.put(i, new TreeSet<Point>(comp));
+		List<Point> ans=new LinkedList<Point>();
 		
 		int imageSize=width*height;
+		WrapBuckets buckets=new WrapBuckets(imageSize);
 		for(int i=0;i<noiseSize;i++){
 			int rand=(int)((imageSize-i)*gen.rand());
+
+			rand=buckets.skipNumbers(rand);
 			
 			int x=rand%width;
 			int y=(rand-rand%width)/width;
 			
-			for(int k=0;k<y;k++)
-				x+=skippedMap.get(k).size();
-			while(x>=width){
-				x-=width;
-				y++;
-				x+=skippedMap.get(y-1).size();
-			}
-			for(Point p:skippedMap.get(y)){
-				if(p.y<y || (p.y==y && p.x<=x)){
-					x++;
-					if(x>=width){
-						x=0;
-						y++;
-					}
-				}else
-					break;
-			}
-			skippedMap.get(y).add(new Point(x,y));
+			buckets.addNumber(rand);
+			
+			ans.add(new Point(x,y));
 		}
-		List<Point> ans=new LinkedList<Point>();
-		for(Entry<Integer,Set<Point>> entry:skippedMap.entrySet())
-			ans.addAll(entry.getValue());
+		buckets.getAll();
 		return ans;
 	}
+
+
+	public static class WrapBuckets{
+		private int size=0;
+		private List<Buckets> buckets=new ArrayList<Buckets>();
+		private int bucketSize;
+
+		public WrapBuckets(int totalSize){
+			int qty=(int)Math.sqrt((double)totalSize/Buckets.SIZE_BUCKET);
+			bucketSize=(int) Math.ceil((double)totalSize/qty);
+			for(int i=0;i<qty;i++)
+				buckets.add(new Buckets(bucketSize));
+		}
+		
+		public Collection<? extends Integer> getAll() {
+			List<Integer> all=new LinkedList<Integer>();
+			for(Buckets bucket:buckets)
+				all.addAll(bucket.getAll());
+			return all;
+		}
+	
+		public int getSize(){
+			return size;
+		}
+		public void addNumber(int x){
+			int index=x/bucketSize;
+			buckets.get(index).addNumber(x%bucketSize);
+			size++;
+		}
+		public int skipNumbers(int x){
+			int index=0;
+
+			while(index<x/bucketSize){
+				x+=buckets.get(index).getSize();
+				index++;
+			}
+			
+			while(bucketSize-buckets.get(x/bucketSize).getSize()<=x%bucketSize){
+				x+=buckets.get(x/bucketSize).getSize();
+			}
+			
+			return (x-x%bucketSize)+buckets.get(x/bucketSize).skipNumbers(x%bucketSize);
+		}
+	}
+
+	public static class Buckets{
+		private int size=0;
+		private List<Set<Integer>> buckets=new ArrayList<Set<Integer>>();
+		
+		public static final int SIZE_BUCKET=10;
+		private static final Comparator<Integer> comp=new Comparator<Integer>() {
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				return o1-o2;
+			}
+		};
+	
+		public Buckets(int totalSize){
+			int qty=(int)Math.ceil((double)totalSize/SIZE_BUCKET);
+			for(int i=0;i<qty;i++)
+				buckets.add(new TreeSet<Integer>(comp));
+		}
+		
+		public Collection<? extends Integer> getAll() {
+			List<Integer> all=new LinkedList<Integer>();
+			for(Set<Integer> bucket:buckets)
+				all.addAll(bucket);
+			return all;
+		}
+	
+		public int getSize(){
+			return size;
+		}
+		public void addNumber(int x){
+			int index=x/SIZE_BUCKET;
+			buckets.get(index).add(x);
+			size++;
+		}
+		public int skipNumbers(int x){
+			int index=0;
+	
+			while(index<x/SIZE_BUCKET){
+				x+=buckets.get(index).size();
+				index++;
+			}
+			
+			while(SIZE_BUCKET-buckets.get(x/SIZE_BUCKET).size()<=x%SIZE_BUCKET){
+				x+=buckets.get(x/SIZE_BUCKET).size();
+			}
+			
+			for(Integer x2:buckets.get(x/SIZE_BUCKET)){
+				if(x2<=x)
+					x++;
+				else
+					break;
+			}
+			return x;
+		}
+	}
+
+
 
 	protected double getDensity() {
 		return density;

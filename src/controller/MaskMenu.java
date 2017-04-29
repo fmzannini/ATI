@@ -13,12 +13,15 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputDialog;
 import model.image.Image;
+import model.image.ImageColorRGB;
 import model.image.ImageGray;
 import model.mask.GaussianMask;
 import model.mask.HighPassMask;
 import model.mask.MeanMask;
 import model.mask.MedianMask;
 import model.mask.MedianWeightsMask;
+import model.mask.PrewittOpX;
+import model.mask.PrewittOpY;
 import model.mask.ScrollableWindowRepeat;
 
 public class MaskMenu extends Menu{
@@ -33,7 +36,9 @@ public class MaskMenu extends Menu{
 	private MenuItem maskGauss;
 	@FXML
 	private MenuItem maskHighPass;
-
+	@FXML
+	private MenuItem prewittOp;
+	
 	public MaskMenu() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/maskMenu.fxml"));
 		fxmlLoader.setRoot(this);
@@ -52,6 +57,7 @@ public class MaskMenu extends Menu{
 				Image img=controller.getImage();
 				if(img==null)
 					return;
+				Image copy=img.copy();
 				String [] inputs=getInputs("Filtro de la Media",
 						"Ingrese el tamaño de la ventana (número impar)."
 						+ "\n Ej:3",
@@ -61,14 +67,28 @@ public class MaskMenu extends Menu{
 				
 				int n=Integer.parseInt(inputs[0]);
 
-				if(img.getType()!=Image.ImageType.IMAGE_GRAY)
-					return;
-				ImageGray imgGray=(ImageGray)img;
+				switch(img.getType()){
+				case IMAGE_GRAY:
+					ImageGray imgGray=(ImageGray)copy;
+					applyMeanMask(imgGray,n);
+					break;
+				case IMAGE_RGB:
+					ImageColorRGB imgColor=(ImageColorRGB) copy;
+					for(int i=0;i<ImageColorRGB.RGB_QTY;i++){
+						ImageGray band=imgColor.getBandOnlyGray(i);
+						applyMeanMask(band,n);
+						imgColor.setBand(band,i);
+					}
+					break;
+				}
+				controller.setSecondaryImage(copy);
+				controller.refreshSecondaryImage();
+				controller.refreshImage();
+			}
+			private void applyMeanMask(ImageGray imgGray,int n){
 				MeanMask mm=new MeanMask(new ScrollableWindowRepeat(imgGray, n, n));
 				ImageGray imgWithMask=mm.applyMask();
 				imgGray.setRegion(imgWithMask, new Point(0,0));
-				controller.refreshImage();
-
 			}
 		});
 		maskMedian.setOnAction(new EventHandler<ActionEvent>() {
@@ -77,6 +97,7 @@ public class MaskMenu extends Menu{
 				Image img=controller.getImage();
 				if(img==null)
 					return;
+				Image copy=img.copy();
 				String [] inputs=getInputs("Filtro de la Mediana",
 						"Ingrese el tamaño de la ventana (número impar)."
 						+ "\n Ej:3",
@@ -86,13 +107,29 @@ public class MaskMenu extends Menu{
 				
 				int n=Integer.parseInt(inputs[0]);
 
-				if(img.getType()!=Image.ImageType.IMAGE_GRAY)
-					return;
-				ImageGray imgGray=(ImageGray)img;
+				switch(img.getType()){
+				case IMAGE_GRAY:
+					ImageGray imgGray=(ImageGray)copy;
+					applyMedianMask(imgGray,n);
+					break;
+				case IMAGE_RGB:
+					ImageColorRGB imgColor=(ImageColorRGB) copy;
+					for(int i=0;i<ImageColorRGB.RGB_QTY;i++){
+						ImageGray band=imgColor.getBandOnlyGray(i);
+						applyMedianMask(band,n);
+						imgColor.setBand(band,i);
+					}
+					break;
+				}
+				controller.setSecondaryImage(copy);
+				controller.refreshSecondaryImage();
+				controller.refreshImage();
+			}
+
+			private void applyMedianMask(ImageGray imgGray, int n) {
 				MedianMask mm=new MedianMask(new ScrollableWindowRepeat(imgGray, n, n));
 				ImageGray imgWithMask=mm.applyMask();
-				imgGray.setRegion(imgWithMask, new Point(0,0));
-				controller.refreshImage();
+				imgGray.setRegion(imgWithMask, new Point(0,0));				
 			}
 		});
 		maskMedianWeights.setOnAction(new EventHandler<ActionEvent>() {
@@ -101,14 +138,31 @@ public class MaskMenu extends Menu{
 				Image img=controller.getImage();
 				if(img==null)
 					return;
+				Image copy=img.copy();
+				
+				switch(img.getType()){
+				case IMAGE_GRAY:
+					ImageGray imgGray=(ImageGray)copy;
+					applyMedianWeightsMask(imgGray);
+					break;
+				case IMAGE_RGB:
+					ImageColorRGB imgColor=(ImageColorRGB) copy;
+					for(int i=0;i<ImageColorRGB.RGB_QTY;i++){
+						ImageGray band=imgColor.getBandOnlyGray(i);
+						applyMedianWeightsMask(band);
+						imgColor.setBand(band,i);
+					}
+					break;
+				}
+				controller.setSecondaryImage(copy);
+				controller.refreshSecondaryImage();
+				controller.refreshImage();
+			}
 
-				if(img.getType()!=Image.ImageType.IMAGE_GRAY)
-					return;
-				ImageGray imgGray=(ImageGray)img;
+			private void applyMedianWeightsMask(ImageGray imgGray) {
 				MedianWeightsMask mwm=new MedianWeightsMask(new ScrollableWindowRepeat(imgGray, 3, 3));
 				ImageGray imgWithMask=mwm.applyMask();
-				imgGray.setRegion(imgWithMask, new Point(0,0));
-				controller.refreshImage();	
+				imgGray.setRegion(imgWithMask, new Point(0,0));				
 			}
 		});
 		maskGauss.setOnAction(new EventHandler<ActionEvent>() {
@@ -117,9 +171,11 @@ public class MaskMenu extends Menu{
 				Image img=controller.getImage();
 				if(img==null)
 					return;
+				Image copy=img.copy();
+				
 				String [] inputs=getInputs("Filtro de Gauss",
 						"Ingrese el tamaño de la ventana (número impar) y el valor de sigma."
-						+ "\n Ej:3,5",
+						+ "\n Ej:7,1",
 						",");
 				if(inputs==null || inputs.length!=2)
 					return;
@@ -127,13 +183,29 @@ public class MaskMenu extends Menu{
 				int n=Integer.parseInt(inputs[0]);
 				double sigma=Double.parseDouble(inputs[1]);
 				
-				if(img.getType()!=Image.ImageType.IMAGE_GRAY)
-					return;
-				ImageGray imgGray=(ImageGray)img;
+				switch(img.getType()){
+				case IMAGE_GRAY:
+					ImageGray imgGray=(ImageGray)copy;
+					applyGaussianMask(imgGray,n,sigma);
+					break;
+				case IMAGE_RGB:
+					ImageColorRGB imgColor=(ImageColorRGB) copy;
+					for(int i=0;i<ImageColorRGB.RGB_QTY;i++){
+						ImageGray band=imgColor.getBandOnlyGray(i);
+						applyGaussianMask(band,n,sigma);
+						imgColor.setBand(band,i);
+					}
+					break;
+				}
+				controller.setSecondaryImage(copy);
+				controller.refreshSecondaryImage();
+				controller.refreshImage();
+			}
+
+			private void applyGaussianMask(ImageGray imgGray, int n, double sigma) {
 				GaussianMask gm=new GaussianMask(new ScrollableWindowRepeat(imgGray, n, n),sigma);
 				ImageGray imgWithMask=gm.applyMask();
 				imgGray.setRegion(imgWithMask, new Point(0,0));
-				controller.refreshImage();	
 			}
 		});
 		maskHighPass.setOnAction(new EventHandler<ActionEvent>() {
@@ -142,16 +214,83 @@ public class MaskMenu extends Menu{
 				Image img=controller.getImage();
 				if(img==null)
 					return;
+				Image copy=img.copy();
 				
-				if(img.getType()!=Image.ImageType.IMAGE_GRAY)
-					return;
-				
-				ImageGray imgGray=(ImageGray)img;
+				switch(img.getType()){
+				case IMAGE_GRAY:
+					ImageGray imgGray=(ImageGray)copy;
+					applyHighPassMask(imgGray);
+					break;
+				case IMAGE_RGB:
+					ImageColorRGB imgColor=(ImageColorRGB) copy;
+					for(int i=0;i<ImageColorRGB.RGB_QTY;i++){
+						ImageGray band=imgColor.getBandOnlyGray(i);
+						applyHighPassMask(band);
+						imgColor.setBand(band,i);
+					}
+					break;
+				}
+				controller.setSecondaryImage(copy);
+				controller.refreshSecondaryImage();
+				controller.refreshImage();
+			}
+
+			private void applyHighPassMask(ImageGray imgGray) {
 				HighPassMask gm=new HighPassMask(new ScrollableWindowRepeat(imgGray, 3, 3));
 				ImageGray imgWithMask=gm.applyMask();
 				imgGray.setRegion(imgWithMask, new Point(0,0));
-				controller.refreshImage();					
 			}
+		});
+		prewittOp.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Image img=controller.getImage();
+				if(img==null)
+					return;
+				Image copyX=img.copy();
+				Image copyY=img.copy();
+				
+				switch(img.getType()){
+				case IMAGE_GRAY:
+					ImageGray imgGrayX=(ImageGray)copyX;
+					ImageGray imgGrayY=(ImageGray)copyY;
+
+					applyPrewittOpX(imgGrayX);
+					applyPrewittOpY(imgGrayY);
+
+					break;
+				case IMAGE_RGB:
+					ImageColorRGB imgColorX=(ImageColorRGB) copyX;
+					ImageColorRGB imgColorY=(ImageColorRGB) copyY;
+
+					for(int i=0;i<ImageColorRGB.RGB_QTY;i++){
+						ImageGray bandX=imgColorX.getBandOnlyGray(i);
+						applyPrewittOpX(bandX);
+						imgColorX.setBand(bandX,i);
+						ImageGray bandY=imgColorY.getBandOnlyGray(i);
+						applyPrewittOpX(bandY);
+						imgColorY.setBand(bandY,i);
+					}
+					break;
+				}
+				controller.setSecondaryImage(copyY);
+				controller.refreshSecondaryImage();
+				controller.setResultImage(copyX);
+				controller.refreshResultImage();
+				controller.refreshImage();
+			}
+
+			private void applyPrewittOpX(ImageGray imgGray) {
+				PrewittOpX pox=new PrewittOpX(new ScrollableWindowRepeat(imgGray, 3, 3));
+				ImageGray imgWithMask=pox.applyMask();
+				imgGray.setRegion(imgWithMask, new Point(0,0));
+			}
+			private void applyPrewittOpY(ImageGray imgGray) {
+				PrewittOpY poy=new PrewittOpY(new ScrollableWindowRepeat(imgGray, 3, 3));
+				ImageGray imgWithMask=poy.applyMask();
+				imgGray.setRegion(imgWithMask, new Point(0,0));
+			}
+
 		});
 	}
 	private String[] getInputs(String title,String header,String pattern){

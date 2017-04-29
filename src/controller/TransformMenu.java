@@ -331,8 +331,8 @@ public class TransformMenu extends Menu {
 				switch (img.getType()) {
 				case IMAGE_GRAY: {
 					ImageGray imgGray = (ImageGray) img.copy();
-					controller.setSecondaryImage(imgGray);
 					imgGray = imgGray.increaseContrast(r1, r2, s1, s2);
+					controller.setSecondaryImage(imgGray);
 					break;
 				}
 				}

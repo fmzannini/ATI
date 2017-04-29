@@ -54,6 +54,8 @@ public class NoiseMenu extends Menu{
 				Image img=controller.getImage();
 				if(img==null)
 					return;
+				Image copy=img.copy();
+				
 				String [] inputs=getInputs("Ruido Gaussiano Aditivo",
 						"Ingrese la densidad de contaminación (entre 0 y 1), el valor de mu y el valor de sigma."
 						+ "\n Ej:0.5,0,5",
@@ -64,8 +66,11 @@ public class NoiseMenu extends Menu{
 				double density=Double.parseDouble(inputs[0]);
 				double mu=Double.parseDouble(inputs[1]);
 				double sigma=Double.parseDouble(inputs[2]);
+				
 				GaussianNoiseAdditive gna=new GaussianNoiseAdditive(density, mu, sigma);
-				applyNoise(gna,img);
+				applyNoise(gna,copy);
+				controller.setSecondaryImage(copy);
+				controller.refreshSecondaryImage();
 				controller.refreshImage();
 			}
 		});
@@ -75,6 +80,7 @@ public class NoiseMenu extends Menu{
 				Image img=controller.getImage();
 				if(img==null)
 					return;
+				Image copy=img.copy();
 				String [] inputs=getInputs("Ruido Exponencial Multiplicativo",
 						"Ingrese la densidad de contaminación (entre 0 y 1) y el valor de lambda."
 						+ "\n Ej:0.5,5",
@@ -85,7 +91,9 @@ public class NoiseMenu extends Menu{
 				double density=Double.parseDouble(inputs[0]);
 				double lambda=Double.parseDouble(inputs[1]);
 				ExponentialNoiseMultiplicative enm=new ExponentialNoiseMultiplicative(density, lambda);
-				applyNoise(enm,img);
+				applyNoise(enm,copy);
+				controller.setSecondaryImage(copy);
+				controller.refreshSecondaryImage();
 				controller.refreshImage();
 			}
 		});
@@ -95,6 +103,7 @@ public class NoiseMenu extends Menu{
 				Image img=controller.getImage();
 				if(img==null)
 					return;
+				Image copy=img.copy();
 				String [] inputs=getInputs("Ruido Rayleigh Multiplicativo",
 						"Ingrese la densidad de contaminación (entre 0 y 1) y el valor de psi."
 						+ "\n Ej:0.5,5",
@@ -105,7 +114,9 @@ public class NoiseMenu extends Menu{
 				double density=Double.parseDouble(inputs[0]);
 				double psi=Double.parseDouble(inputs[1]);
 				RayleighNoiseMultiplicative rnm=new RayleighNoiseMultiplicative(density, psi);
-				applyNoise(rnm,img);
+				applyNoise(rnm,copy);
+				controller.setSecondaryImage(copy);
+				controller.refreshSecondaryImage();
 				controller.refreshImage();
 			}
 		});
@@ -115,6 +126,7 @@ public class NoiseMenu extends Menu{
 				Image img=controller.getImage();
 				if(img==null)
 					return;
+				Image copy=img.copy();
 				String [] inputs=getInputs("Ruido Sal y Pimienta",
 						"Ingrese la densidad de contaminación (entre 0 y 1), el valor de p0 y el valor de p1."
 						+ "\n Ej:0.5,0.3,0.7",
@@ -127,7 +139,9 @@ public class NoiseMenu extends Menu{
 				double p1=Double.parseDouble(inputs[2]);
 
 				SaltAndPepperNoise spn=new SaltAndPepperNoise(density, p0, p1);
-				applyNoise(spn,img);
+				applyNoise(spn,copy);
+				controller.setSecondaryImage(copy);
+				controller.refreshSecondaryImage();
 				controller.refreshImage();
 			}
 		});
@@ -146,11 +160,20 @@ public class NoiseMenu extends Menu{
 	}
 	
 	private void applyNoise(Noise noise,Image img){
-		if(img.getType()!=Image.ImageType.IMAGE_GRAY)
-			return;
-		ImageGray imgGray=(ImageGray)img;
-		ImageGray imgWithNoise=noise.applyNoise(imgGray);
-		imgGray.setRegion(imgWithNoise, new Point(0,0));
+		switch(img.getType()){
+		case IMAGE_GRAY:
+			ImageGray imgGray=(ImageGray)img;
+			ImageGray imgWithNoise=noise.applyNoise(imgGray);
+			imgGray.setRegion(imgWithNoise, new Point(0,0));
+			break;
+		case IMAGE_RGB:
+			ImageColorRGB imgColor=(ImageColorRGB) img;
+			for(int i=0;i<Image.RGB_QTY;i++){
+				ImageGray imgColorWithNoise=noise.applyNoise(imgColor.getBandOnlyGray(i));
+				imgColor.setBand(imgColorWithNoise, i);				
+			}
+			break;
+		}
 	}
 
 }

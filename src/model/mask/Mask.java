@@ -1,6 +1,7 @@
 package model.mask;
 
 import model.image.ImageGray;
+import utils.LinearTransformation;
 
 public class Mask {
 	private double[][] weights;
@@ -21,7 +22,7 @@ public class Mask {
 			double newPixel = applyMask(region);
 			scroll.updateCurrentCenter(newPixel);
 		}
-		return scroll.getResult();
+		return LinearTransformation.grayImage(scroll.getResult());
 	}
 
 	protected double applyMask(double[][] region) {

@@ -7,4 +7,5 @@
 	<MenuItem text="Filtro de la mediana ponderada" fx:id="maskMedianWeights"/>
 	<MenuItem text="Filtro de Gauss" fx:id="maskGauss"/>
 	<MenuItem text="Filtro pasa altos" fx:id="maskHighPass"/>
+	<MenuItem text="Operador Prewitt" fx:id="prewittOp"/>
 </fx:root>
