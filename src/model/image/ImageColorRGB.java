@@ -108,18 +108,29 @@ public class ImageColorRGB extends ImageColor {
 		}
 		return this;
 	}
-	
+
 	public ImageColorRGB applyThresholding(int t) {
 		for (int i = 0; i < this.getWidth(); i++) {
 			for (int j = 0; j < this.getHeight(); j++) {
-				this.getImage()[i][j][RED_BAND] = this.getImage()[i][j][RED_BAND] >=t ? 255.0 : 0.0;
-				this.getImage()[i][j][GREEN_BAND] = this.getImage()[i][j][GREEN_BAND] >=t ? 255.0 : 0.0;
-				this.getImage()[i][j][BLUE_BAND] = this.getImage()[i][j][BLUE_BAND] >=t ? 255.0 : 0.0;
+				this.getImage()[i][j][RED_BAND] = this.getImage()[i][j][RED_BAND] >= t ? 255.0 : 0.0;
+				this.getImage()[i][j][GREEN_BAND] = this.getImage()[i][j][GREEN_BAND] >= t ? 255.0 : 0.0;
+				this.getImage()[i][j][BLUE_BAND] = this.getImage()[i][j][BLUE_BAND] >= t ? 255.0 : 0.0;
 			}
 		}
 		return this;
 	}
-	
+
+	public ImageColorRGB applyThresholding(int tRed, int tGreen, int tBlue) {
+		for (int i = 0; i < this.getWidth(); i++) {
+			for (int j = 0; j < this.getHeight(); j++) {
+				this.getImage()[i][j][RED_BAND] = this.getImage()[i][j][RED_BAND] >= tRed ? 255.0 : 0.0;
+				this.getImage()[i][j][GREEN_BAND] = this.getImage()[i][j][GREEN_BAND] >= tGreen ? 255.0 : 0.0;
+				this.getImage()[i][j][BLUE_BAND] = this.getImage()[i][j][BLUE_BAND] >= tBlue ? 255.0 : 0.0;
+			}
+		}
+		return this;
+	}
+
 	public Image copy() {
 		double[][][] matrix = new double[this.getWidth()][this.getHeight()][3];
 		for (int i = 0; i < this.getWidth(); i++) {
@@ -133,11 +144,11 @@ public class ImageColorRGB extends ImageColor {
 	}
 
 	public void setBand(ImageGray band, int k) {
-		double[][] pixels=band.getImage();
-		for(int i=0;i<band.getWidth();i++){
-			for(int j=0;j<band.getHeight();j++){
-				double[] currentValue=this.getPixel(i, j);
-				currentValue[k]=pixels[i][j];
+		double[][] pixels = band.getImage();
+		for (int i = 0; i < band.getWidth(); i++) {
+			for (int j = 0; j < band.getHeight(); j++) {
+				double[] currentValue = this.getPixel(i, j);
+				currentValue[k] = pixels[i][j];
 				this.setPixel(i, j, currentValue);
 			}
 		}

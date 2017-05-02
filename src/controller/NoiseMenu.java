@@ -203,7 +203,6 @@ public class NoiseMenu extends Menu {
 
 				AnisotropicDiffusion id;
 				for (int i = 0; i < iterations; i++) {
-					System.out.println("a");
 					switch (copy.getType()) {
 					case IMAGE_GRAY: 
 						id = new AnisotropicDiffusion((ImageGray)copy, leclarc, sigma);

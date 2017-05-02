@@ -11,4 +11,5 @@
 	<ResultsMenu fx:id="resultsMenu"></ResultsMenu>
 	<NoiseMenu fx:id="noiseMenu"></NoiseMenu>
 	<MaskMenu fx:id="maskMenu"></MaskMenu>
+	<ThresholdingMenu fx:id="thresholdingMenu"></ThresholdingMenu>
 </fx:root>

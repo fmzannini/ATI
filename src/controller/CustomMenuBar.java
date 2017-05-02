@@ -32,6 +32,9 @@ public class CustomMenuBar extends MenuBar {
 	@FXML
 	private MaskMenu maskMenu;
 	
+	@FXML
+	private ThresholdingMenu thresholdingMenu;
+	
 	public CustomMenuBar() {
 		super();
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/customMenuBar.fxml"));
@@ -54,6 +57,7 @@ public class CustomMenuBar extends MenuBar {
 		resultsMenu.initialize(controller);
 		noiseMenu.initialize(controller);
 		maskMenu.initialize(controller);
+		thresholdingMenu.initialize(controller);
 	}
 
 }
