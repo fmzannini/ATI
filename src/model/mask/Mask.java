@@ -22,16 +22,23 @@ public class Mask {
 			double newPixel = applyMask(region);
 			scroll.updateCurrentCenter(newPixel);
 		}
-		return LinearTransformation.grayImage(scroll.getResult());
+		return finalTransformation(scroll.getResult());
 	}
 
-	protected double applyMask(double[][] region) {
+	protected ImageGray finalTransformation(ImageGray result) {
+		return LinearTransformation.grayImage(result);
+	}
+
+	protected double applyMask(double[][] region, double[][] weights){
 		double value = 0.0;
 		for (int i = 0; i < region.length; i++) {
 			for (int j = 0; j < region[0].length; j++) {
 				value += region[i][j] * weights[i][j];
 			}
 		}
-		return value;
+		return value;		
+	}
+	protected double applyMask(double[][] region) {
+		return applyMask(region, weights);
 	}
 }

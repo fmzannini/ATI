@@ -1,4 +1,7 @@
-package model.mask;
+package model.mask.edge_detector;
+
+import model.mask.Mask;
+import model.mask.ScrollableWindow;
 
 public class PrewittOpX extends Mask {
 

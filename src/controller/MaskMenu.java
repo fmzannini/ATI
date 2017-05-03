@@ -21,6 +21,10 @@ import model.mask.MeanMask;
 import model.mask.MedianMask;
 import model.mask.MedianWeightsMask;
 import model.mask.ScrollableWindowRepeat;
+import model.mask.edge_detector.PrewittOp;
+import model.mask.edge_detector.PrewittOpX;
+import model.mask.edge_detector.PrewittOpY;
+import model.mask.edge_detector.SobelOp;
 
 public class MaskMenu extends Menu{
 
@@ -35,7 +39,12 @@ public class MaskMenu extends Menu{
 	@FXML
 	private MenuItem maskHighPass;
 	@FXML
+	private MenuItem prewittOpXY;
+
+	@FXML
 	private MenuItem prewittOp;
+	@FXML
+	private MenuItem sobelOp;
 	
 	public MaskMenu() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/maskMenu.fxml"));
@@ -239,7 +248,7 @@ public class MaskMenu extends Menu{
 				imgGray.setRegion(imgWithMask, new Point(0,0));
 			}
 		});
-		prewittOp.setOnAction(new EventHandler<ActionEvent>() {
+		prewittOpXY.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				Image img=controller.getImage();
@@ -271,25 +280,60 @@ public class MaskMenu extends Menu{
 					}
 					break;
 				}
-				controller.setSecondaryImage(copyY);
+				controller.setSecondaryImage(copyX);
 				controller.refreshSecondaryImage();
-				controller.setResultImage(copyX);
+				controller.setResultImage(copyY);
 				controller.refreshResultImage();
 				controller.refreshImage();
 			}
 
 			private void applyPrewittOpX(ImageGray imgGray) {
-//				PrewittOpX pox=new PrewittOpX(new ScrollableWindowRepeat(imgGray, 3, 3));
-//				ImageGray imgWithMask=pox.applyMask();
-//				imgGray.setRegion(imgWithMask, new Point(0,0));
+				PrewittOpX pox=new PrewittOpX(new ScrollableWindowRepeat(imgGray, 3, 3));
+				ImageGray imgWithMask=pox.applyMask();
+				imgGray.setRegion(imgWithMask, new Point(0,0));
 			}
 			private void applyPrewittOpY(ImageGray imgGray) {
-//				PrewittOpY poy=new PrewittOpY(new ScrollableWindowRepeat(imgGray, 3, 3));
-//				ImageGray imgWithMask=poy.applyMask();
-//				imgGray.setRegion(imgWithMask, new Point(0,0));
+				PrewittOpY poy=new PrewittOpY(new ScrollableWindowRepeat(imgGray, 3, 3));
+				ImageGray imgWithMask=poy.applyMask();
+				imgGray.setRegion(imgWithMask, new Point(0,0));
 			}
 
 		});
+		prewittOp.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Image img=controller.getImage();
+				if(img==null)
+					return;
+				Image copy=img.copy();
+				
+				PrewittOp op=new PrewittOp();
+				copy=op.apply(copy);
+
+				controller.setSecondaryImage(copy);
+				controller.refreshSecondaryImage();
+				controller.refreshImage();
+
+			}
+		});
+		sobelOp.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Image img=controller.getImage();
+				if(img==null)
+					return;
+				Image copy=img.copy();
+				
+				SobelOp op=new SobelOp();
+				copy=op.apply(copy);
+
+				controller.setSecondaryImage(copy);
+				controller.refreshSecondaryImage();
+				controller.refreshImage();
+
+			}
+		});
+
 	}
 	private String[] getInputs(String title,String header,String pattern){
 		Dialog<String> dialog=new TextInputDialog();
