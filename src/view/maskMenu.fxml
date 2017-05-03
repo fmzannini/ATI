@@ -10,5 +10,9 @@
 	<MenuItem text="Operador Prewitt X e Y" fx:id="prewittOpXY"/>
 	<MenuItem text="Operador Prewitt" fx:id="prewittOp"/>
 	<MenuItem text="Operador Sobel" fx:id="sobelOp"/>
+	<MenuItem text="Operador direccional Matriz A" fx:id="directionalMatrixAOp"/>
+	<MenuItem text="Operador direccional Kirsh" fx:id="directionalKirshOp"/>
+	<MenuItem text="Operador direccional Prewitt" fx:id="directionalPrewittOp"/>
+	<MenuItem text="Operador direccional Sobel" fx:id="directionalSobelOp"/>
 	
 </fx:root>

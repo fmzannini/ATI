@@ -21,10 +21,15 @@ import model.mask.MeanMask;
 import model.mask.MedianMask;
 import model.mask.MedianWeightsMask;
 import model.mask.ScrollableWindowRepeat;
-import model.mask.edge_detector.PrewittOp;
-import model.mask.edge_detector.PrewittOpX;
-import model.mask.edge_detector.PrewittOpY;
-import model.mask.edge_detector.SobelOp;
+import model.mask.edge_detector.ApplyOperator;
+import model.mask.edge_detector.directionals.DirectionalMatrixAOp;
+import model.mask.edge_detector.directionals.DirectionalMatrixKirsh;
+import model.mask.edge_detector.directionals.DirectionalMatrixPrewitt;
+import model.mask.edge_detector.directionals.DirectionalMatrixSobel;
+import model.mask.edge_detector.gradient.PrewittOp;
+import model.mask.edge_detector.gradient.PrewittOpX;
+import model.mask.edge_detector.gradient.PrewittOpY;
+import model.mask.edge_detector.gradient.SobelOp;
 
 public class MaskMenu extends Menu{
 
@@ -45,6 +50,16 @@ public class MaskMenu extends Menu{
 	private MenuItem prewittOp;
 	@FXML
 	private MenuItem sobelOp;
+	
+	@FXML
+	private MenuItem directionalMatrixAOp;
+	@FXML
+	private MenuItem directionalKirshOp;
+	@FXML
+	private MenuItem directionalPrewittOp;
+	@FXML
+	private MenuItem directionalSobelOp;
+
 	
 	public MaskMenu() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/maskMenu.fxml"));
@@ -299,41 +314,15 @@ public class MaskMenu extends Menu{
 			}
 
 		});
-		prewittOp.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				Image img=controller.getImage();
-				if(img==null)
-					return;
-				Image copy=img.copy();
-				
-				PrewittOp op=new PrewittOp();
-				copy=op.apply(copy);
 
-				controller.setSecondaryImage(copy);
-				controller.refreshSecondaryImage();
-				controller.refreshImage();
+		prewittOp.setOnAction(new ButtonApplyMask(new PrewittOp(), controller));
+		sobelOp.setOnAction(new ButtonApplyMask(new SobelOp(),controller));
 
-			}
-		});
-		sobelOp.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				Image img=controller.getImage();
-				if(img==null)
-					return;
-				Image copy=img.copy();
-				
-				SobelOp op=new SobelOp();
-				copy=op.apply(copy);
-
-				controller.setSecondaryImage(copy);
-				controller.refreshSecondaryImage();
-				controller.refreshImage();
-
-			}
-		});
-
+		directionalMatrixAOp.setOnAction(new ButtonApplyMask(new DirectionalMatrixAOp(), controller));
+		directionalKirshOp.setOnAction(new ButtonApplyMask(new DirectionalMatrixKirsh(), controller));
+		directionalPrewittOp.setOnAction(new ButtonApplyMask(new DirectionalMatrixPrewitt(), controller));
+		directionalSobelOp.setOnAction(new ButtonApplyMask(new DirectionalMatrixSobel(), controller));
+		
 	}
 	private String[] getInputs(String title,String header,String pattern){
 		Dialog<String> dialog=new TextInputDialog();
@@ -347,4 +336,28 @@ public class MaskMenu extends Menu{
 		return inputs;
 	}
 
+	public static class ButtonApplyMask implements EventHandler<ActionEvent>{
+		private ApplyOperator operator;
+		private InterfaceViewController controller;
+		
+		public ButtonApplyMask(ApplyOperator operator, InterfaceViewController controller) {
+			super();
+			this.operator=operator;
+			this.controller = controller;
+		}
+
+		@Override
+		public void handle(ActionEvent event) {
+			Image img=controller.getImage();
+			if(img==null)
+				return;
+			Image copy=img.copy();
+			
+			copy=operator.apply(copy);
+
+			controller.setSecondaryImage(copy);
+			controller.refreshSecondaryImage();
+			controller.refreshImage();
+		}
+	}
 }

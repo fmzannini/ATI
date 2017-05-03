@@ -1,4 +1,4 @@
-package model.mask.edge_detector;
+package model.mask.edge_detector.gradient;
 
 import model.image.ImageGray;
 import model.mask.Mask;
