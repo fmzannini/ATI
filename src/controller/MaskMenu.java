@@ -21,6 +21,18 @@ import model.mask.MeanMask;
 import model.mask.MedianMask;
 import model.mask.MedianWeightsMask;
 import model.mask.ScrollableWindowRepeat;
+import model.mask.edge_detector.ApplyOperator;
+import model.mask.edge_detector.directionals.DirectionalMatrixAOp;
+import model.mask.edge_detector.directionals.DirectionalMatrixKirsh;
+import model.mask.edge_detector.directionals.DirectionalMatrixPrewitt;
+import model.mask.edge_detector.directionals.DirectionalMatrixSobel;
+import model.mask.edge_detector.gradient.PrewittOp;
+import model.mask.edge_detector.gradient.PrewittOpX;
+import model.mask.edge_detector.gradient.PrewittOpY;
+import model.mask.edge_detector.gradient.SobelOp;
+import model.mask.edge_detector.laplacian.LaplacianGaussianMethod;
+import model.mask.edge_detector.laplacian.LaplacianMethod;
+import model.mask.edge_detector.laplacian.LaplacianMethod.ThresholdType;
 
 public class MaskMenu extends Menu{
 
@@ -35,7 +47,32 @@ public class MaskMenu extends Menu{
 	@FXML
 	private MenuItem maskHighPass;
 	@FXML
+	private MenuItem prewittOpXY;
+
+	@FXML
 	private MenuItem prewittOp;
+	@FXML
+	private MenuItem sobelOp;
+	
+	@FXML
+	private MenuItem directionalMatrixAOp;
+	@FXML
+	private MenuItem directionalKirshOp;
+	@FXML
+	private MenuItem directionalPrewittOp;
+	@FXML
+	private MenuItem directionalSobelOp;
+
+
+	@FXML
+	private MenuItem laplacianOp;
+	@FXML
+	private MenuItem laplacianWithSlopeEvaluationOp;
+	@FXML
+	private MenuItem laplacianGaussianOp;
+	@FXML
+	private MenuItem laplacianGaussianWithSlopeEvaluationOp;
+
 	
 	public MaskMenu() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/maskMenu.fxml"));
@@ -239,7 +276,7 @@ public class MaskMenu extends Menu{
 				imgGray.setRegion(imgWithMask, new Point(0,0));
 			}
 		});
-		prewittOp.setOnAction(new EventHandler<ActionEvent>() {
+		prewittOpXY.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				Image img=controller.getImage();
@@ -271,24 +308,173 @@ public class MaskMenu extends Menu{
 					}
 					break;
 				}
-				controller.setSecondaryImage(copyY);
+				controller.setSecondaryImage(copyX);
 				controller.refreshSecondaryImage();
-				controller.setResultImage(copyX);
+				controller.setResultImage(copyY);
 				controller.refreshResultImage();
 				controller.refreshImage();
 			}
 
 			private void applyPrewittOpX(ImageGray imgGray) {
-//				PrewittOpX pox=new PrewittOpX(new ScrollableWindowRepeat(imgGray, 3, 3));
-//				ImageGray imgWithMask=pox.applyMask();
-//				imgGray.setRegion(imgWithMask, new Point(0,0));
+				PrewittOpX pox=new PrewittOpX(new ScrollableWindowRepeat(imgGray, 3, 3));
+				ImageGray imgWithMask=pox.applyMask();
+				imgGray.setRegion(imgWithMask, new Point(0,0));
 			}
 			private void applyPrewittOpY(ImageGray imgGray) {
-//				PrewittOpY poy=new PrewittOpY(new ScrollableWindowRepeat(imgGray, 3, 3));
-//				ImageGray imgWithMask=poy.applyMask();
-//				imgGray.setRegion(imgWithMask, new Point(0,0));
+				PrewittOpY poy=new PrewittOpY(new ScrollableWindowRepeat(imgGray, 3, 3));
+				ImageGray imgWithMask=poy.applyMask();
+				imgGray.setRegion(imgWithMask, new Point(0,0));
 			}
 
+		});
+
+		prewittOp.setOnAction(new ButtonApplyMask(new PrewittOp(), controller));
+		sobelOp.setOnAction(new ButtonApplyMask(new SobelOp(),controller));
+
+		directionalMatrixAOp.setOnAction(new ButtonApplyMask(new DirectionalMatrixAOp(), controller));
+		directionalKirshOp.setOnAction(new ButtonApplyMask(new DirectionalMatrixKirsh(), controller));
+		directionalPrewittOp.setOnAction(new ButtonApplyMask(new DirectionalMatrixPrewitt(), controller));
+		directionalSobelOp.setOnAction(new ButtonApplyMask(new DirectionalMatrixSobel(), controller));
+		
+		laplacianOp.setOnAction(new ButtonApplyMask(new LaplacianMethod(), controller));
+		laplacianWithSlopeEvaluationOp.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Image img=controller.getImage();
+				if(img==null)
+					return;
+				Image copy=img.copy();
+				
+				String [] inputs=getInputs("Operador Laplaciano",
+						"Ingrese el umbral para la evaluacion de la pendiente."
+						+ "\n MAX  - usa 0.8*max"
+						+ "\n MEAN  - usa la media"
+						+ "\n MEDIAN  - usa la mediana"
+						+ "\n CUSTOM=40  - usa el valor dado: 40",
+						"=");
+				if(inputs==null || inputs.length==0 || inputs.length>2)
+					return;
+				
+				ThresholdType thresholdType;
+				double thresholdValue=1;
+				if(inputs[0].toUpperCase().equals("MAX"))
+					thresholdType=ThresholdType.MAX;
+				else if(inputs[0].toUpperCase().equals("MEAN"))
+					thresholdType=ThresholdType.MEAN;
+				else if(inputs[0].toUpperCase().equals("MEDIAN"))
+					thresholdType=ThresholdType.MEDIAN;
+				else if(inputs[0].toUpperCase().equals("CUSTOM")){
+					thresholdType=ThresholdType.CUSTOM;
+					thresholdValue=Double.parseDouble(inputs[1]);
+				}else
+					return;
+
+				LaplacianMethod methodLaplacian=null;
+				switch(thresholdType){
+					case MAX:
+					case MEAN:
+					case MEDIAN:
+						methodLaplacian=new LaplacianMethod(thresholdType);
+						break;
+					case CUSTOM:
+						methodLaplacian=new LaplacianMethod(thresholdValue);
+						break;
+				}
+				
+				copy=methodLaplacian.apply(copy);
+
+				controller.setSecondaryImage(copy);
+				controller.refreshSecondaryImage();
+				controller.refreshImage();
+			}
+		});
+		
+		laplacianGaussianOp.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Image img=controller.getImage();
+				if(img==null)
+					return;
+				Image copy=img.copy();
+				
+				String [] inputs=getInputs("Operador Laplaciano-Gaussiano",
+						"Ingrese el tamaño de la ventana (número impar) y el valor de sigma."
+						+ "\n Ej:7,1",
+						",");
+				if(inputs==null || inputs.length!=2)
+					return;
+				
+				int windowSize=Integer.parseInt(inputs[0]);
+				double sigma=Double.parseDouble(inputs[1]);
+	
+				LaplacianGaussianMethod methodLoG=new LaplacianGaussianMethod(windowSize, sigma);
+				copy=methodLoG.apply(copy);
+
+				controller.setSecondaryImage(copy);
+				controller.refreshSecondaryImage();
+				controller.refreshImage();
+			}
+		});
+		laplacianGaussianWithSlopeEvaluationOp.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Image img=controller.getImage();
+				if(img==null)
+					return;
+				Image copy=img.copy();
+				
+				String [] inputs=getInputs("Operador Laplaciano-Gaussiano",
+						"Ingrese el tamaño de la ventana (número impar) y el valor de sigma."
+						+ "\n Ej:7,1",
+						",");
+				if(inputs==null || inputs.length!=2)
+					return;
+				
+				int windowSize=Integer.parseInt(inputs[0]);
+				double sigma=Double.parseDouble(inputs[1]);
+	
+				inputs=getInputs("Operador Laplaciano",
+						"Ingrese el umbral para la evaluacion de la pendiente."
+						+ "\n MAX  - usa 0.8*max"
+						+ "\n MEAN  - usa la media"
+						+ "\n MEDIAN  - usa la mediana"
+						+ "\n CUSTOM=40  - usa el valor dado: 40",
+						"=");
+				if(inputs==null || inputs.length==0 || inputs.length>2)
+					return;
+				
+				ThresholdType thresholdType;
+				double thresholdValue=1;
+				if(inputs[0].toUpperCase().equals("MAX"))
+					thresholdType=ThresholdType.MAX;
+				else if(inputs[0].toUpperCase().equals("MEAN"))
+					thresholdType=ThresholdType.MEAN;
+				else if(inputs[0].toUpperCase().equals("MEDIAN"))
+					thresholdType=ThresholdType.MEDIAN;
+				else if(inputs[0].toUpperCase().equals("CUSTOM")){
+					thresholdType=ThresholdType.CUSTOM;
+					thresholdValue=Double.parseDouble(inputs[1]);
+				}else
+					return;
+
+				LaplacianGaussianMethod methodLoG=null;
+				switch(thresholdType){
+					case MAX:
+					case MEAN:
+					case MEDIAN:
+						methodLoG=new LaplacianGaussianMethod(windowSize,sigma,thresholdType);
+						break;
+					case CUSTOM:
+						methodLoG=new LaplacianGaussianMethod(windowSize,sigma,thresholdValue);
+						break;
+				}
+
+				copy=methodLoG.apply(copy);
+
+				controller.setSecondaryImage(copy);
+				controller.refreshSecondaryImage();
+				controller.refreshImage();
+			}
 		});
 	}
 	private String[] getInputs(String title,String header,String pattern){
@@ -303,4 +489,28 @@ public class MaskMenu extends Menu{
 		return inputs;
 	}
 
+	public static class ButtonApplyMask implements EventHandler<ActionEvent>{
+		private ApplyOperator operator;
+		private InterfaceViewController controller;
+		
+		public ButtonApplyMask(ApplyOperator operator, InterfaceViewController controller) {
+			super();
+			this.operator=operator;
+			this.controller = controller;
+		}
+
+		@Override
+		public void handle(ActionEvent event) {
+			Image img=controller.getImage();
+			if(img==null)
+				return;
+			Image copy=img.copy();
+			
+			copy=operator.apply(copy);
+
+			controller.setSecondaryImage(copy);
+			controller.refreshSecondaryImage();
+			controller.refreshImage();
+		}
+	}
 }

@@ -4,6 +4,8 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
+import java.util.ArrayList;
+import java.util.List;
 
 import utils.DynamicRangeCompression;
 import utils.LinearTransformation;
@@ -187,6 +189,10 @@ public class ImageGray implements Image {
 	}
 
 	public ImageGray applyThresholding(int t) {
+		return this.applyThresholding((double)t);
+	}
+
+	public ImageGray applyThresholding(double t) {
 		for (int i = 0; i < this.width; i++) {
 			for (int j = 0; j < this.height; j++) {
 				this.image[i][j] = this.image[i][j] >= t ? 255.0 : 0.0;
@@ -268,6 +274,36 @@ public class ImageGray implements Image {
 
 	private double calculateContrast(double pixel, double r1, double r2, double s1, double s2) {
 		return ((s2 - s1) / (r2 - r1)) * pixel + s1 - ((s2 - s1) / (r2 - r1)) * r1;
+	}
+
+	public double getMaxValue() {
+		double max=image[0][0];
+		for(int i=0;i<width;i++){
+			for(int j=0;j<height;j++){
+				if(max<image[i][j])
+					max=image[i][j];
+			}
+		}
+		return max;
+	}
+
+	public double getMedianValue(boolean includeZeros) {
+		List<Double> list=new ArrayList<>(width*height);
+		for(int i=0;i<width;i++){
+			for(int j=0;j<height;j++){
+				if(!includeZeros){
+					if(image[i][j]>0)
+						list.add(image[i][j]);
+				}else
+					list.add(image[i][j]);
+			}
+		}
+		list.sort(null);
+		int totalSize=list.size();
+		if(totalSize%2==1)
+			return list.get((totalSize+1)/2);
+		else
+			return 0.5*(list.get(totalSize/2)+list.get(totalSize/2+1));
 	}
 
 }
