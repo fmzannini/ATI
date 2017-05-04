@@ -30,7 +30,7 @@ public class GlobalThresholding {
 	public ImageGray calculateGlobalThreshold(int delta) {
 		int t = 0;
 		while (t != 0 && t != 255) {
-			t = (int) Math.random() * 255;
+			t = (int) (Math.random() * 255);
 		}
 
 		int taux = -delta - 1;
