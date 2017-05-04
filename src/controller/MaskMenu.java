@@ -30,6 +30,9 @@ import model.mask.edge_detector.gradient.PrewittOp;
 import model.mask.edge_detector.gradient.PrewittOpX;
 import model.mask.edge_detector.gradient.PrewittOpY;
 import model.mask.edge_detector.gradient.SobelOp;
+import model.mask.edge_detector.laplacian.LaplacianGaussianMethod;
+import model.mask.edge_detector.laplacian.LaplacianMethod;
+import model.mask.edge_detector.laplacian.LaplacianMethod.ThresholdType;
 
 public class MaskMenu extends Menu{
 
@@ -59,6 +62,16 @@ public class MaskMenu extends Menu{
 	private MenuItem directionalPrewittOp;
 	@FXML
 	private MenuItem directionalSobelOp;
+
+
+	@FXML
+	private MenuItem laplacianOp;
+	@FXML
+	private MenuItem laplacianWithSlopeEvaluationOp;
+	@FXML
+	private MenuItem laplacianGaussianOp;
+	@FXML
+	private MenuItem laplacianGaussianWithSlopeEvaluationOp;
 
 	
 	public MaskMenu() {
@@ -323,6 +336,146 @@ public class MaskMenu extends Menu{
 		directionalPrewittOp.setOnAction(new ButtonApplyMask(new DirectionalMatrixPrewitt(), controller));
 		directionalSobelOp.setOnAction(new ButtonApplyMask(new DirectionalMatrixSobel(), controller));
 		
+		laplacianOp.setOnAction(new ButtonApplyMask(new LaplacianMethod(), controller));
+		laplacianWithSlopeEvaluationOp.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Image img=controller.getImage();
+				if(img==null)
+					return;
+				Image copy=img.copy();
+				
+				String [] inputs=getInputs("Operador Laplaciano",
+						"Ingrese el umbral para la evaluacion de la pendiente."
+						+ "\n MAX  - usa 0.8*max"
+						+ "\n MEAN  - usa la media"
+						+ "\n MEDIAN  - usa la mediana"
+						+ "\n CUSTOM=40  - usa el valor dado: 40",
+						"=");
+				if(inputs==null || inputs.length==0 || inputs.length>2)
+					return;
+				
+				ThresholdType thresholdType;
+				double thresholdValue=1;
+				if(inputs[0].toUpperCase().equals("MAX"))
+					thresholdType=ThresholdType.MAX;
+				else if(inputs[0].toUpperCase().equals("MEAN"))
+					thresholdType=ThresholdType.MEAN;
+				else if(inputs[0].toUpperCase().equals("MEDIAN"))
+					thresholdType=ThresholdType.MEDIAN;
+				else if(inputs[0].toUpperCase().equals("CUSTOM")){
+					thresholdType=ThresholdType.CUSTOM;
+					thresholdValue=Double.parseDouble(inputs[1]);
+				}else
+					return;
+
+				LaplacianMethod methodLaplacian=null;
+				switch(thresholdType){
+					case MAX:
+					case MEAN:
+					case MEDIAN:
+						methodLaplacian=new LaplacianMethod(thresholdType);
+						break;
+					case CUSTOM:
+						methodLaplacian=new LaplacianMethod(thresholdValue);
+						break;
+				}
+				
+				copy=methodLaplacian.apply(copy);
+
+				controller.setSecondaryImage(copy);
+				controller.refreshSecondaryImage();
+				controller.refreshImage();
+			}
+		});
+		
+		laplacianGaussianOp.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Image img=controller.getImage();
+				if(img==null)
+					return;
+				Image copy=img.copy();
+				
+				String [] inputs=getInputs("Operador Laplaciano-Gaussiano",
+						"Ingrese el tamaño de la ventana (número impar) y el valor de sigma."
+						+ "\n Ej:7,1",
+						",");
+				if(inputs==null || inputs.length!=2)
+					return;
+				
+				int windowSize=Integer.parseInt(inputs[0]);
+				double sigma=Double.parseDouble(inputs[1]);
+	
+				LaplacianGaussianMethod methodLoG=new LaplacianGaussianMethod(windowSize, sigma);
+				copy=methodLoG.apply(copy);
+
+				controller.setSecondaryImage(copy);
+				controller.refreshSecondaryImage();
+				controller.refreshImage();
+			}
+		});
+		laplacianGaussianWithSlopeEvaluationOp.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Image img=controller.getImage();
+				if(img==null)
+					return;
+				Image copy=img.copy();
+				
+				String [] inputs=getInputs("Operador Laplaciano-Gaussiano",
+						"Ingrese el tamaño de la ventana (número impar) y el valor de sigma."
+						+ "\n Ej:7,1",
+						",");
+				if(inputs==null || inputs.length!=2)
+					return;
+				
+				int windowSize=Integer.parseInt(inputs[0]);
+				double sigma=Double.parseDouble(inputs[1]);
+	
+				inputs=getInputs("Operador Laplaciano",
+						"Ingrese el umbral para la evaluacion de la pendiente."
+						+ "\n MAX  - usa 0.8*max"
+						+ "\n MEAN  - usa la media"
+						+ "\n MEDIAN  - usa la mediana"
+						+ "\n CUSTOM=40  - usa el valor dado: 40",
+						"=");
+				if(inputs==null || inputs.length==0 || inputs.length>2)
+					return;
+				
+				ThresholdType thresholdType;
+				double thresholdValue=1;
+				if(inputs[0].toUpperCase().equals("MAX"))
+					thresholdType=ThresholdType.MAX;
+				else if(inputs[0].toUpperCase().equals("MEAN"))
+					thresholdType=ThresholdType.MEAN;
+				else if(inputs[0].toUpperCase().equals("MEDIAN"))
+					thresholdType=ThresholdType.MEDIAN;
+				else if(inputs[0].toUpperCase().equals("CUSTOM")){
+					thresholdType=ThresholdType.CUSTOM;
+					thresholdValue=Double.parseDouble(inputs[1]);
+				}else
+					return;
+
+				LaplacianGaussianMethod methodLoG=null;
+				switch(thresholdType){
+					case MAX:
+					case MEAN:
+					case MEDIAN:
+						methodLoG=new LaplacianGaussianMethod(windowSize,sigma,thresholdType);
+						break;
+					case CUSTOM:
+						methodLoG=new LaplacianGaussianMethod(windowSize,sigma,thresholdValue);
+						break;
+				}
+
+				copy=methodLoG.apply(copy);
+
+				controller.setSecondaryImage(copy);
+				controller.refreshSecondaryImage();
+				controller.refreshImage();
+			}
+		});
 	}
 	private String[] getInputs(String title,String header,String pattern){
 		Dialog<String> dialog=new TextInputDialog();
