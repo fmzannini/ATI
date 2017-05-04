@@ -15,11 +15,14 @@ import model.image.Image;
 import model.image.ImageColorRGB;
 import model.image.ImageGray;
 import model.thresholding.GlobalThresholding;
+import model.thresholding.OtsuThresholding;
 
 public class ThresholdingMenu extends Menu {
 
 	@FXML
 	private MenuItem globalThresholding;
+	@FXML
+	private MenuItem otsuThresholding;
 
 	public ThresholdingMenu() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/thresholdingMenu.fxml"));
@@ -60,6 +63,28 @@ public class ThresholdingMenu extends Menu {
 				controller.refreshImage();
 			}
 		});
+		otsuThresholding.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Image img = controller.getImage();
+				if (img == null)
+					return;
+				Image copy = img.copy();
+
+				switch (copy.getType()) {
+				case IMAGE_GRAY:
+					OtsuThresholding gt = new OtsuThresholding((ImageGray) copy);
+					copy = gt.calculateOtsuThreshold();
+					break;
+				case IMAGE_RGB:
+					
+				}
+				controller.setSecondaryImage(copy);
+				controller.refreshSecondaryImage();
+				controller.refreshImage();
+			}
+		});
+
 	}
 	
 	private String[] getInputs(String title, String header, String pattern) {

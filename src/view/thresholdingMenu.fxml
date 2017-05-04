@@ -3,4 +3,5 @@
 
 <fx:root type="Menu" xmlns:fx="http://javafx.com/fxml" text="Umbralización">
 	<MenuItem text="Umbralización Global" fx:id="globalThresholding"/>
+	<MenuItem text="Umbralización de Otsu" fx:id="otsuThresholding"/>
 </fx:root>
