@@ -59,7 +59,7 @@ public class LaplacianMethod extends ApplyOperator{
 			threshold=mean;
 			break;
 		case MEDIAN:
-			double median=ans.getMedianValue();
+			double median=ans.getMedianValue(false);
 			threshold=median;
 			break;
 		case CUSTOM:

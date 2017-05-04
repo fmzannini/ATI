@@ -287,15 +287,19 @@ public class ImageGray implements Image {
 		return max;
 	}
 
-	public double getMedianValue() {
+	public double getMedianValue(boolean includeZeros) {
 		List<Double> list=new ArrayList<>(width*height);
 		for(int i=0;i<width;i++){
 			for(int j=0;j<height;j++){
-				list.add(image[i][j]);
+				if(!includeZeros){
+					if(image[i][j]>0)
+						list.add(image[i][j]);
+				}else
+					list.add(image[i][j]);
 			}
 		}
-		
-		int totalSize=width*height;
+		list.sort(null);
+		int totalSize=list.size();
 		if(totalSize%2==1)
 			return list.get((totalSize+1)/2);
 		else
