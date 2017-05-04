@@ -77,7 +77,9 @@ public class ThresholdingMenu extends Menu {
 					copy = gt.calculateOtsuThreshold();
 					break;
 				case IMAGE_RGB:
-					
+					OtsuThresholding gtColor = new OtsuThresholding((ImageColorRGB) copy);
+					copy = gtColor.calculateOtsuThresholdColor();
+					break;
 				}
 				controller.setSecondaryImage(copy);
 				controller.refreshSecondaryImage();
