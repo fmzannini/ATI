@@ -29,7 +29,8 @@ public class GlobalThresholding {
 
 	public ImageGray calculateGlobalThreshold(int delta) {
 		int t = 0;
-		while (t != 0 && t != 255) {
+		t=getInitialThreshold(img);
+		while (t == 0 || t == 255) {
 			t = (int) (Math.random() * 255);
 		}
 
@@ -71,6 +72,18 @@ public class GlobalThresholding {
 		} while ((t - taux) < delta);
 		System.out.println(t);
 		return img.applyThresholding(t);
+	}
+	
+	private int getInitialThreshold(ImageGray img){
+		int min=255;
+		for (int i = 0; i < img.getWidth(); i++) {
+			for (int j = 0; j < img.getHeight(); j++) {
+				if (img.getPixel(i, j) <min) {
+					min=(int) Math.ceil(img.getPixel(i, j));
+				}
+			}
+		}
+		return min;
 	}
 	
 	public ImageColorRGB calculateGlobalThresholdColor(int delta) {
