@@ -12,4 +12,5 @@
 	<NoiseMenu fx:id="noiseMenu"></NoiseMenu>
 	<MaskMenu fx:id="maskMenu"></MaskMenu>
 	<ThresholdingMenu fx:id="thresholdingMenu"></ThresholdingMenu>
+	<SegmentationMenu fx:id="segmentationMenu"></SegmentationMenu>	
 </fx:root>

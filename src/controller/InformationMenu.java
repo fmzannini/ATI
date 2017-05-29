@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.io.IOException;
 import java.util.Optional;
 
+import controller.utils.MouseSelectionController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -44,8 +45,9 @@ public class InformationMenu extends Menu{
 			public void handle(final ActionEvent event) {
 				// llamada a la función obtener info de la region
 				Image img=controller.getImage();
-				Point origin=controller.getSelectionOrigin();
-				Point dest=controller.getSelectionEnd();
+				MouseSelectionController selectionController=controller.getMouseSelectionController();
+				Point origin=selectionController.getSelectionOrigin();
+				Point dest=selectionController.getSelectionEnd();
 				if(origin==null || dest==null || img==null)
 					return;
 				Image region=img.getRegion(origin, dest);
@@ -77,7 +79,7 @@ public class InformationMenu extends Menu{
 				alert.getDialogPane().setPrefSize(300, 300);
 				alert.showAndWait();
 				
-				controller.resetSelection();
+				selectionController.resetSelection();
 			}
 		});
 		getPixel.setOnAction(new EventHandler<ActionEvent>() {

@@ -43,7 +43,7 @@ public class ImageColorRGB extends ImageColor {
 	}
 
 	@Override
-	public Image getRegion(Point origin, Point end) {
+	public ImageColorRGB getRegion(Point origin, Point end) {
 		return new ImageColorRGB(super.getRegionMatrix(origin, end));
 	}
 

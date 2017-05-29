@@ -22,7 +22,7 @@ public class ATIApplication extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			BorderPane root = FXMLLoader.load(ATIApplication.class.getResource("/view/index.fxml"));
-			Scene scene = new Scene(root, screen.width / 2, 500);
+			Scene scene = new Scene(root, screen.width/* / 2*/*3/4, 500);
 
 //			File f = new File("resources/application.css");
 //			scene.getStylesheets().add("file:///" + f.getAbsolutePath().replace("\\", "/"));

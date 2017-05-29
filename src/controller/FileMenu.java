@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+import controller.utils.MouseSelectionController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -99,8 +100,9 @@ public class FileMenu extends Menu {
 			@Override
 			public void handle(ActionEvent event) {
 				Image img=controller.getImage();
-				Point origin=controller.getSelectionOrigin();
-				Point dest=controller.getSelectionEnd();
+				MouseSelectionController selectionController=controller.getMouseSelectionController();
+				Point origin=selectionController.getSelectionOrigin();
+				Point dest=selectionController.getSelectionEnd();
 				if(origin==null || dest==null || img==null)
 					return;
 				Image region=img.getRegion(origin, dest);
@@ -110,7 +112,7 @@ public class FileMenu extends Menu {
 				File file = fileChooser.showSaveDialog(ATIApplication.primaryStage);
 				saveImage(file,region);
 				
-				controller.resetSelection();
+				selectionController.resetSelection();
 
 			}
 		});

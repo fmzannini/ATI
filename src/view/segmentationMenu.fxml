@@ -1,0 +1,7 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root type="Menu" xmlns:fx="http://javafx.com/fxml" text="Segmentacion">
+	<MenuItem text="LevelSet a la imagen" fx:id="levelSetToImage"/>
+	<MenuItem text="LevelSet a una secuencia" fx:id="levelSetToVideo"/>	
+</fx:root>

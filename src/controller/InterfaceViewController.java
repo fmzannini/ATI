@@ -9,6 +9,8 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import controller.utils.MouseSelectionController;
+import controller.utils.MouseSelectionListener;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -22,7 +24,7 @@ import model.image.Image;
 import model.image.ImageColorRGB;
 import model.image.ImageGray;
 
-public class InterfaceViewController implements Initializable {
+public class InterfaceViewController implements Initializable, MouseSelectionListener {
 
 	@FXML
 	private CustomMenuBar customMenuBar;
@@ -42,26 +44,23 @@ public class InterfaceViewController implements Initializable {
 	private BufferedImage bufImg;
 	private BufferedImage bufSecondaryImg;
 	private BufferedImage bufResultImg;
-	private Selection selection = new Selection();
+	private MouseSelectionController mouseSelectionController = new MouseSelectionController();
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		customMenuBar.initialize(this);
 		mainImage.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent event) {
-				Point click = new Point((int) Math.round(event.getX()), (int) Math.round(event.getY()));
-				selection.click(click);
-				event.consume();
+				mouseSelectionController.mouseClick(event);
 			};
 		});
 		mainImage.setOnMouseMoved(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				Point mousePosition = new Point((int) Math.round(event.getX()), (int) Math.round(event.getY()));
-				selection.mousePosition(mousePosition);
-				event.consume();
+				mouseSelectionController.mouseMoved(event);
 			}
 		});
+		mouseSelectionController.registerListener(this);
 	}
 
 	public void loadImage(File file) {
@@ -117,66 +116,39 @@ public class InterfaceViewController implements Initializable {
 	public Image getResultImage() {
 		return resultImg;
 	}
+
+	public MouseSelectionController getMouseSelectionController() {
+		return mouseSelectionController;
+	}
 	
-	private class Selection {
-		Point firstClick;
-		Point secondClick;
+	public void selectionMoved(Point firstClick, Point endPosition){
+		drawRectangleSelection(firstClick,endPosition);
+	}
+	public void selectionReset(){
+		cleanRectangleSelection();
+	}
+	public void selectionEnd(Point origin,Point end){
+		
+	}
+	
+	private void cleanRectangleSelection() {
+		mainImage.setImage(SwingFXUtils.toFXImage(bufImg, null));
+	}
+	private void drawRectangleSelection(Point firstClick, Point endPosition) {
+		BufferedImage bi = new BufferedImage(bufImg.getWidth(), bufImg.getHeight(), bufImg.getType());
+		bi.setData(bufImg.getData());
+		Graphics2D graphics = (Graphics2D) bi.getGraphics();
+		int minX = Math.min(firstClick.x, endPosition.x);
+		int maxX = Math.max(firstClick.x, endPosition.x);
+		int minY = Math.min(firstClick.y, endPosition.y);
+		int maxY = Math.max(firstClick.y, endPosition.y);
 
-		public void click(Point p) {
-			if (firstClick == null) {
-				firstClick = p;
-			} else if (secondClick == null) {
-				secondClick = p;
-			} else {
-				resetSelection();
-			}
-		}
-
-		public void resetSelection() {
-			firstClick = null;
-			secondClick = null;
-			mainImage.setImage(SwingFXUtils.toFXImage(bufImg, null));
-		}
-
-		public void mousePosition(Point mousePosition) {
-			if (firstClick != null && secondClick == null) {
-				BufferedImage bi = new BufferedImage(bufImg.getWidth(), bufImg.getHeight(), bufImg.getType());
-				bi.setData(bufImg.getData());
-				Graphics2D graphics = (Graphics2D) bi.getGraphics();
-				int minX = Math.min(firstClick.x, mousePosition.x);
-				int maxX = Math.max(firstClick.x, mousePosition.x);
-				int minY = Math.min(firstClick.y, mousePosition.y);
-				int maxY = Math.max(firstClick.y, mousePosition.y);
-
-				graphics.drawRect(minX, minY, maxX - minX, maxY - minY);
-				mainImage.setImage(SwingFXUtils.toFXImage(bi, null));
-			}
-		}
+		graphics.drawRect(minX, minY, maxX - minX, maxY - minY);
+		mainImage.setImage(SwingFXUtils.toFXImage(bi, null));
 	}
 
-	public Point getSelectionOrigin() {
-		if (selection.firstClick == null || selection.secondClick == null)
-			return null;
 
-		int minX = Math.min(selection.firstClick.x, selection.secondClick.x);
-		int minY = Math.min(selection.firstClick.y, selection.secondClick.y);
 
-		return new Point(minX, minY);
-	}
-
-	public Point getSelectionEnd() {
-		if (selection.firstClick == null || selection.secondClick == null)
-			return null;
-
-		int maxX = Math.max(selection.firstClick.x, selection.secondClick.x);
-		int maxY = Math.max(selection.firstClick.y, selection.secondClick.y);
-
-		return new Point(maxX, maxY);
-	}
-
-	public void resetSelection() {
-		selection.resetSelection();
-	}
 
 	public void refreshImage() {
 		bufImg = img.showImage();
@@ -246,5 +218,8 @@ public class InterfaceViewController implements Initializable {
 		}
 
 	}
+
+	
+
 
 }
