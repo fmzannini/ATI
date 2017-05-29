@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import controller.segmentation.ButtonLevelSetToImage;
+import controller.segmentation.ButtonLevelSetToVideo;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -50,13 +51,11 @@ public class SegmentationMenu extends Menu{
 			}
 		});
 		levelSetToVideo.setOnAction(new EventHandler<ActionEvent>() {
-
+			private ButtonLevelSetToImage buttonHandler=new ButtonLevelSetToVideo(controller);
 			@Override
 			public void handle(ActionEvent event) {
-				// TODO Auto-generated method stub
-				
-			}
-		
+				buttonHandler.call();
+			}		
 		});
 
 	}

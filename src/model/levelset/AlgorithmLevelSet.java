@@ -31,7 +31,7 @@ public class AlgorithmLevelSet{
 	protected int[][] getMatrix(){
 		return matrix;
 	}
-	protected LevelSetImage getLevelSetImage(){
+	public LevelSetImage getLevelSetImage(){
 		return levelSetImage;
 	}
 	
@@ -43,6 +43,9 @@ public class AlgorithmLevelSet{
 		return pixelsOut;
 	}
 
+	public int getMaxIterations() {
+		return maxIterations;
+	}
 	public AlgorithmLevelSet(LevelSetImage levelSetImage, Set<Point> pixelsIn, Set<Point> pixelsOut, int maxIterations) {
 		this.pixelsIn=pixelsIn;
 		this.pixelsOut=pixelsOut;

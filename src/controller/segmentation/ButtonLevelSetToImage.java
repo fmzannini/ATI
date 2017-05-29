@@ -16,18 +16,29 @@ import model.levelset.LevelSetImageGray;
 
 public class ButtonLevelSetToImage implements MouseSelectionListener{
 
+	private static final String HEADER_FOR_IMAGE="LevelSet a la imagen";
+	
 	private State currentState = State.INIT;
 	private Point inTopLeft;
 	private Point inBottomRight;
 	private Point outTopLeft;
 	private Point outBottomRight;
 	private InterfaceViewController controller;
+	
+	private String headerText;
+
+	private int maxIterations;
 
 	public ButtonLevelSetToImage(InterfaceViewController controller) {
+		this(controller,HEADER_FOR_IMAGE);
+	}
+	public ButtonLevelSetToImage(InterfaceViewController controller, String headerText) {
 		this.controller = controller;
+		this.headerText=headerText;
 		controller.getMouseSelectionController().registerListener(this);
 	}
 
+	
 	public enum State {
 		INIT, SELECTION_IN, SELECTION_OUT
 	};
@@ -37,25 +48,32 @@ public class ButtonLevelSetToImage implements MouseSelectionListener{
 		if (img == null)
 			return;
 
-		UtilsDialogs.showAlert("LevelSet a la imagen ", "Seleccione un área DENTRO del objeto.");
+		UtilsDialogs.showAlert(headerText, "Seleccione un área DENTRO del objeto.");
 
 		currentState = State.SELECTION_IN;
 	}
 
 
-	private void process() {
+	protected void process() {
 		Image img = controller.getImage();
 		if (img == null)
 			return;
 
 		Image copy = img.copy();
 
-		String[] inputs = UtilsDialogs.getInputs("LevelSet a la imagen ",
-				"Ingrese la máxima cantidad de iteraciones." + "\n Ej:15", ",");
-		if (inputs == null || inputs.length != 1)
+		AlgorithmLevelSet algorithmLevelSet=applyAlgorithmToSingleImage(copy);
+		if(algorithmLevelSet==null)
 			return;
+		
+		controller.setSecondaryImage(copy);
+		controller.refreshSecondaryImage();
+		controller.refreshImage();
+		
 
-		int maxIterations = Integer.parseInt(inputs[0]);
+	}
+
+	protected AlgorithmLevelSet applyAlgorithmToSingleImage(Image copy){
+
 
 		LevelSetImage levelSetImage = null;
 		switch (copy.getType()) {
@@ -77,18 +95,14 @@ public class ButtonLevelSetToImage implements MouseSelectionListener{
 
 		markResults(copy, algorithmLevelSet.getPixelsIn(), algorithmLevelSet.getPixelsOut());
 
-		controller.setSecondaryImage(copy);
-		controller.refreshSecondaryImage();
-		controller.refreshImage();
-
+		return algorithmLevelSet;
 	}
-
 	private static final double MARK_GRAY_IN = 0;
 	private static final double MARK_GRAY_OUT = 255;
 	private static final double[] MARK_RGB_IN = { 255, 128, 0 };
 	private static final double[] MARK_RGB_OUT = { 0, 128, 255 };
 
-	private void markResults(Image copy, Set<Point> pixelsIn, Set<Point> pixelsOut) {
+	protected void markResults(Image copy, Set<Point> pixelsIn, Set<Point> pixelsOut) {
 		switch (copy.getType()) {
 		case IMAGE_GRAY:
 			ImageGray imgGray = (ImageGray) copy;
@@ -129,7 +143,7 @@ public class ButtonLevelSetToImage implements MouseSelectionListener{
 				inTopLeft = origin;
 				inBottomRight = end;
 		
-				UtilsDialogs.showAlert("LevelSet a la imagen ", "Seleccione un área FUERA del objeto.");
+				UtilsDialogs.showAlert(headerText, "Seleccione un área FUERA del objeto.");
 				currentState = State.SELECTION_OUT;
 				controller.getMouseSelectionController().resetSelection();
 				break;
@@ -138,8 +152,15 @@ public class ButtonLevelSetToImage implements MouseSelectionListener{
 				outBottomRight = end;
 
 				controller.getMouseSelectionController().resetSelection();
-				process();
 				currentState = State.INIT;
+				
+				String[] inputs = UtilsDialogs.getInputs(headerText,
+						"Ingrese la máxima cantidad de iteraciones." + "\n Ej:15", ",");
+				if (inputs == null || inputs.length != 1)
+					return ;
+
+				this.maxIterations = Integer.parseInt(inputs[0]);
+				process();
 				break;
 		}
 	}

@@ -13,6 +13,14 @@ public class LevelSetImageGray extends LevelSetImage {
 	private double meanColorObject;
 	private double meanColorBackground;
 	
+	public double getMeanColorObject() {
+		return meanColorObject;
+	}
+
+	public double getMeanColorBackground() {
+		return meanColorBackground;
+	}
+
 	public LevelSetImageGray(ImageGray img, Point topLeft,Point bottomRight, ImageGray regionOut) {
 		super(img);
 		this.img=img;
@@ -22,7 +30,13 @@ public class LevelSetImageGray extends LevelSetImage {
 		this.meanColorBackground=regionOut.getMeanValuePixels();
 	}
 	
-	
+	public LevelSetImageGray(ImageGray img, double meanColorObject, double meanColorBackground ){
+		super(img);
+		this.img=img;
+		
+		this.meanColorObject=meanColorObject;
+		this.meanColorBackground=meanColorBackground;
+	}
 
 	@Override
 	public double calculateFd(Point p) {

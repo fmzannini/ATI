@@ -10,6 +10,13 @@ public class LevelSetImageColorRGB extends LevelSetImage {
 	private double[] meanColorObject;
 	private double[] meanColorBackground;
 	
+	public double[] getMeanColorObject() {
+		return meanColorObject;
+	}
+	public double[] getMeanColorBackground() {
+		return meanColorBackground;
+	}
+
 	public LevelSetImageColorRGB(ImageColorRGB img, Point topLeft,Point bottomRight, ImageColorRGB regionOut) {
 		super(img);
 		this.img=img;
@@ -19,6 +26,13 @@ public class LevelSetImageColorRGB extends LevelSetImage {
 		this.meanColorBackground=regionOut.getMeanValuePixels();
 	}
 	
+	public LevelSetImageColorRGB(ImageColorRGB img,	double[] meanColorObject, double[] meanColorBackground){
+		super(img);
+		this.img=img;
+		
+		this.meanColorObject=meanColorObject;
+		this.meanColorBackground=meanColorBackground;
+	}
 	
 
 	@Override
