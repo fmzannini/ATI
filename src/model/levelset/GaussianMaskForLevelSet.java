@@ -7,12 +7,13 @@ public class GaussianMaskForLevelSet{
 	public static final int SIZE_WINDOW=5;
 
 	private static final double SIGMA=1;
-	private double[][] weights;
-	private ScrollableWindowRepeatForLevelSet scroll;
+	private static final ScrollableWindowRepeatForLevelSet SCROLL=new ScrollableWindowRepeatForLevelSet(SIZE_WINDOW, SIZE_WINDOW);;
+	private static final double[][] WEIGHTS=generateWeights(SCROLL, SIGMA);
 	
-	public GaussianMaskForLevelSet() {
-		this.scroll=new ScrollableWindowRepeatForLevelSet(SIZE_WINDOW, SIZE_WINDOW);
-		this.weights=generateWeights(scroll, SIGMA);
+	private int[][] matrix;
+	
+	public GaussianMaskForLevelSet(int[][] matrix) {
+		this.matrix=matrix;
 	}
 	
 	
@@ -40,13 +41,13 @@ public class GaussianMaskForLevelSet{
 	
 	
 
-	public double applyMask(int[][] matrix, Point center){
-		double[][] region=this.scroll.nextRegion(matrix, center);
+	public double applyMask(Point center){
+		double[][] region=SCROLL.nextRegion(matrix, center);
 		
 		double value = 0.0;
 		for (int i = 0; i < region.length; i++) {
 			for (int j = 0; j < region[0].length; j++) {
-				value += region[i][j] * this.weights[i][j];
+				value += region[i][j] * WEIGHTS[i][j];
 			}
 		}
 		return value;		

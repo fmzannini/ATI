@@ -1,14 +1,28 @@
 package model.levelset;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 public class AlgorithmLevelSet{
+	
+	private static final Condition CONDITION_FOR_CLEAN_PIXELS_OUT=new Condition() {
+		@Override
+		public boolean evaluateCondition(double value) {
+			return value<0;
+		}
+	};
+
+	private static final Condition CONDITION_FOR_CLEAN_PIXELS_IN=new Condition() {		
+		@Override
+		public boolean evaluateCondition(double value) {
+			return value>0;
+		}
+	};
+
 	
 	private static final int PIXEL_OBJECT = -3;
 	private static final int PIXEL_IN = -1;
@@ -21,8 +35,8 @@ public class AlgorithmLevelSet{
 
 	private int matrix[][];
 
-	private Set<Point> pixelsIn;
-	private Set<Point> pixelsOut;
+	private List<Point> pixelsIn;
+	private List<Point> pixelsOut;
 
 	
 	private int maxIterations;
@@ -36,17 +50,17 @@ public class AlgorithmLevelSet{
 	}
 	
 	
-	public Set<Point> getPixelsIn() {
+	public List<Point> getPixelsIn() {
 		return pixelsIn;
 	}
-	public Set<Point> getPixelsOut() {
+	public List<Point> getPixelsOut() {
 		return pixelsOut;
 	}
 
 	public int getMaxIterations() {
 		return maxIterations;
 	}
-	public AlgorithmLevelSet(LevelSetImage levelSetImage, Set<Point> pixelsIn, Set<Point> pixelsOut, int maxIterations) {
+	public AlgorithmLevelSet(LevelSetImage levelSetImage, List<Point> pixelsIn, List<Point> pixelsOut, int maxIterations) {
 		this.pixelsIn=pixelsIn;
 		this.pixelsOut=pixelsOut;
 		this.maxIterations=maxIterations;
@@ -57,8 +71,8 @@ public class AlgorithmLevelSet{
 
 	
 	public AlgorithmLevelSet(LevelSetImage levelSetImage, Point topLeft, Point bottomRight, int maxIterations) {
-		this.pixelsIn=new HashSet<Point>();
-		this.pixelsOut=new HashSet<Point>();
+		this.pixelsIn=new LinkedList<Point>();
+		this.pixelsOut=new LinkedList<Point>();
 		this.maxIterations=maxIterations;
 		this.levelSetImage=levelSetImage;
 		
@@ -72,16 +86,16 @@ public class AlgorithmLevelSet{
 		setPixelsRow(pixelsIn,topLeft.x,bottomRight.x,topLeft.y); //Borde superior
 		setPixelsRow(pixelsIn,topLeft.x,bottomRight.x,bottomRight.y); //Borde inferior
 		
-		setPixelsCol(pixelsIn,topLeft.x,topLeft.y,bottomRight.y); //Borde izquierdo
-		setPixelsCol(pixelsIn,bottomRight.x,topLeft.y,bottomRight.y); //Borde derecho
+		setPixelsCol(pixelsIn,topLeft.x,topLeft.y+1,bottomRight.y-1); //Borde izquierdo //+-1 para evitar repetir las esquinas
+		setPixelsCol(pixelsIn,bottomRight.x,topLeft.y+1,bottomRight.y-1); //Borde derecho //+-1 para evitar repetir las esquinas
 
 		
 		//Pixels Out
 		setPixelsRow(pixelsOut,topLeft.x-1,bottomRight.x+1,topLeft.y-1); //Borde superior
 		setPixelsRow(pixelsOut,topLeft.x-1,bottomRight.x+1,bottomRight.y+1); //Borde inferior
 
-		setPixelsCol(pixelsOut,topLeft.x-1,topLeft.y-1,bottomRight.y+1); //Borde izquierdo
-		setPixelsCol(pixelsOut,bottomRight.x+1,topLeft.y-1,bottomRight.y+1); //Borde derecho
+		setPixelsCol(pixelsOut,topLeft.x-1,topLeft.y-1+1,bottomRight.y+1-1); //Borde izquierdo //el segundo +-1 para evitar repetir las esquinas
+		setPixelsCol(pixelsOut,bottomRight.x+1,topLeft.y-1+1,bottomRight.y+1-1); //Borde derecho //el segundo +-1 para evitar repetir las esquinas
 
 	}
 
@@ -137,32 +151,10 @@ public class AlgorithmLevelSet{
 		
 	}
 	
-/*	private void generateMatrix() {
-		int imgWidth=levelSetImage.getWidth();
-		int imgHeight=levelSetImage.getHeight();
-		this.matrix=new int[imgWidth][imgHeight];
-		for(int i=0;i<imgWidth;i++){
-			for(int j=0;j<imgHeight;j++){
-				double fdValue=levelSetImage.calculateFd(new Point(i, j));
-				if(fdValue>0){
-					this.matrix[i][j]=PIXEL_OBJECT;
-				}else{
-					this.matrix[i][j]=PIXEL_BACKGROUND;					
-				}
-			}
-		}
-		
-		for(Point p:this.pixelsIn){
-			this.matrix[p.x][p.y]=PIXEL_IN;
-		}
-		for(Point p:this.pixelsOut){
-			this.matrix[p.x][p.y]=PIXEL_OUT;
-		}
-	}*/
 
-	private void updatePixels(Set<Point> pointsOfBoundToUpdate, int[][] matrix, Set<Point> pointsOfBoundToAdd, int valueForReplace, int valueForMatrix, int valueForBound, CycleLevelSet cycleLevelSet, Condition condition){
+	private void updatePixels(List<Point> pointsOfBoundToUpdate, int[][] matrix, List<Point> pointsOfBoundToAdd, int valueForReplace, int valueForMatrix, int valueForBound, CycleLevelSet cycleLevelSet, Condition condition){
 		Iterator<Point> iterPixelsToUpdate=pointsOfBoundToUpdate.iterator();
-		Set<Point> newsPixelsToAddToSetUpdate=new HashSet<Point>();
+		List<Point> newsPixelsToAddToSetUpdate=new ArrayList<Point>();
 		while(iterPixelsToUpdate.hasNext()){
 			Point p=iterPixelsToUpdate.next();
 			double value=cycleLevelSet.calculateValue(p);
@@ -173,20 +165,21 @@ public class AlgorithmLevelSet{
 				List<Point> neighbors=getFourNeighbors(p);
 				for(Point neighbor:neighbors){
 					if(matrix[neighbor.x][neighbor.y]==valueForMatrix){
-						newsPixelsToAddToSetUpdate.add(neighbor);
+						newsPixelsToAddToSetUpdate.add(neighbor); // se posterga el agregado a la lista porque el iterador no permite el cambio.
+						matrix[neighbor.x][neighbor.y]=valueForBound; //se actualiza la matriz ahora para evitar repetidos
+
 					}
 				}
 			}
 		}
 		for(Point p:newsPixelsToAddToSetUpdate){
 			pointsOfBoundToUpdate.add(p);
-			matrix[p.x][p.y]=valueForBound;
 		}
 		
 		
 	}
 	
-	private void cleanPixels(Set<Point> setToClean, int[][] matrix, int valueForMatrix,Condition condition){
+	private void cleanPixels(List<Point> setToClean, int[][] matrix, int valueForMatrix,Condition condition){
 		Iterator<Point> iterPixelsToClean=setToClean.iterator();
 		while(iterPixelsToClean.hasNext()){
 			Point p=iterPixelsToClean.next();
@@ -205,33 +198,21 @@ public class AlgorithmLevelSet{
 		}				
 	}
 	
+	
+	
 	public void apply(){
 		do{
 			//first cycle
-			//while(!isEnd() && iterations<maxIterations){
 			int maxIterationsFirstCycle=Math.max(levelSetImage.getWidth(), levelSetImage.getHeight());
 			for(int i=0;i<maxIterationsFirstCycle && !isEnd();i++){
-				applyCycle(new CycleLevelSet() {
-					
-					@Override
-					public double calculateValue(Point p) {
-						return AlgorithmLevelSet.this.getLevelSetImage().calculateFd(p);
-					}
-				});
+				applyCycle(new FirstCycleLevelSet(this));
 			}
 
 			//second cycle
 			for(int i=0;i<GaussianMaskForLevelSet.SIZE_WINDOW;i++){
-				applyCycle(new CycleLevelSet() {
-					private GaussianMaskForLevelSet gaussianMask=new GaussianMaskForLevelSet();
-					
-					
-					@Override
-					public double calculateValue(Point p) {
-						return gaussianMask.applyMask(AlgorithmLevelSet.this.getMatrix(), p);
-					}
-				});				
+				applyCycle(new SecondCycleLevelSet(this));				
 			}
+			
 			iterations++;
 		} while(!isEnd() && iterations<maxIterations);
 		
@@ -247,47 +228,22 @@ public class AlgorithmLevelSet{
 	
 	protected void updatePixelsOut(CycleLevelSet cycleLevelSet){
 		updatePixels(pixelsOut, matrix, pixelsIn,PIXEL_IN, PIXEL_BACKGROUND, PIXEL_OUT, cycleLevelSet,
-				new Condition() {
-					
-					@Override
-					public boolean evaluateCondition(double value) {
-						return value>0;
-					}
-				});
+				cycleLevelSet.getConditionForUpdatePixelsOut());
 	}
-	
 	
 	protected void cleanPixelsIn(){
 		cleanPixels(pixelsIn, matrix, PIXEL_OBJECT,
-				new Condition() {
-					
-					@Override
-					public boolean evaluateCondition(double value) {
-						return value>0;
-					}
-				});
+				CONDITION_FOR_CLEAN_PIXELS_IN);
 	}
 
 	protected void updatePixelsIn(CycleLevelSet cycleLevelSet) {
 		updatePixels(pixelsIn, matrix, pixelsOut,PIXEL_OUT, PIXEL_OBJECT, PIXEL_IN, cycleLevelSet,
-				new Condition() {
-					
-					@Override
-					public boolean evaluateCondition(double value) {
-						return value<0;
-					}
-				});
+				cycleLevelSet.getConditionForUpdatePixelsIn());
 	}
 	
 	protected void cleanPixelsOut(){
 		cleanPixels(pixelsOut, matrix, PIXEL_BACKGROUND, 
-				new Condition() {
-					
-					@Override
-					public boolean evaluateCondition(double value) {
-						return value<0;
-					}
-				});
+				CONDITION_FOR_CLEAN_PIXELS_OUT);
 	}
 
 	protected boolean isEnd() {

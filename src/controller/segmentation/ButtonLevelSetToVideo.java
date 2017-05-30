@@ -1,6 +1,7 @@
 package controller.segmentation;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -10,11 +11,7 @@ import java.util.regex.Pattern;
 import controller.ATIApplication;
 import controller.InterfaceViewController;
 import controller.utils.UtilsDialogs;
-import javafx.animation.PauseTransition;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.stage.FileChooser;
-import javafx.util.Duration;
 import model.image.Image;
 import model.image.ImageColorRGB;
 import model.image.ImageGray;
@@ -47,7 +44,11 @@ public class ButtonLevelSetToVideo extends ButtonLevelSetToImage {
 		fileChooser.setTitle("Open Resource File");
 		files = fileChooser.showOpenMultipleDialog(ATIApplication.primaryStage);
 		
-	/*	files.sort(new Comparator<File>() {
+		List<File> listFiles=files;
+	 	List<File> files=new ArrayList<File>();
+	  	for(File f:listFiles)
+	  		files.add(f);
+	  	files.sort(new Comparator<File>() {
 			@Override
 			public int compare(File o1, File o2) {
 				int number1=extractNumber(o1);
@@ -66,7 +67,12 @@ public class ButtonLevelSetToVideo extends ButtonLevelSetToImage {
 				int number=Integer.parseInt(group);
 				return number;
 			}
-		});*/
+		});
+	  	
+	  	for(File f:files)
+	  		System.out.println("File: "+f.getName());
+	  	
+	  	
 		iterFiles=files.iterator();
 		
 		if(!iterFiles.hasNext())
@@ -111,6 +117,7 @@ public class ButtonLevelSetToVideo extends ButtonLevelSetToImage {
 			@Override
 			public void run() {
 				int numFrame=1;
+				long acumTime=0;
 				AlgorithmLevelSet algorithmLevelSet=firstApplication();
 
 				if(algorithmLevelSet==null)
@@ -138,6 +145,7 @@ public class ButtonLevelSetToVideo extends ButtonLevelSetToImage {
 					long timeEnd=System.nanoTime();
 					long elapsedTime=timeEnd-timeInit;
 					System.out.println("Time for process algorithm frame "+numFrame+": "+(elapsedTime*NANO_TO_MS)+"ms");
+					acumTime+=elapsedTime;
 					long diffTimeFrame=timeFrame-elapsedTime;
 
 					controller.setMainImage(copy);
@@ -152,6 +160,7 @@ public class ButtonLevelSetToVideo extends ButtonLevelSetToImage {
 						}
 					numFrame++;
 				}
+				System.out.println("Mean time for process algorithm: "+((((double)acumTime)/numFrame)*NANO_TO_MS)+"ms");
 				
 			}
 		};

@@ -1,7 +1,7 @@
 package controller.segmentation;
 
 import java.awt.Point;
-import java.util.Set;
+import java.util.List;
 
 import controller.InterfaceViewController;
 import controller.utils.MouseSelectionListener;
@@ -102,7 +102,7 @@ public class ButtonLevelSetToImage implements MouseSelectionListener{
 	private static final double[] MARK_RGB_IN = { 255, 128, 0 };
 	private static final double[] MARK_RGB_OUT = { 0, 128, 255 };
 
-	protected void markResults(Image copy, Set<Point> pixelsIn, Set<Point> pixelsOut) {
+	protected void markResults(Image copy, List<Point> pixelsIn, List<Point> pixelsOut) {
 		switch (copy.getType()) {
 		case IMAGE_GRAY:
 			ImageGray imgGray = (ImageGray) copy;

@@ -51,7 +51,7 @@ public class SegmentationMenu extends Menu{
 			}
 		});
 		levelSetToVideo.setOnAction(new EventHandler<ActionEvent>() {
-			private ButtonLevelSetToImage buttonHandler=new ButtonLevelSetToVideo(controller);
+			private ButtonLevelSetToVideo buttonHandler=new ButtonLevelSetToVideo(controller);
 			@Override
 			public void handle(ActionEvent event) {
 				buttonHandler.call();
