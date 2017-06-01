@@ -69,7 +69,7 @@ public class Mask {
 			scroll.updateCurrentCenter(newPixel);
 		}
 		double[] redPixel = {255.0, 0.0, 0.0};
-		double[] bluePixel = {0.0, 0.0, 255.0};
+		double[] bluePixel = {0.0, 255.0, 0.0};
 		for (Point p: map.get(true)) {
 			colorResult.setPixel(new Point((int) p.getX(), (int) p.getY()), redPixel);
 		}
