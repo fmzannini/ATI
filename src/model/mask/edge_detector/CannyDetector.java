@@ -48,6 +48,9 @@ public class CannyDetector {
 		double t1 = calculateT1(imgWithMaskMatrix);
 		double t2 = calculateT2(imgWithMaskMatrix);
 		
+//		double t1 = 60;
+//		double t2 = 100;
+		
 		System.out.println(t1 + "   " + t2);
 		List<Point> pendingPoints = new LinkedList<Point>();
 		for (int i = 0; i < sobelMatrix.length; i++) {
@@ -134,7 +137,7 @@ public class CannyDetector {
 		double mean = getMean(values);
 		double aux = 0;
 		for (double a : values) {
-			aux += ((mean - a) * (mean - a));
+			aux += ((a - mean) * (a - mean));
 		}
 		return Math.sqrt(aux / values.length);
 	}
