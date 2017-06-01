@@ -153,5 +153,17 @@ public class ImageColorRGB extends ImageColor {
 			}
 		}
 	}
+	
+	public void setRegion(ImageColorRGB region, Point origin) {
+		int width = region.getWidth();
+		int height = region.getHeight();
+		double[][][] pixels = region.getImage();
+
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				this.setPixel(origin.x + i, origin.y + j, pixels[i][j]);
+			}
+		}
+	}
 
 }

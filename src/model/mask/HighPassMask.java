@@ -2,13 +2,13 @@ package model.mask;
 
 public class HighPassMask extends Mask {
 	
-	private static double[][] WEIGHTS_3=new double[][]{
+	private static double[][] WEIGHTS_3 = new double[][]{
 		{-1,-1,-1},
 		{-1, 8,-1},
 		{-1,-1,-1}
 	};
 	
-	private static double[][] WEIGHTS_5=new double[][]{
+	private static double[][] WEIGHTS_5 = new double[][]{
 		{-1,-1,-1,-1,-1},
 		{-1, 0, 1, 0,-1},
 		{-1, 1,12, 1,-1},
