@@ -19,6 +19,10 @@ public class Param {
 
 	private double[] generateValues() {
 		int length=(int) ((maxValue-minValue)/step)+1;
+		
+		if(minValue+length*step>=maxValue) // no incluir el extremo derecho
+			length--;
+		
 		double[] values=new double[length];
 		for(int i=0;i<length;i++){
 			values[i]=minValue+i*step;

@@ -16,7 +16,7 @@ public class HoughTransform {
 	private Equation2D equation;
 	private Param[] params;
 	
-	private Map<Double[],Integer> votesMatrix;
+	private Map<List<Double>,Integer> votesMatrix;
 
 	private List<Point> whitePoints;
 	
@@ -32,14 +32,17 @@ public class HoughTransform {
 	}
 	
 	private void initializeVotesMatrix(){
-		votesMatrix=new HashMap<Double[],Integer>();
+		votesMatrix=new HashMap<List<Double>,Integer>();
 		int[] indexes=new int[params.length];
 		for(int i=0;i<indexes.length;i++)
 			indexes[i]=0;
 		
 		do{
 			Double[] paramsValue=getParamsValues(indexes);
-			votesMatrix.put(paramsValue, 0);
+			List<Double> params=new ArrayList<Double>();
+			for(int i=0;i<paramsValue.length;i++)
+				params.add(paramsValue[i]);
+			votesMatrix.put(params, 0);
 		}while((indexes=nextParamsIndexes(indexes))!=null);
 	}
 	
@@ -50,6 +53,8 @@ public class HoughTransform {
 				indexes[i]=0;
 			else if(i==0 && indexes[i]>=params[i].getLength())
 				return null;
+			else
+				break;
 		}
 		return indexes;
 	}
@@ -83,11 +88,11 @@ public class HoughTransform {
 	}
 	
 	private void computateVotes(){
-		for(Double[] paramsValue: votesMatrix.keySet()){
+		for(List<Double> paramsValue: votesMatrix.keySet()){
 			int qty=votesMatrix.get(paramsValue);
-			double[] paramsValueUnBox=new double[paramsValue.length];
+			double[] paramsValueUnBox=new double[paramsValue.size()];
 			for(int i=0;i<paramsValueUnBox.length;i++)
-				paramsValueUnBox[i]=paramsValue[i];
+				paramsValueUnBox[i]=paramsValue.get(i);
 			for(Point point:whitePoints){
 				if(equation.isSolve(paramsValueUnBox, point)){
 					qty++;
@@ -106,9 +111,14 @@ public class HoughTransform {
 		}
 		
 		List<Double[]> ans=new ArrayList<Double[]>();
-		for(Entry<Double[],Integer> entry: votesMatrix.entrySet()){
-			if(entry.getValue()>=0.8*maxVotes)
-				ans.add(entry.getKey());
+		for(Entry<List<Double>,Integer> entry: votesMatrix.entrySet()){
+			if(entry.getValue()>=0.8*maxVotes){
+				List<Double> list=entry.getKey();
+				Double[] array=new Double[list.size()];
+				for(int i=0;i<array.length;i++)
+					array[i]=list.get(i);
+				ans.add(array);
+			}
 		}
 		
 		return ans;

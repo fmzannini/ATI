@@ -2,6 +2,9 @@
 <?import javafx.scene.layout.*?>
 
 <fx:root type="Menu" xmlns:fx="http://javafx.com/fxml" text="Segmentacion">
+	<MenuItem text="Transformada Hough Rectas" fx:id="houghTransformRects"/>
+	<MenuItem text="Transformada Hough Círculo" fx:id="houghTransformCircle"/>
+	
 	<MenuItem text="LevelSet a la imagen" fx:id="levelSetToImage"/>
 	<MenuItem text="LevelSet a una secuencia" fx:id="levelSetToVideo"/>	
 </fx:root>
