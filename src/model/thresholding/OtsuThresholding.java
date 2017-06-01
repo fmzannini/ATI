@@ -56,7 +56,7 @@ public class OtsuThresholding {
 					/ (cumulativeSum[i] * (1 - cumulativeSum[i]));
 			maxDeviation = maxDeviation < deviation[i] ? deviation[i] : maxDeviation;
 		}
-		
+
 		int otsuThreshold = 0;
 		int count = 0;
 		for (int i = 0; i < deviation.length; i++) {
@@ -66,11 +66,11 @@ public class OtsuThresholding {
 			}
 		}
 		otsuThreshold = (int) (otsuThreshold / count + 0.5);
-		
+
 		System.out.println(otsuThreshold);
 		return img.applyThresholding((int) (otsuThreshold));
 	}
-	
+
 	public ImageColorRGB calculateOtsuThresholdColor() {
 		double[][] pi = new double[256][3];
 		for (int i = 0; i < imgRGB.getWidth(); i++) {
@@ -110,19 +110,25 @@ public class OtsuThresholding {
 		double[][] deviation = new double[256][3];
 		double[] maxDeviation = new double[3];
 		for (int i = 0; i < pi.length; i++) {
-			deviation[i][RED_BAND] = Math.pow(globalMean[RED_BAND] * cumulativeSum[i][RED_BAND] - cumulativeMean[i][RED_BAND], 2)
+			deviation[i][RED_BAND] = Math
+					.pow(globalMean[RED_BAND] * cumulativeSum[i][RED_BAND] - cumulativeMean[i][RED_BAND], 2)
 					/ (cumulativeSum[i][RED_BAND] * (1 - cumulativeSum[i][RED_BAND]));
-			maxDeviation[RED_BAND] = maxDeviation[RED_BAND] < deviation[i][RED_BAND] ? deviation[i][RED_BAND] : maxDeviation[RED_BAND];
-			
-			deviation[i][GREEN_BAND] = Math.pow(globalMean[GREEN_BAND] * cumulativeSum[i][GREEN_BAND] - cumulativeMean[i][GREEN_BAND], 2)
+			maxDeviation[RED_BAND] = maxDeviation[RED_BAND] < deviation[i][RED_BAND] ? deviation[i][RED_BAND]
+					: maxDeviation[RED_BAND];
+
+			deviation[i][GREEN_BAND] = Math
+					.pow(globalMean[GREEN_BAND] * cumulativeSum[i][GREEN_BAND] - cumulativeMean[i][GREEN_BAND], 2)
 					/ (cumulativeSum[i][GREEN_BAND] * (1 - cumulativeSum[i][GREEN_BAND]));
-			maxDeviation[GREEN_BAND] = maxDeviation[GREEN_BAND] < deviation[i][GREEN_BAND] ? deviation[i][GREEN_BAND] : maxDeviation[GREEN_BAND];
-			
-			deviation[i][BLUE_BAND] = Math.pow(globalMean[BLUE_BAND] * cumulativeSum[i][BLUE_BAND] - cumulativeMean[i][BLUE_BAND], 2)
+			maxDeviation[GREEN_BAND] = maxDeviation[GREEN_BAND] < deviation[i][GREEN_BAND] ? deviation[i][GREEN_BAND]
+					: maxDeviation[GREEN_BAND];
+
+			deviation[i][BLUE_BAND] = Math
+					.pow(globalMean[BLUE_BAND] * cumulativeSum[i][BLUE_BAND] - cumulativeMean[i][BLUE_BAND], 2)
 					/ (cumulativeSum[i][BLUE_BAND] * (1 - cumulativeSum[i][BLUE_BAND]));
-			maxDeviation[BLUE_BAND] = maxDeviation[BLUE_BAND] < deviation[i][BLUE_BAND] ? deviation[i][BLUE_BAND] : maxDeviation[BLUE_BAND];
+			maxDeviation[BLUE_BAND] = maxDeviation[BLUE_BAND] < deviation[i][BLUE_BAND] ? deviation[i][BLUE_BAND]
+					: maxDeviation[BLUE_BAND];
 		}
-		
+
 		int[] otsuThreshold = new int[3];
 		int[] count = new int[3];
 		for (int i = 0; i < 256; i++) {
@@ -142,8 +148,57 @@ public class OtsuThresholding {
 		otsuThreshold[RED_BAND] = (int) (otsuThreshold[RED_BAND] / count[RED_BAND] + 0.5);
 		otsuThreshold[GREEN_BAND] = (int) (otsuThreshold[GREEN_BAND] / count[GREEN_BAND] + 0.5);
 		otsuThreshold[BLUE_BAND] = (int) (otsuThreshold[BLUE_BAND] / count[BLUE_BAND] + 0.5);
-		
+
 		System.out.println(otsuThreshold);
 		return imgRGB.applyThresholding(otsuThreshold[RED_BAND], otsuThreshold[GREEN_BAND], otsuThreshold[BLUE_BAND]);
+	}
+
+	public int getOtsuThreshold() {
+		double[] pi = new double[256];
+		for (int i = 0; i < img.getWidth(); i++) {
+			for (int j = 0; j < img.getHeight(); j++) {
+				pi[(int) img.getPixel(i, j)]++;
+			}
+		}
+
+		int pixelAmount = img.getWidth() * img.getHeight();
+		for (int i = 0; i < pi.length; i++) {
+			pi[i] = pi[i] / pixelAmount;
+		}
+
+		double[] cumulativeSum = new double[256];
+		for (int i = 1; i < cumulativeSum.length; i++) {
+			cumulativeSum[i] = pi[i] + cumulativeSum[i - 1];
+		}
+
+		double[] cumulativeMean = new double[256];
+		for (int i = 1; i < cumulativeMean.length; i++) {
+			cumulativeMean[i] = cumulativeMean[i - 1] + pi[i] * i;
+		}
+
+		double globalMean = 0.0;
+		for (int i = 0; i < pi.length; i++) {
+			globalMean += pi[i] * i;
+		}
+
+		double[] deviation = new double[256];
+		double maxDeviation = 0.0;
+		for (int i = 0; i < pi.length; i++) {
+			deviation[i] = Math.pow(globalMean * cumulativeSum[i] - cumulativeMean[i], 2)
+					/ (cumulativeSum[i] * (1 - cumulativeSum[i]));
+			maxDeviation = maxDeviation < deviation[i] ? deviation[i] : maxDeviation;
+		}
+
+		int otsuThreshold = 0;
+		int count = 0;
+		for (int i = 0; i < deviation.length; i++) {
+			if (deviation[i] == maxDeviation) {
+				otsuThreshold += i;
+				count++;
+			}
+		}
+		otsuThreshold = (int) (otsuThreshold / count + 0.5);
+		
+		return otsuThreshold;
 	}
 }

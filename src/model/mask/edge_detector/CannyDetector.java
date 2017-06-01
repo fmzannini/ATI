@@ -12,6 +12,7 @@ import model.mask.ScrollableWindowRepeat;
 import model.mask.edge_detector.gradient.SobelOp;
 import model.mask.edge_detector.gradient.SobelOpX;
 import model.mask.edge_detector.gradient.SobelOpY;
+import model.thresholding.OtsuThresholding;
 import utils.LinearTransformation;
 
 public class CannyDetector {
@@ -22,20 +23,21 @@ public class CannyDetector {
 		ImageGray imgWithMask = gm.applyMask();
 		double[][] imgWithMaskMatrix = imgWithMask.getImage();
 
-		// sobel con normalización de imagen
-		SobelOp sobel = new SobelOp();
-		ImageGray sobelImage = (ImageGray) sobel.apply((ImageGray) imgWithMask.copy());
-		sobelImage = LinearTransformation.grayImage(sobelImage);
-		double[][] sobelMatrix = sobelImage.getImage();
-
+//		// sobel con normalización de imagen
+//		SobelOp sobel = new SobelOp();
+//		ImageGray sobelImage = (ImageGray) sobel.apply((ImageGray) imgWithMask.copy());
+//		double[][] sobelMatrix = sobelImage.getImage();
+		
 		// derivadas direccionales por cada pixel en x y en y con la imagen pre
 		// sobel
 		SobelOpX sobelX = new SobelOpX(new ScrollableWindowRepeat(imgWithMask, 3, 3));
-		SobelOpY sobelY = new SobelOpY(new ScrollableWindowRepeat(imgWithMask, 3, 3));
+		SobelOpY sobelY = new SobelOpY(new ScrollableWindowRepeat(imgWithMask, 3, 3));		
 
 		double[][] dx = sobelX.applyMaskWithoutTransformation();
 		double[][] dy = sobelY.applyMaskWithoutTransformation();
 
+		double[][] sobelMatrix = computeSobelMatrix(dx, dy);
+		
 		// supresión de no máximos
 		for (int i = 1; i < imgWithMaskMatrix.length - 1; i++) {
 			for (int j = 1; j < imgWithMaskMatrix[0].length - 1; j++) {
@@ -47,9 +49,6 @@ public class CannyDetector {
 		// umbralización con histéresis
 		double t1 = calculateT1(imgWithMaskMatrix);
 		double t2 = calculateT2(imgWithMaskMatrix);
-		
-//		double t1 = 60;
-//		double t2 = 100;
 		
 		System.out.println(t1 + "   " + t2);
 		List<Point> pendingPoints = new LinkedList<Point>();
@@ -72,12 +71,13 @@ public class CannyDetector {
 			while (it.hasNext()) {
 				Point p = it.next();
 				if (hasToBeChanged(sobelMatrix, (int) p.getX(), (int) p.getY())) {
-					it.remove();
 					wasModified = true;
 					sobelMatrix[(int)p.getX()][(int)p.getY()] = 255;
+					it.remove();
 				}
 			}
 		}
+		
 		System.out.println("----\n" + pendingPoints.size());
 		for (Point p: pendingPoints) {
 			sobelMatrix[(int)p.getX()][(int)p.getY()] = 0;
@@ -189,6 +189,16 @@ public class CannyDetector {
 			}
 		}
 		return false;
+	}
+	
+	public double[][] computeSobelMatrix(double[][] dx, double[][] dy) {
+		double[][] result = new double[dx.length][dx[0].length];
+		for (int i = 0; i < dx.length; i++) {
+			for (int j = 0; j < dx[0].length; j++) {
+				result[i][j] = Math.hypot(dx[i][j], dy[i][j]);
+			}
+		}
+		return result;
 	}
 
 }

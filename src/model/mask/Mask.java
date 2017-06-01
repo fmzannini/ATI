@@ -91,10 +91,6 @@ public class Mask {
 		}
 		
 		double s = 1 - ((double) k) / 37.0;
-//		double[] originalPixel = new double[3];
-//		originalPixel[0] = region[center.x][center.y];
-//		originalPixel[1] = region[center.x][center.y];
-//		originalPixel[2] = region[center.x][center.y];
 		
 		if (s >= 0.375 && s < 0.625) {
 			map.get(true).add(new Point(p.x, p.y));
