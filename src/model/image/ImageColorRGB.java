@@ -28,6 +28,22 @@ public class ImageColorRGB extends ImageColor {
 		}
 
 	}
+	public ImageColorRGB(ImageGray image) {
+		this(image.getWidth(), image.getHeight());
+		int width = this.getWidth();
+		int height = this.getHeight();
+		double[][] img = image.getImage();
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				double[] pixelValue = new double[RGB_QTY];
+				for (int k = 0; k < RGB_QTY; k++) {
+					pixelValue[k] = img[i][j];
+				}
+				this.setPixel(i, j, pixelValue);
+			}
+		}
+
+	}
 
 	public ImageColorRGB(int width, int height) {
 		super(width, height, RGB_QTY);
@@ -43,7 +59,7 @@ public class ImageColorRGB extends ImageColor {
 	}
 
 	@Override
-	public Image getRegion(Point origin, Point end) {
+	public ImageColorRGB getRegion(Point origin, Point end) {
 		return new ImageColorRGB(super.getRegionMatrix(origin, end));
 	}
 
