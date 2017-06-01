@@ -54,18 +54,17 @@ public class Mask {
 		return applyMask(region, weights);
 	}
 	
-	public ImageColorRGB applySusanMask(double t, int width, int height) {
-		ImageColorRGB result = new ImageColorRGB(width, height);
+	public ImageGray applySusanMask(double t, int width, int height) {
+		ImageGray result = new ImageGray(width, height);
 		while (scroll.hasNext()) {
 			double[][] region = scroll.nextRegion();
-			double[] newPixel = applySusanMask(region, weights, t, scroll.getMiddlePoint());
-			System.out.println(scroll.getMiddlePoint());
-			result.setPixel(scroll.getMiddlePoint(), newPixel);
+			double newPixel = applySusanMask(region, weights, t, scroll.getMiddlePoint());
+			scroll.updateCurrentCenter(newPixel);
 		}
-		return result;
+		return scroll.getResult();
 	}
 	
-	public double[] applySusanMask(double[][] region, double[][] weights, double t, Point center) {
+	public double applySusanMask(double[][] region, double[][] weights, double t, Point center) {
 		int k = 0;
 		for (int i = 0; i < region.length; i++) {
 			for (int j = 0; j < region.length; j++) {
@@ -76,19 +75,19 @@ public class Mask {
 		}
 		
 		double s = 1 - ((double) k) / 37.0;
-		double[] redPixel = {255.0, 0.0, 0.0};
-		double[] bluePixel = {0.0, 0.0, 255.0};
-		double[] originalPixel = new double[3];
-		originalPixel[0] = region[center.x][center.y];
-		originalPixel[1] = region[center.x][center.y];
-		originalPixel[2] = region[center.x][center.y];
+//		double[] redPixel = {255.0, 0.0, 0.0};
+//		double[] bluePixel = {0.0, 0.0, 255.0};
+//		double[] originalPixel = new double[3];
+//		originalPixel[0] = region[center.x][center.y];
+//		originalPixel[1] = region[center.x][center.y];
+//		originalPixel[2] = region[center.x][center.y];
 		
 		if (s >= 0.375 && s < 0.625) {
-			return redPixel;
+			return 255;
 		} else if (s >= 0.625 && s < 0.875) {
-			return bluePixel;
+			return 255;
 		} else {
-			return originalPixel;
+			return 0;
 		}
 	}
 }

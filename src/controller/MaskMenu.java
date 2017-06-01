@@ -492,19 +492,19 @@ public class MaskMenu extends Menu {
 
 				switch (img.getType()) {
 				case IMAGE_GRAY:
-					colorCopy = applySusanMask((ImageGray)copy, threshold);
+					copy = applySusanMask((ImageGray)copy, threshold);
 					break;
 				case IMAGE_RGB:
 					break;
 				}
-				controller.setSecondaryImage(colorCopy);
+				controller.setSecondaryImage(copy);
 				controller.refreshSecondaryImage();
 				controller.refreshImage();
 			}
 
-			private ImageColorRGB applySusanMask(ImageGray imgGray, double t) {
+			private ImageGray applySusanMask(ImageGray imgGray, double t) {
 				SusanMask sm = new SusanMask(new ScrollableWindowRepeat(imgGray, 7, 7));
-				ImageColorRGB imgWithMask = sm.applySusanMask(t, imgGray.getWidth(), imgGray.getHeight());
+				ImageGray imgWithMask = sm.applySusanMask(t, imgGray.getWidth(), imgGray.getHeight());
 				return imgWithMask;
 			}
 		});
