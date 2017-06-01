@@ -17,10 +17,15 @@ import utils.LinearTransformation;
 
 public class CannyDetector {
 
-	public ImageGray apply(ImageGray img, int n, double sigma) {
+	public ImageGray apply(ImageGray img, int n, double sigma, boolean gaussFilter) {
 		// filtro gausiano
+		ImageGray imgWithMask;
+		if(gaussFilter){
 		GaussianMask gm = new GaussianMask(new ScrollableWindowRepeat((ImageGray) img.copy(), n, n), sigma);
-		ImageGray imgWithMask = gm.applyMask();
+		imgWithMask = gm.applyMask();
+		}else{
+			imgWithMask=(ImageGray) img.copy();
+		}
 		double[][] imgWithMaskMatrix = imgWithMask.getImage();
 
 //		// sobel con normalización de imagen
@@ -37,18 +42,27 @@ public class CannyDetector {
 		double[][] dy = sobelY.applyMaskWithoutTransformation();
 
 		double[][] sobelMatrix = computeSobelMatrix(dx, dy);
+		double[][] sobelMatrixCopy=new double[sobelMatrix.length][sobelMatrix[0].length];
+		for(int i=0;i<sobelMatrix.length;i++)
+			for(int j=0;j<sobelMatrix[0].length;j++)
+				sobelMatrixCopy[i][j]=sobelMatrix[i][j];
 		
 		// supresión de no máximos
 		for (int i = 1; i < imgWithMaskMatrix.length - 1; i++) {
 			for (int j = 1; j < imgWithMaskMatrix[0].length - 1; j++) {
 				Point p = getBorderDirection(i, j, dx, dy);
-				nonMaximumSupresion(i, j, sobelMatrix, p);
+				nonMaximumSupresion(i, j, sobelMatrix,sobelMatrixCopy, p);
 			}
 		}
 
 		// umbralización con histéresis
-		double t1 = calculateT1(imgWithMaskMatrix);
-		double t2 = calculateT2(imgWithMaskMatrix);
+		double t1 = calculateT1(sobelMatrixCopy);
+		double t2 = calculateT2(sobelMatrixCopy);
+		
+		if(t1<50)
+			t1=50;
+		if(t2>150)
+			t2=150;
 		
 		System.out.println(t1 + "   " + t2);
 		List<Point> pendingPoints = new LinkedList<Point>();
@@ -103,12 +117,12 @@ public class CannyDetector {
 		}
 	}
 
-	private void nonMaximumSupresion(int i, int j, double[][] sobel, Point p) {
-		if (sobel[i][j] <= sobel[i + (int) p.getX()][j + (int) p.getY()]) {
+	private void nonMaximumSupresion(int i, int j, double[][] sobel, double[][] sobelCopy, Point p) {
+		if (sobelCopy[i][j] <= sobelCopy[i + (int) p.getX()][j + (int) p.getY()]) {
 			sobel[i][j] = 0;
 			return;
 		}
-		if (sobel[i][j] <= sobel[i - (int) p.getX()][j - (int) p.getY()]) {
+		if (sobelCopy[i][j] <= sobelCopy[i - (int) p.getX()][j - (int) p.getY()]) {
 			sobel[i][j] = 0;
 			return;
 		}

@@ -527,11 +527,11 @@ public class MaskMenu extends Menu {
 				String[] inputs = input.split(",");
 				int n = Integer.parseInt(inputs[0]);
 				double sigma = Double.parseDouble(inputs[1]);
-
+				boolean gaussFilter=inputs[2].toUpperCase().equals("TRUE");
 				switch (img.getType()) {
 				case IMAGE_GRAY:
 					CannyDetector canny = new CannyDetector();
-					copy = canny.apply((ImageGray)copy, n, sigma);
+					copy = canny.apply((ImageGray)copy, n, sigma,gaussFilter);
 					break;
 				case IMAGE_RGB:
 					break;
