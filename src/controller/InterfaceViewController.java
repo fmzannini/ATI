@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
@@ -142,8 +143,16 @@ public class InterfaceViewController implements Initializable, MouseSelectionLis
 		int maxX = Math.max(firstClick.x, endPosition.x);
 		int minY = Math.min(firstClick.y, endPosition.y);
 		int maxY = Math.max(firstClick.y, endPosition.y);
+		Color colorMin=new Color(bi.getRGB(minX, minY));
+		Color colorMax=new Color(bi.getRGB(maxX, maxY));
 
+		Color newColor=new Color(255-(int)((colorMin.getRed()+colorMax.getRed())/2.0),
+				255-(int)((colorMin.getGreen()+colorMax.getGreen())/2.0)
+				,255-(int)((colorMin.getBlue()+colorMax.getBlue())/2.0));
+		Color aux=graphics.getColor();
+		graphics.setColor(newColor);
 		graphics.drawRect(minX, minY, maxX - minX, maxY - minY);
+		graphics.setColor(aux);
 		mainImage.setImage(SwingFXUtils.toFXImage(bi, null));
 	}
 

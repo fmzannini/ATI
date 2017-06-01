@@ -33,7 +33,11 @@ public class GraphicLibrary {
 	}
 	
 	public void drawLine(Point p1, Point p2){
+		Color aux=graphics.getColor();
+		graphics.setColor(Color.RED);
 		graphics.drawLine(p1.x, p1.y, p2.x, p2.y);
+		graphics.setColor(aux);	
+
 	}
 	
 }

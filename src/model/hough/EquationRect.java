@@ -46,15 +46,28 @@ public class EquationRect implements Equation2D {
 			return aux;
 		}
 	}
+
+	private double angle;
+	private double cos;
+	private double sin;
+	public void presetParamsValue(double[] paramsValue){
+		double prevAngle=paramsValue[PARAM_ANGLE];
+		angle=Math.toRadians(prevAngle);
+		cos=Math.cos(angle);
+		sin=Math.sin(angle);
+	}
 	@Override
 	public boolean isSolve(double[] paramsValue, Point point) {
 		double x=point.x;
 		double y=point.y;
 		
 		double r=paramsValue[PARAM_R];
-		double angle=Math.toRadians(paramsValue[PARAM_ANGLE]);
-		
-		double aux=Math.abs(r-x*Math.cos(angle)-y*Math.sin(angle));
+/*		double prevAngle=paramsValue[PARAM_ANGLE];
+		double angle=Math.toRadians(prevAngle);
+		double cos=Math.cos(angle);
+		double sin=Math.sin(angle);
+*/
+		double aux=Math.abs(r-x*cos-y*sin);
 		
 		return aux<EPSILON;
 	}

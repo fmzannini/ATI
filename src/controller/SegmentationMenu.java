@@ -1,5 +1,7 @@
 package controller;
 
+import java.awt.Point;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,20 +15,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import java.awt.Point;
-import java.awt.color.ColorSpace;
-import java.awt.image.BufferedImage;
-
 import model.graphics.GraphicLibrary;
 import model.hough.EquationCircle;
 import model.hough.EquationRect;
 import model.hough.HoughTransform;
 import model.hough.Param;
 import model.image.Image;
+import model.image.Image.ImageType;
 import model.image.ImageColorRGB;
 import model.image.ImageGray;
 import model.mask.edge_detector.gradient.PrewittOp;
-import model.thresholding.OtsuThresholding;
 
 public class SegmentationMenu extends Menu{
 
@@ -73,6 +71,9 @@ public class SegmentationMenu extends Menu{
 						+ "\n\t angle=["+angleLeftRange+","+angleRightRange+")"
 						+ "\n Ingrese el paso de discretización (r,angle)"
 						+ "\n ej:1,1", ",");
+				
+				if(inputs==null || inputs.length!=2)
+					return;
 				double rStep=Math.abs(Double.parseDouble(inputs[0]));
 				double angleStep=Math.abs(Double.parseDouble(inputs[1]));
 				
@@ -123,6 +124,8 @@ public class SegmentationMenu extends Menu{
 					List<Point> rect=getBoundsPoints(params,equationRect,leftX,rightX,topY,bottomY);
 					rects.add(rect);
 				}
+				if(copy.getType()==ImageType.IMAGE_GRAY)
+					copy=new ImageColorRGB((ImageGray)copy);
 				BufferedImage bufImg=copy.showImage();
 				GraphicLibrary graphics=new GraphicLibrary(bufImg.createGraphics());
 				for(List<Point> rect:rects)
@@ -173,6 +176,9 @@ public class SegmentationMenu extends Menu{
 				String[] inputs=UtilsDialogs.getInputs("Transformada Hough circulos", ""
 						+ "Ingrese los rangos del centro del círculo (Xmin,Xmax,Ymin,Ymax)."
 						+ "\n ej:99,101,99,101", ",");
+				if(inputs==null || inputs.length!=4)
+					return;
+
 				double minX=Double.parseDouble(inputs[0]);
 				double maxX=Double.parseDouble(inputs[1]);
 				double minY=Double.parseDouble(inputs[2]);
@@ -193,6 +199,10 @@ public class SegmentationMenu extends Menu{
 	
 						+ "\n Ingrese el paso de discretización (x,y,radio)"
 						+ "\n ej:1,1,0.1", ",");
+				
+				if(inputs2==null || inputs2.length!=3)
+					return;
+
 				double xStep=Math.abs(Double.parseDouble(inputs2[0]));
 				double yStep=Math.abs(Double.parseDouble(inputs2[1]));
 				double radiusStep=Math.abs(Double.parseDouble(inputs2[2]));
@@ -232,6 +242,8 @@ public class SegmentationMenu extends Menu{
 			}
 
 			private Image drawCircles(List<Double[]> paramsCircles, EquationCircle equationCircle, Image copy) {
+				if(copy.getType()==ImageType.IMAGE_GRAY)
+					copy=new ImageColorRGB((ImageGray)copy);
 				BufferedImage bufImg=copy.showImage();
 				
 				GraphicLibrary graphics=new GraphicLibrary(bufImg.createGraphics());
@@ -245,14 +257,7 @@ public class SegmentationMenu extends Menu{
 					graphics.drawCircleLine(center, radius);
 				}
 				
-				switch(copy.getType()){
-				case IMAGE_GRAY:
-					copy=new ImageGray(bufImg, false);
-					break;
-				case IMAGE_RGB:
-					copy=new ImageColorRGB(bufImg);
-					break;
-				}
+				copy=new ImageColorRGB(bufImg);
 				
 				return copy;
 			}
@@ -278,8 +283,9 @@ public class SegmentationMenu extends Menu{
 	private ImageGray binarizeImg(ImageGray copy) {
 		PrewittOp prewittOp=new PrewittOp();
 		ImageGray img=(ImageGray) prewittOp.apply(copy);
-		OtsuThresholding otsuThresholding=new OtsuThresholding((ImageGray) img);
-		img=otsuThresholding.calculateOtsuThreshold();
+		img=img.applyThresholding(60);
+		//OtsuThresholding otsuThresholding=new OtsuThresholding((ImageGray) img);
+		//img=otsuThresholding.calculateOtsuThreshold();
 		return img;
 	}
 

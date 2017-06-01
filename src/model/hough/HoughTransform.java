@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 import model.image.ImageGray;
 
 public class HoughTransform {
-
+	
 	private static final double WHITE_VALUE = 255;
 	private ImageGray binaryImg;
 	private Equation2D equation;
@@ -93,13 +93,15 @@ public class HoughTransform {
 			double[] paramsValueUnBox=new double[paramsValue.size()];
 			for(int i=0;i<paramsValueUnBox.length;i++)
 				paramsValueUnBox[i]=paramsValue.get(i);
+			equation.presetParamsValue(paramsValueUnBox);
 			for(Point point:whitePoints){
 				if(equation.isSolve(paramsValueUnBox, point)){
 					qty++;
 				}
 			}
+
 			votesMatrix.put(paramsValue, qty);
-		}		
+		}
 	}
 	
 
@@ -112,7 +114,8 @@ public class HoughTransform {
 		
 		List<Double[]> ans=new ArrayList<Double[]>();
 		for(Entry<List<Double>,Integer> entry: votesMatrix.entrySet()){
-			if(entry.getValue()>=0.8*maxVotes){
+			int qty=entry.getValue();
+			if(qty>0 && qty>=0.8*maxVotes){
 				List<Double> list=entry.getKey();
 				Double[] array=new Double[list.size()];
 				for(int i=0;i<array.length;i++)

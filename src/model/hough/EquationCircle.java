@@ -13,14 +13,20 @@ public class EquationCircle implements Equation2D {
 
 	private static final int PARAMS_LENGTH = 3;
 		
+	
+	private double sqrRadius;
+	public void presetParamsValue(double[] paramsValue){
+		double radius=paramsValue[PARAM_RADIUS];
+		sqrRadius=Math.pow(radius,2);
+	}
 
+	
 	@Override
 	public boolean isSolve(double[] paramsValue, Point point) {
 		double xCenter=paramsValue[PARAM_X_CENTER];
 		double yCenter=paramsValue[PARAM_Y_CENTER];
-		double radius=paramsValue[PARAM_RADIUS];
 		
-		double aux=Math.abs(Math.pow(radius,2)-Math.pow(point.x-xCenter, 2)-Math.pow(point.y-yCenter, 2));
+		double aux=Math.abs(sqrRadius-Math.pow(point.x-xCenter, 2)-Math.pow(point.y-yCenter, 2));
 		
 		return aux<EPSILON;
 	}

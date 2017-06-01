@@ -47,7 +47,7 @@ public class ButtonLevelSetToImage implements MouseSelectionListener{
 		Image img = controller.getImage();
 		if (img == null)
 			return;
-
+		controller.getMouseSelectionController().resetSelection();
 		UtilsDialogs.showAlert(headerText, "Seleccione un área DENTRO del objeto.");
 
 		currentState = State.SELECTION_IN;
@@ -107,19 +107,32 @@ public class ButtonLevelSetToImage implements MouseSelectionListener{
 		case IMAGE_GRAY:
 			ImageGray imgGray = (ImageGray) copy;
 			for (Point p : pixelsIn) {
-				imgGray.setPixel(p, MARK_GRAY_IN);
+//				imgGray.setPixel(p, MARK_GRAY_IN);
+				imgGray.setPixel(p, 255-imgGray.getPixel(p));			
 			}
 			for (Point p : pixelsOut) {
-				imgGray.setPixel(p, MARK_GRAY_OUT);
+//				imgGray.setPixel(p, MARK_GRAY_OUT);
+				imgGray.setPixel(p, 255-imgGray.getPixel(p));			
 			}
 			break;
 		case IMAGE_RGB:
 			ImageColorRGB imgRGB = (ImageColorRGB) copy;
 			for (Point p : pixelsIn) {
-				imgRGB.setPixel(p, MARK_RGB_IN);
+//				imgRGB.setPixel(p, MARK_RGB_IN);
+				double[] pixel=imgRGB.getPixel(p);
+				for(int i=0;i<Image.RGB_QTY;i++)
+//					pixel[i]=255-pixel[i];
+					pixel[i]=pixel[i]<128?255:0;
+
+				imgRGB.setPixel(p, pixel);
 			}
 			for (Point p : pixelsOut) {
-				imgRGB.setPixel(p, MARK_RGB_OUT);
+//				imgRGB.setPixel(p, MARK_RGB_OUT);
+				double[] pixel=imgRGB.getPixel(p);
+				for(int i=0;i<Image.RGB_QTY;i++)
+//					pixel[i]=255-pixel[i];
+					pixel[i]=pixel[i]<128?255:0;
+				imgRGB.setPixel(p, pixel);
 			}
 			break;
 		}
