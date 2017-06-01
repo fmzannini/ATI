@@ -109,5 +109,10 @@ public class ScrollableWindowRepeat implements ScrollableWindow {
 	public ImageGray getResult() {
 		return result;
 	}
+	
+	@Override
+	public Point getCenter() {
+		return center;
+	}
 
 }

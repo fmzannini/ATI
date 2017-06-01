@@ -9,6 +9,7 @@ public interface ScrollableWindow {
 	public int getHeightWindow();
 	public Point getMiddlePoint();
 	public Point[] getDisplacements();
+	public Point getCenter();
 	
 	public boolean hasNext();
 	public double[][] nextRegion();

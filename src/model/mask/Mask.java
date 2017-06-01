@@ -1,6 +1,10 @@
 package model.mask;
 
 import java.awt.Point;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import model.image.ImageColorRGB;
 import model.image.ImageGray;
@@ -54,17 +58,29 @@ public class Mask {
 		return applyMask(region, weights);
 	}
 	
-	public ImageGray applySusanMask(double t, int width, int height) {
-		ImageGray result = new ImageGray(width, height);
+	public ImageColorRGB applySusanMask(double t, int width, int height) {
+		Map<Boolean, List<Point>> map = new HashMap<Boolean, List<Point>>();
+		map.put(true, new LinkedList<Point>()); //bordes
+		map.put(false, new LinkedList<Point>()); //esquinas
+		ImageColorRGB colorResult = scroll.getResult().toColor();
 		while (scroll.hasNext()) {
 			double[][] region = scroll.nextRegion();
-			double newPixel = applySusanMask(region, weights, t, scroll.getMiddlePoint());
+			double newPixel = applySusanMask(region, weights, t, scroll.getMiddlePoint(), map, scroll.getCenter());
 			scroll.updateCurrentCenter(newPixel);
 		}
-		return scroll.getResult();
+		double[] redPixel = {255.0, 0.0, 0.0};
+		double[] bluePixel = {0.0, 0.0, 255.0};
+		for (Point p: map.get(true)) {
+			colorResult.setPixel(new Point((int) p.getX(), (int) p.getY()), redPixel);
+		}
+		for (Point p: map.get(false)) {
+			colorResult.setPixel(new Point((int) p.getX(), (int) p.getY()), bluePixel);
+		}
+		
+		return colorResult;
 	}
 	
-	public double applySusanMask(double[][] region, double[][] weights, double t, Point center) {
+	public double applySusanMask(double[][] region, double[][] weights, double t, Point center, Map<Boolean, List<Point>> map, Point p) {
 		int k = 0;
 		for (int i = 0; i < region.length; i++) {
 			for (int j = 0; j < region.length; j++) {
@@ -75,16 +91,16 @@ public class Mask {
 		}
 		
 		double s = 1 - ((double) k) / 37.0;
-//		double[] redPixel = {255.0, 0.0, 0.0};
-//		double[] bluePixel = {0.0, 0.0, 255.0};
 //		double[] originalPixel = new double[3];
 //		originalPixel[0] = region[center.x][center.y];
 //		originalPixel[1] = region[center.x][center.y];
 //		originalPixel[2] = region[center.x][center.y];
 		
 		if (s >= 0.375 && s < 0.625) {
+			map.get(true).add(new Point(p.x, p.y));
 			return 255;
 		} else if (s >= 0.625 && s < 0.875) {
+			map.get(false).add(new Point(p.x, p.y));
 			return 255;
 		} else {
 			return 0;

@@ -305,5 +305,19 @@ public class ImageGray implements Image {
 		else
 			return 0.5*(list.get(totalSize/2)+list.get(totalSize/2+1));
 	}
+	
+	public ImageColorRGB toColor() {
+		ImageColorRGB result = new ImageColorRGB(this.width, this.height);
+		for (int i = 0; i < this.width; i++) {
+			for (int j = 0; j < this.height; j++) {
+				double[] pixel = new double[3];
+				pixel[0] = this.getPixel(i, j);
+				pixel[1] = this.getPixel(i, j);
+				pixel[2] = this.getPixel(i, j);
+				result.setPixel(new Point(i, j), pixel);
+			}
+		}
+		return result;
+	}
 
 }
