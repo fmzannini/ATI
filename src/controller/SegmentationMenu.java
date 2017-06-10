@@ -39,6 +39,7 @@ public class SegmentationMenu extends Menu{
 	@FXML
 	private MenuItem levelSetToVideo;
 
+
 	public SegmentationMenu() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/segmentationMenu.fxml"));
 		fxmlLoader.setRoot(this);

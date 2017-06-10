@@ -20,5 +20,7 @@
 	<MenuItem text="Operador Laplaciano-Gaussiano con pendiente" fx:id="laplacianGaussianWithSlopeEvaluationOp"/>
 	<MenuItem text="Detector de Susan" fx:id="susanMask"/>
 	<MenuItem text="Detector de Canny" fx:id="cannyMask"/>
+
+	<MenuItem text="Detector de Harris" fx:id="harrisDetector"/>
 	
 </fx:root>

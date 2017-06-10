@@ -1,7 +1,11 @@
 package controller;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import javafx.event.ActionEvent;
@@ -12,6 +16,8 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputDialog;
+import model.graphics.GraphicLibrary;
+import model.harris.HarrisDetector;
 import model.image.Image;
 import model.image.ImageColorRGB;
 import model.image.ImageGray;
@@ -78,6 +84,9 @@ public class MaskMenu extends Menu {
 	private MenuItem susanMask;
 	@FXML
 	private MenuItem cannyMask;
+
+	@FXML
+	private MenuItem harrisDetector;
 
 	public MaskMenu() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/maskMenu.fxml"));
@@ -539,6 +548,53 @@ public class MaskMenu extends Menu {
 				controller.setSecondaryImage(copy);
 				controller.refreshSecondaryImage();
 				controller.refreshImage();
+			}
+		});
+		harrisDetector.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Image img = controller.getImage();
+				if (img == null)
+					return;
+				Image copy = img.copy();
+
+				String[] inputs = getInputs("Detector de Harris",
+						"Ingrese el porcentaje del máximo usado como umbral de R."
+					+	"\n Ej:0.8", ",");
+				if (inputs == null || inputs.length != 1)
+					return;
+
+				double threshold = Double.parseDouble(inputs[0]);
+
+				HarrisDetector harris=new HarrisDetector(copy, threshold);
+				harris.apply();
+				copy = markPoints(copy,harris.getDetectedPoints());
+
+				System.out.println("harris: "+harris.getDetectedPoints().size());
+				controller.setSecondaryImage(copy);
+				controller.refreshSecondaryImage();
+				controller.refreshImage();
+			}
+
+			private Image markPoints(Image copy, List<Point> detectedPoints) {
+				ImageColorRGB img=null;
+				switch(copy.getType()){
+				case IMAGE_GRAY:
+					img=new ImageColorRGB((ImageGray)copy);
+					break;
+				case IMAGE_RGB:
+					img=(ImageColorRGB)copy;
+					break;
+				}
+				BufferedImage bufImg=img.showImage();
+				Graphics2D g2D=bufImg.createGraphics();
+				g2D.setColor(Color.RED);
+				GraphicLibrary graphics=new GraphicLibrary(g2D);
+				double length=6.0;
+				for(Point point:detectedPoints){
+					graphics.drawSquare(point, length);
+				}
+				return new ImageColorRGB(bufImg);
 			}
 		});
 	}
