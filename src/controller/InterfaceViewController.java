@@ -61,7 +61,7 @@ public class InterfaceViewController implements Initializable, MouseSelectionLis
 				mouseSelectionController.mouseMoved(event);
 			}
 		});
-		mouseSelectionController.registerListener(this);
+		mouseSelectionController.registerListener(this); 
 	}
 
 	public void loadImage(File file) {
@@ -88,6 +88,7 @@ public class InterfaceViewController implements Initializable, MouseSelectionLis
 				break;
 			case "PPM":
 				img = new ImageColorRGB(ifm.readImagePPM());
+				System.out.println("OK");
 				break;
 			case "BMP":
 				img = new ImageColorRGB(ifm.readImageBMP());
@@ -195,6 +196,7 @@ public class InterfaceViewController implements Initializable, MouseSelectionLis
 			switch (extension.toUpperCase()) {
 			case "PGM":
 				secondaryImg = ifm.readImagePGM();
+				this.setSecondaryImage(new ImageGray(secondaryImg, false));
 				break;
 			case "RAW":
 				Dialog<String> dialog = new TextInputDialog();
@@ -208,18 +210,23 @@ public class InterfaceViewController implements Initializable, MouseSelectionLis
 				int width = Integer.parseInt(inputs[0]);
 				int height = Integer.parseInt(inputs[1]);
 				secondaryImg = ifm.readImageRAW(width, height);
+				this.setSecondaryImage(new ImageGray(secondaryImg, false));
 				break;
 			case "PPM":
 				secondaryImg = ifm.readImagePPM();
+				System.out.println("OK");
+				this.setSecondaryImage(new ImageColorRGB(secondaryImg));
 				break;
 			case "BMP":
 				secondaryImg = ifm.readImageBMP();
+				this.setSecondaryImage(new ImageColorRGB(secondaryImg));
 				break;
 			default:
 				secondaryImg = ifm.readImage();
+				this.setSecondaryImage(new ImageColorRGB(secondaryImg));
 				break;
 			}
-			this.setSecondaryImage(new ImageGray(secondaryImg, false));
+			
 			secondaryImage.setImage(SwingFXUtils.toFXImage(secondaryImg, null));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

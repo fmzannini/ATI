@@ -41,6 +41,7 @@ import model.mask.edge_detector.gradient.SobelOp;
 import model.mask.edge_detector.laplacian.LaplacianGaussianMethod;
 import model.mask.edge_detector.laplacian.LaplacianMethod;
 import model.mask.edge_detector.laplacian.LaplacianMethod.ThresholdType;
+import model.mask.edge_detector.sift.SIFTUtils;
 
 public class MaskMenu extends Menu {
 
@@ -84,6 +85,9 @@ public class MaskMenu extends Menu {
 	private MenuItem susanMask;
 	@FXML
 	private MenuItem cannyMask;
+	
+	@FXML
+	private MenuItem sift;
 
 	@FXML
 	private MenuItem harrisDetector;
@@ -597,6 +601,46 @@ public class MaskMenu extends Menu {
 				return new ImageColorRGB(bufImg);
 			}
 		});
+		sift.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Image img = controller.getImage();
+				Image img2 = controller.getSecondaryImage();
+				if (img == null || img2 == null)
+					return;
+				Image copy = img.copy();
+				Image copy2 = img2.copy();
+				
+//				Dialog<String> dialog = new TextInputDialog();
+//				dialog.setTitle("Seleccionar parámetros");
+//				dialog.setHeaderText("Indicar tamaño de ventana y sigma. Por ejemplo: 5,1");
+//				Optional<String> result = dialog.showAndWait();
+//				if (!result.isPresent())
+//					return;
+//				String input = result.get();
+//				String[] inputs = input.split(",");
+//				int n = Integer.parseInt(inputs[0]);
+//				double sigma = Double.parseDouble(inputs[1]);
+//				boolean gaussFilter=inputs[2].toUpperCase().equals("TRUE");
+				Image[] results = {null, null};
+				switch (img.getType()) {
+				case IMAGE_GRAY:
+//					SIFTUtils siftUtils = new SIFTUtils();
+//					results = siftUtils.sift(copy, copy2);
+//					System.out.println(results[0] + "    " + results[1]);
+//					break;
+				case IMAGE_RGB:
+					SIFTUtils siftUtils2 = new SIFTUtils();
+					results = siftUtils2.sift((ImageColorRGB)copy,(ImageColorRGB) copy2);
+					System.out.println(results[0] + "    " + results[1]);
+					break;
+				}
+				controller.setMainImage(results[0]);
+				controller.setSecondaryImage(results[1]);
+				controller.refreshSecondaryImage();
+				controller.refreshImage();
+			}
+		});
 	}
 
 	private String[] getInputs(String title, String header, String pattern) {
@@ -635,4 +679,6 @@ public class MaskMenu extends Menu {
 			controller.refreshImage();
 		}
 	}
+	
+	
 }

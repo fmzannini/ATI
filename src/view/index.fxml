@@ -16,11 +16,11 @@
     <center>
     <GridPane xmlns:fx="http://javafx.com/fxml" alignment="center">
     	<ImageView fx:id="mainImage" 
-	    	GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+	    	GridPane.columnIndex="0" GridPane.rowIndex="0" fitWidth="650.0" preserveRatio="true"/>
 	    <ImageView fx:id="secondaryImage"
-			GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+			GridPane.columnIndex="1" GridPane.rowIndex="0" fitWidth="650.0" preserveRatio="true"/>
 		<ImageView fx:id="resultImage"
-			GridPane.columnIndex="0" GridPane.rowIndex="2"/>	    	
+			GridPane.columnIndex="0" GridPane.rowIndex="2" fitWidth="650.0" preserveRatio="true"/>	    	
     </GridPane>
     </center>
 </BorderPane>
