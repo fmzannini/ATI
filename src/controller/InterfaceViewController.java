@@ -61,7 +61,7 @@ public class InterfaceViewController implements Initializable, MouseSelectionLis
 				mouseSelectionController.mouseMoved(event);
 			}
 		});
-		mouseSelectionController.registerListener(this);
+		mouseSelectionController.registerListener(this); 
 	}
 
 	public void loadImage(File file) {
