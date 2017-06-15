@@ -569,15 +569,18 @@ public class MaskMenu extends Menu {
 				Image[] results = {null, null};
 				switch (img.getType()) {
 				case IMAGE_GRAY:
-					SIFTUtils sift = new SIFTUtils();
-					results = sift.sift(copy, copy2);
+//					SIFTUtils siftUtils = new SIFTUtils();
+//					results = siftUtils.sift(copy, copy2);
+//					System.out.println(results[0] + "    " + results[1]);
+//					break;
+				case IMAGE_RGB:
+					SIFTUtils siftUtils2 = new SIFTUtils();
+					results = siftUtils2.sift((ImageColorRGB)copy,(ImageColorRGB) copy2);
 					System.out.println(results[0] + "    " + results[1]);
 					break;
-				case IMAGE_RGB:
-					break;
 				}
-//				controller.setMainImage(results[0]);
-//				controller.setSecondaryImage(results[1]);
+				controller.setMainImage(results[0]);
+				controller.setSecondaryImage(results[1]);
 				controller.refreshSecondaryImage();
 				controller.refreshImage();
 			}

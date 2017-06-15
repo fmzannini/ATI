@@ -9,13 +9,13 @@ import mpi.cbg.fly.PointMatch;
 import mpi.cbg.fly.SIFT;
 
 public class SIFTUtils {
-	public static Image sift(Image image) {
+	public static Image sift(ImageColorRGB image) {
 		Vector<Feature> f1 = SIFT.getFeatures(image.showImage());
 		paintFeatures(image, f1);
 		return image;
 	}
 
-	public static Image[] sift(Image imageA, Image imageB) {
+	public static Image[] sift(ImageColorRGB imageA, ImageColorRGB imageB) {
 		Vector<Feature> fs1 = SIFT.getFeatures(imageA.showImage());
 		Vector<Feature> fs2 = SIFT.getFeatures(imageB.showImage());
 		Image image1 = imageA.copy();
@@ -29,8 +29,8 @@ public class SIFTUtils {
 		}
 		// System.out.println((double) matches.size()
 		// / Math.min(fs1.size(), fs2.size()) * 100 + "%");
-		paintFeatures(imageA, fs1);
-		// paintFeatures(b, f2);
+		paintFeatures(image1, fs1);
+		paintFeatures(image2, fs2);
 		Image[] pair = { image1, image2 };
 		return pair;
 	}
