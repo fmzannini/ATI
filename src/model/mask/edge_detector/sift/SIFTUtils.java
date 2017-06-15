@@ -29,8 +29,8 @@ public class SIFTUtils {
 		}
 		// System.out.println((double) matches.size()
 		// / Math.min(fs1.size(), fs2.size()) * 100 + "%");
-		paintFeatures(image1, fs1);
-		paintFeatures(image2, fs2);
+//		paintFeatures(image1, fs1);
+//		paintFeatures(image2, fs2);
 		Image[] pair = { image1, image2 };
 		return pair;
 	}
