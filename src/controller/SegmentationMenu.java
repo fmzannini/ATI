@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import controller.segmentation.ButtonLevelSetToEyeImage;
 import controller.segmentation.ButtonLevelSetToImage;
 import controller.segmentation.ButtonLevelSetToVideo;
 import controller.utils.UtilsDialogs;
@@ -39,6 +40,8 @@ public class SegmentationMenu extends Menu{
 	@FXML
 	private MenuItem levelSetToVideo;
 
+	@FXML
+	private MenuItem levelSetToIris;
 
 	public SegmentationMenu() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/segmentationMenu.fxml"));
@@ -277,6 +280,13 @@ public class SegmentationMenu extends Menu{
 			public void handle(ActionEvent event) {
 				buttonHandler.call();
 			}		
+		});
+		levelSetToIris.setOnAction(new EventHandler<ActionEvent>() {
+			private ButtonLevelSetToEyeImage buttonHandler=new ButtonLevelSetToEyeImage(controller);
+			@Override
+			public void handle(ActionEvent event) {
+				buttonHandler.call();
+			}
 		});
 
 	}

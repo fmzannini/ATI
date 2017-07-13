@@ -7,4 +7,6 @@
 	
 	<MenuItem text="LevelSet a la imagen" fx:id="levelSetToImage"/>
 	<MenuItem text="LevelSet a una secuencia" fx:id="levelSetToVideo"/>	
+	<MenuItem text="LevelSet a iris" fx:id="levelSetToIris"/>	
+
 </fx:root>

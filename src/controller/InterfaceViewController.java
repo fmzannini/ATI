@@ -91,7 +91,12 @@ public class InterfaceViewController implements Initializable, MouseSelectionLis
 				System.out.println("OK");
 				break;
 			case "BMP":
-				img = new ImageColorRGB(ifm.readImageBMP());
+				BufferedImage aux=ifm.readImageBMP();
+				if(aux.getType()==BufferedImage.TYPE_BYTE_GRAY)
+					img = new ImageGray(aux,false);
+				else
+					img = new ImageColorRGB(aux);
+					
 				break;
 			default:
 				img = new ImageColorRGB(ifm.readImage());
@@ -137,6 +142,7 @@ public class InterfaceViewController implements Initializable, MouseSelectionLis
 		mainImage.setImage(SwingFXUtils.toFXImage(bufImg, null));
 	}
 	private void drawRectangleSelection(Point firstClick, Point endPosition) {
+
 		BufferedImage bi = new BufferedImage(bufImg.getWidth(), bufImg.getHeight(), bufImg.getType());
 		bi.setData(bufImg.getData());
 		Graphics2D graphics = (Graphics2D) bi.getGraphics();
