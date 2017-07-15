@@ -300,7 +300,17 @@ public class SegmentationMenu extends Menu{
 					return;
 				imgGray=(ImageGray)(img.copy());
 				
-				IrisDescriptorGenerator irisDescriptorGenerator=new IrisDescriptorGenerator(imgGray,info);
+				
+				String[] inputs=UtilsDialogs.getInputs("Generar descriptor de iris", ""
+						+ "Ingrese frecuencia central y ancho de banda del filtro log-gabor (f0,sigma)."
+						+ "\n ej: 0.16,0.125", ",");
+				if(inputs==null || inputs.length!=2)
+					return;
+
+				double f0=Double.parseDouble(inputs[0]);
+				double sigma=Double.parseDouble(inputs[1]);
+
+				IrisDescriptorGenerator irisDescriptorGenerator=new IrisDescriptorGenerator(imgGray,info, f0,sigma);
 				
 				ImageGray rect=irisDescriptorGenerator.process();
 				

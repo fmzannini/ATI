@@ -5,6 +5,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import org.jtransforms.fft.DoubleFFT_2D;
+
 import model.image.ImageGray;
 
 public class IrisDescriptorGenerator {
@@ -14,11 +16,15 @@ public class IrisDescriptorGenerator {
 	private InfoIris info;
 	private ImageGray eye;
 	private double[][] matrix;
+	private double f0;
+	private double logSigmaOnF0Sqr2;
 	
-	
-	public IrisDescriptorGenerator(ImageGray eye, InfoIris info) {
+	public IrisDescriptorGenerator(ImageGray eye, InfoIris info, double f0, double sigma) {
 		this.info=info;
 		this.eye=eye;
+		
+		this.f0=f0;
+		this.logSigmaOnF0Sqr2=2*Math.pow(Math.log(sigma/f0),2);
 	}
 	
 	
@@ -47,8 +53,10 @@ public class IrisDescriptorGenerator {
 		fillMatrix(minOut, minIn,0);
 		fillMatrix(maxOut, maxIn,minIn.size());
 		
-		
-		return new ImageGray(matrix);
+		double[][] matrixFft=fft();
+		filterLogGabor(matrixFft);
+		matrixFft=ifft(matrixFft);
+		return new ImageGray(matrixFft);
 	}
 	
 	private void fillMatrix(List<Point> outList, List<Point> inList, int angleIndexInit) {
@@ -93,4 +101,49 @@ public class IrisDescriptorGenerator {
 		
 	}
 
+	private double[][] fft() {
+		 DoubleFFT_2D fft=new DoubleFFT_2D(matrix.length, matrix[0].length);
+		 
+		 double[][] matrixFft=new double[matrix.length][matrix[0].length*2];
+		 for(int i=0;i<matrix.length;i++) {
+			 for(int j=0;j<matrix[0].length;j++) {
+				 matrixFft[i][2*j]=matrix[i][j];
+			 }
+		 }
+		 
+		 fft.complexForward(matrixFft);
+		 
+		 return matrixFft;
+		 
+	}
+	
+	private double[][] ifft(double[][] matrixFft){
+		 DoubleFFT_2D fft=new DoubleFFT_2D(matrixFft.length, matrixFft[0].length/2);
+
+		 fft.complexInverse(matrixFft, false);
+		 
+		 return matrixFft;
+	}
+	
+	private void filterLogGabor(double[][] matrixFft) {
+	
+		for(int i=0;i<matrixFft.length;i++) {
+			for(int j=0;j<matrixFft[0].length;j++) {
+				matrixFft[i][j]=logGabor(Math.abs(matrixFft[i][j]));
+			}
+		}
+		
+		
+	}
+	
+	private double logGabor(double frecuency) {
+		if(frecuency==0)
+			return 0;
+		double logFOnF0= Math.log(frecuency/f0);
+		
+		double aux1=-Math.pow(logFOnF0,2);
+		double aux2=aux1/logSigmaOnF0Sqr2;
+		
+		return Math.exp(aux2);
+	}
 }
