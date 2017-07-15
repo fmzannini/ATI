@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import controller.segmentation.ButtonLevelSetToEyeImage;
 import controller.segmentation.ButtonLevelSetToImage;
 import controller.segmentation.ButtonLevelSetToVideo;
+import controller.segmentation.EventHandlerIris;
 import controller.utils.UtilsDialogs;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -25,6 +25,8 @@ import model.image.Image;
 import model.image.Image.ImageType;
 import model.image.ImageColorRGB;
 import model.image.ImageGray;
+import model.iris.InfoIris;
+import model.iris.IrisDescriptorGenerator;
 import model.mask.edge_detector.gradient.PrewittOp;
 
 public class SegmentationMenu extends Menu{
@@ -42,6 +44,9 @@ public class SegmentationMenu extends Menu{
 
 	@FXML
 	private MenuItem levelSetToIris;
+
+	@FXML
+	private MenuItem processIris;
 
 	public SegmentationMenu() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/segmentationMenu.fxml"));
@@ -281,11 +286,29 @@ public class SegmentationMenu extends Menu{
 				buttonHandler.call();
 			}		
 		});
-		levelSetToIris.setOnAction(new EventHandler<ActionEvent>() {
-			private ButtonLevelSetToEyeImage buttonHandler=new ButtonLevelSetToEyeImage(controller);
+		
+		EventHandlerIris levelSetToIrisHandler=new EventHandlerIris(controller);
+		levelSetToIris.setOnAction(levelSetToIrisHandler);
+		
+		processIris.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				buttonHandler.call();
+				InfoIris info=levelSetToIrisHandler.getInfoIris();
+				Image img=controller.getImage();
+				ImageGray imgGray;
+				if(img==null || img.getType()!=ImageType.IMAGE_GRAY)
+					return;
+				imgGray=(ImageGray)(img.copy());
+				
+				IrisDescriptorGenerator irisDescriptorGenerator=new IrisDescriptorGenerator(imgGray,info);
+				
+				ImageGray rect=irisDescriptorGenerator.process();
+				
+				
+				controller.setSecondaryImage(rect);
+				controller.refreshImage();
+				controller.refreshSecondaryImage();
+				
 			}
 		});
 

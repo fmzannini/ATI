@@ -8,5 +8,7 @@
 	<MenuItem text="LevelSet a la imagen" fx:id="levelSetToImage"/>
 	<MenuItem text="LevelSet a una secuencia" fx:id="levelSetToVideo"/>	
 	<MenuItem text="LevelSet a iris" fx:id="levelSetToIris"/>	
+	<MenuItem text="Generar descriptores iris" fx:id="processIris"/>	
+	
 
 </fx:root>

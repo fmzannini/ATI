@@ -1,14 +1,7 @@
 package controller.segmentation;
 
 import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import controller.InterfaceViewController;
 import controller.utils.MouseSelectionListener;
@@ -17,6 +10,8 @@ import model.image.Image;
 import model.image.Image.ImageType;
 import model.image.ImageColorRGB;
 import model.image.ImageGray;
+import model.iris.InfoIris;
+import model.iris.IrisExtractor;
 import model.levelset.AlgorithmLevelSet;
 import model.levelset.LevelSetImage;
 import model.levelset.LevelSetImageGray;
@@ -45,6 +40,7 @@ public class ButtonLevelSetToEyeImage implements MouseSelectionListener{
 	private String headerText;
 
 	private int maxIterations;
+	private IrisExtractor irisExtractor;
 
 	public ButtonLevelSetToEyeImage(InterfaceViewController controller) {
 		this(controller,HEADER_FOR_IMAGE);
@@ -53,6 +49,7 @@ public class ButtonLevelSetToEyeImage implements MouseSelectionListener{
 		this.controller = controller;
 		this.headerText=headerText;
 		controller.getMouseSelectionController().registerListener(this);
+		irisExtractor=new IrisExtractor();
 	}
 
 	public enum StateIris{
@@ -78,31 +75,6 @@ public class ButtonLevelSetToEyeImage implements MouseSelectionListener{
 		currentLevelSetState = StateLevelSet.SELECTION_IN;
 	}
 
-public enum Directions{
-	D60(1,1),D110(1,-1),D240(-1,-1),D300(-1,1);
-	
-	int x;
-	int y;
-	Directions(int x, int y){
-		this.x=x;
-		this.y=y;
-	}
-	public int getX() {
-		return x;
-	}
-	public void setX(int x) {
-		this.x = x;
-	}
-	public int getY() {
-		return y;
-	}
-	public void setY(int y) {
-		this.y = y;
-	}
-	
-	
-	
-};
 	protected void process() {
 		Image img = controller.getImage();
 		if (img == null)
@@ -137,88 +109,12 @@ public enum Directions{
 			pixelsInInnerIris=algorithmLevelSet.getPixelsIn();
 			pixelsOutInnerIris=algorithmLevelSet.getPixelsOut();
 			
-			List<Point> result=new ArrayList<Point>();
-			Map<Integer,List<Point>> bins=new HashMap<Integer,List<Point>>();
-			for(Point p:pixelsInOuterIris){
-				List<Point> list=bins.get(p.y);
-				if(list==null)
-					list=new ArrayList<Point>();
-				list.add(p);
-				bins.put(p.y, list);
-			}
 			
+			ImageColorRGB imgColor=irisExtractor.process(copy, pixelsInOuterIris, pixelsOutInnerIris, pixelsInInnerIris);
 			
-			for(Entry<Integer,List<Point>> entry: bins.entrySet() ){
-				Point minX=null;
-				Point maxX=null;
-				for(Point p:entry.getValue()){
-					if(minX==null || p.x<minX.x)
-						minX=p;
-					if(maxX==null || p.x>maxX.x)
-						maxX=p;
-				}
-				result.add(minX);
-				result.add(maxX);
-				entry.getValue().clear();
-				entry.getValue().add(minX);
-				entry.getValue().add(maxX);
-
-			}
-			List<Integer> list=new ArrayList<Integer>(bins.keySet());
-			list.sort(new Comparator<Integer>() {
-				@Override
-				public int compare(Integer o1, Integer o2) {
-					return o1-o2;
-				}
-			});
-			for(Integer y: list){
-				List<Point> aux1=bins.get(y);
-				Point minX1=aux1.get(0);
-				Point maxX1=aux1.get(1);
-
-				List<Point> aux2=bins.get(y+1);
-				if(aux2==null)
-					continue;
-				Point minX2=aux2.get(0);
-				Point maxX2=aux2.get(1);
-
-				completeCircle(result,minX2.y,Math.min(minX1.x, minX2.x),Math.max(minX1.x, minX2.x));
-				completeCircle(result,maxX2.y,Math.min(maxX1.x, maxX2.x),Math.max(maxX1.x, maxX2.x));
-
-			}
-			
-			
-			Point center=getCenter(pixelsOutInnerIris);
-			
-			for(Directions dir:Directions.values()){
-				int x=center.x;
-				int y=center.y;
-				while(!pixelsOutInnerIris.contains(new Point(x,y))){
-					x+=dir.getX();
-					y+=dir.getY();
-				}
-				
-				
-				
-			}
-			
-			
-			
-			
-			
-
-//			List<Point> irisArea=getIrisArea(copy,result,pixelsOutInnerIris,pixelsInInnerIris);
-
-			ImageColorRGB imgColor=new ImageColorRGB(copy);
-			for(Point p: pixelsOutInnerIris)
-				imgColor.setPixel(p, new double[]{255,0,0});
-			for(Point p: result)
-				imgColor.setPixel(p, new double[]{0,0,255});
-
-			imgColor.setPixel(center, new double[]{0,255,0});
-
 	//markIrisArea(copy, irisArea);
-
+			
+			
 			controller.setSecondaryImage(imgColor);
 			controller.refreshSecondaryImage();
 			controller.refreshImage();
@@ -228,84 +124,7 @@ public enum Directions{
 
 	}
 
-	private Point getCenter(List<Point> pixelsOutInnerIris2) {
-		float x=0;
-		float y=0;
-		int count=0;
-		for(Point p:pixelsOutInnerIris){
-			x+=p.x;
-			y+=p.y;
-			count++;
-		}
-		return new Point(Math.round(x/count),Math.round(y/count));
-	}
-	private void completeCircle(List<Point> result, int y, int minX, int maxX) {
-		for(int x=minX; x<maxX; x++){
-			result.add(new Point(x,y));
-		}
-		
-	}
-	private void markIrisArea(ImageGray copy, List<Point> irisArea) {
-		for (Point p : irisArea) {
-			copy.setPixel(p, 128);			
-		}
-	}
-	private List<Point> getIrisArea(ImageGray copy,List<Point> pixelsOuter, List<Point> pixelsInner , List<Point> pixelsOutInner) {
-		Set<Point> allPoints=new HashSet<Point>();
-		
-		Set<Point> currentStep=new HashSet<Point>();
-		Set<Point> newStep=null;
 
-		Set<Point> firstTime=new HashSet<>(pixelsOutInner);
-		
-		
-		allPoints.addAll(pixelsOuter);
-		for(Point p: pixelsInner){
-			allPoints.add(p);
-			currentStep.add(p);
-		}
-		
-		do{
-			newStep=new HashSet<Point>();
-			for(Point p:currentStep){
-				List<Point> neighbours=getFourNeighbours(p);
-				for(Point neighbour: neighbours){
-					if(p.x<0 || p.y<0 || neighbour.x<0 ||neighbour.y<0)
-						System.out.println(" ");
-					if(firstTime==null || (firstTime!=null && !firstTime.contains(neighbour))){
-						if(!allPoints.contains(neighbour)){
-							allPoints.add(neighbour);
-							newStep.add(neighbour);
-						}
-					}
-					
-				}
-			}
-			currentStep=newStep;
-
-			markIrisArea(copy, new ArrayList<Point>(allPoints));
-
-			controller.setSecondaryImage(copy);
-			controller.refreshSecondaryImage();
-			controller.refreshImage();
-
-		//	if(firstTime!=null)
-			//	firstTime=null;
-		}while(newStep.size()>0);
-		
-		
-		return new ArrayList<Point>(allPoints);
-	}
-	private List<Point> getFourNeighbours(Point p) {
-		List<Point> neighbours=new ArrayList<Point>();
-		
-		neighbours.add(new Point(p.x+1,p.y));
-		neighbours.add(new Point(p.x-1,p.y));
-		neighbours.add(new Point(p.x,p.y+1));
-		neighbours.add(new Point(p.x,p.y-1));
-		
-		return neighbours;
-	}
 	protected AlgorithmLevelSet applyAlgorithmToSingleImage(ImageGray imgGray){
 
 		LevelSetImage levelSetImage = null;
@@ -407,6 +226,9 @@ public enum Directions{
 				process();
 				break;
 		}
+	}
+	public InfoIris getInfoIris() {
+		return irisExtractor.getInfoIris();
 	}
 
 }
