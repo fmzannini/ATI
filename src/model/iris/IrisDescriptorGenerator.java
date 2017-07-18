@@ -57,6 +57,7 @@ public class IrisDescriptorGenerator {
 		double[][] matrixFft=fft();
 		filterLogGabor(matrixFft);
 		matrixFft=ifft(matrixFft);
+	
 		return LinearTransformation.grayImage(new ImageGray(matrixFft));
 		//return new ImageGray(matrixFft);
 	}

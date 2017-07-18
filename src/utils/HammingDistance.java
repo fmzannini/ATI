@@ -9,6 +9,8 @@ public class HammingDistance {
 		int hammingSum = 0;
 		for (int i = 0; i < img1.getWidth(); i++) {
 			for (int j = 0; j < img1.getHeight(); j++) {
+				if(i>=img2.getWidth() || j>=img2.getHeight())
+					continue;
 				if (img1.getPixel(i, j) == 0 && img2.getPixel(i, j) == 0) {
 					hammingSum++;
 					N++;
@@ -36,7 +38,7 @@ public class HammingDistance {
 				}
 			}
 		}
-		return hammingSum / N;
+		return ((double)hammingSum) / (double)N;
 	}
 
 	//s1 is the string with greater length

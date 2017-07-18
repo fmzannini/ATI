@@ -59,6 +59,9 @@ public class ButtonLevelSetToEyeImage implements MouseSelectionListener{
 		INIT, SELECTION_IN, SELECTION_OUT
 	};
 
+	public void reset(){
+		currentIrisState=StateIris.OUTER_IRIS;
+	}
 	public void call() {
 		Image img = controller.getImage();
 		if (img == null)

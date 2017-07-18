@@ -25,9 +25,11 @@ import model.image.Image;
 import model.image.Image.ImageType;
 import model.image.ImageColorRGB;
 import model.image.ImageGray;
+import model.iris.HammingDistanceData;
 import model.iris.InfoIris;
 import model.iris.IrisDescriptorGenerator;
 import model.mask.edge_detector.gradient.PrewittOp;
+import utils.HammingDistance;
 
 public class SegmentationMenu extends Menu{
 
@@ -47,6 +49,9 @@ public class SegmentationMenu extends Menu{
 
 	@FXML
 	private MenuItem processIris;
+	
+	@FXML
+	private MenuItem hammingDistance;
 
 	public SegmentationMenu() {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/segmentationMenu.fxml"));
@@ -291,6 +296,8 @@ public class SegmentationMenu extends Menu{
 		levelSetToIris.setOnAction(levelSetToIrisHandler);
 		
 		processIris.setOnAction(new EventHandler<ActionEvent>() {
+			HammingDistanceData data=new HammingDistanceData();
+			
 			@Override
 			public void handle(ActionEvent event) {
 				InfoIris info=levelSetToIrisHandler.getInfoIris();
@@ -314,11 +321,35 @@ public class SegmentationMenu extends Menu{
 				
 				ImageGray rect=irisDescriptorGenerator.process();
 				
+				if(data.getImg1()==null){
+					data.setImg1(rect);
+				}else if(data.getImg2()==null){
+					data.setImg2(rect);
+					double distance=HammingDistance.compare(data.getImg1(), data.getImg2());
+					System.out.println("Hamming distance:"+distance);
+				}else{
+					data.setImg1(rect);
+					data.setImg2(null);
+				}
+			
 				
 				controller.setSecondaryImage(rect);
 				controller.refreshImage();
 				controller.refreshSecondaryImage();
 				
+			}
+		});
+		
+		hammingDistance.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				
+				Image img1=controller.getImage();
+				Image img2=controller.getSecondaryImage();
+				
+				double distance=HammingDistance.compare(((ImageGray)img1), (ImageGray)img2);
+				System.out.println("Hamming distance:"+distance);
+
 			}
 		});
 

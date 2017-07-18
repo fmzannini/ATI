@@ -17,6 +17,7 @@ public class EventHandlerIris implements EventHandler<ActionEvent>{
 	
 	@Override
 	public void handle(ActionEvent event) {
+		buttonHandler.reset();
 		buttonHandler.call();
 	}
 	
