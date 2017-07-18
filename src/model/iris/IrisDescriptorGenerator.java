@@ -8,6 +8,7 @@ import java.util.List;
 import org.jtransforms.fft.DoubleFFT_2D;
 
 import model.image.ImageGray;
+import utils.LinearTransformation;
 
 public class IrisDescriptorGenerator {
 
@@ -56,7 +57,8 @@ public class IrisDescriptorGenerator {
 		double[][] matrixFft=fft();
 		filterLogGabor(matrixFft);
 		matrixFft=ifft(matrixFft);
-		return new ImageGray(matrixFft);
+		return LinearTransformation.grayImage(new ImageGray(matrixFft));
+		//return new ImageGray(matrixFft);
 	}
 	
 	private void fillMatrix(List<Point> outList, List<Point> inList, int angleIndexInit) {
@@ -121,19 +123,26 @@ public class IrisDescriptorGenerator {
 		 DoubleFFT_2D fft=new DoubleFFT_2D(matrixFft.length, matrixFft[0].length/2);
 
 		 fft.complexInverse(matrixFft, false);
+		 double[][] ans=new double[matrixFft.length][matrixFft[0].length/2];
 		 
-		 return matrixFft;
+		 for(int i=0;i<ans.length;i++){
+			 for(int j=0;j<ans[0].length;j++){
+				 ans[i][j]=matrixFft[i][2*j];
+					
+//				 ans[i][j]=Math.hypot(matrixFft[i][2*j],matrixFft[i][2*j+1]);
+			 }
+		 }
+		 
+		 
+		 return ans;
 	}
 	
 	private void filterLogGabor(double[][] matrixFft) {
-	
 		for(int i=0;i<matrixFft.length;i++) {
 			for(int j=0;j<matrixFft[0].length;j++) {
 				matrixFft[i][j]=logGabor(Math.abs(matrixFft[i][j]));
 			}
 		}
-		
-		
 	}
 	
 	private double logGabor(double frecuency) {
