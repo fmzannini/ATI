@@ -1,0 +1,12 @@
+method:0 person1:0 photo1:0 person2:0 photo2:0 hamming:1.0
+method:0 person1:0 photo1:0 person2:1 photo2:0 hamming:0.932791832010582
+method:0 person1:0 photo1:0 person2:1 photo2:1 hamming:0.9310598544973545
+method:0 person1:0 photo1:0 person2:1 photo2:2 hamming:0.9315000826719577
+method:0 person1:0 photo1:0 person2:2 photo2:0 hamming:0.9329096395502645
+method:0 person1:0 photo1:0 person2:2 photo2:1 hamming:0.9334986772486773
+method:0 person1:0 photo1:0 person2:2 photo2:2 hamming:0.9322069279100529
+method:0 person1:1 photo1:0 person2:0 photo2:0 hamming:0.932791832010582
+method:0 person1:1 photo1:0 person2:1 photo2:0 hamming:1.0
+method:0 person1:1 photo1:0 person2:1 photo2:1 hamming:0.9310875896057348
+method:0 person1:1 photo1:0 person2:1 photo2:2 hamming:0.9313140707671957
+method:0 person1:1 photo1:0 person2:2 photo2:0 hamming:0.9325696844598055

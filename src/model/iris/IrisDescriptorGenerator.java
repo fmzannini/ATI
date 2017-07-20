@@ -54,14 +54,28 @@ public class IrisDescriptorGenerator {
 		fillMatrix(minOut, minIn,0);
 		fillMatrix(maxOut, maxIn,minIn.size());
 		
-		double[][] matrixFft=fft();
+		return new ImageGray(matrix);
+	}
+
+	public ImageGray encode(ImageGray pattern){
+		double[][] matrixFft=fft(pattern.getImage());
 		filterLogGabor(matrixFft);
 		matrixFft=ifft(matrixFft);
 	
 		return LinearTransformation.grayImage(new ImageGray(matrixFft));
 		//return new ImageGray(matrixFft);
+
 	}
+	public int[][][] encode2(ImageGray pattern){
+		double[][] matrixFft=fft(pattern.getImage());
+		filterLogGabor(matrixFft);
+		int[][][] enc=ifft2(matrixFft);
 	
+		return enc;
+		//return new ImageGray(matrixFft);
+
+	}
+
 	private void fillMatrix(List<Point> outList, List<Point> inList, int angleIndexInit) {
 		
 		
@@ -104,13 +118,13 @@ public class IrisDescriptorGenerator {
 		
 	}
 
-	private double[][] fft() {
-		 DoubleFFT_2D fft=new DoubleFFT_2D(matrix.length, matrix[0].length);
+	private double[][] fft(double[][] pattern) {
+		 DoubleFFT_2D fft=new DoubleFFT_2D(pattern.length, pattern[0].length);
 		 
-		 double[][] matrixFft=new double[matrix.length][matrix[0].length*2];
-		 for(int i=0;i<matrix.length;i++) {
-			 for(int j=0;j<matrix[0].length;j++) {
-				 matrixFft[i][2*j]=matrix[i][j];
+		 double[][] matrixFft=new double[pattern.length][pattern[0].length*2];
+		 for(int i=0;i<pattern.length;i++) {
+			 for(int j=0;j<pattern[0].length;j++) {
+				 matrixFft[i][2*j]=pattern[i][j];
 			 }
 		 }
 		 
@@ -120,6 +134,11 @@ public class IrisDescriptorGenerator {
 		 
 	}
 	
+	public enum CalculateType{
+		REAL,COMPLEX,ABS,ABS_SQR
+	}
+	public static CalculateType CALCULATE_TYPE=CalculateType.REAL; 
+	
 	private double[][] ifft(double[][] matrixFft){
 		 DoubleFFT_2D fft=new DoubleFFT_2D(matrixFft.length, matrixFft[0].length/2);
 
@@ -128,7 +147,23 @@ public class IrisDescriptorGenerator {
 		 
 		 for(int i=0;i<ans.length;i++){
 			 for(int j=0;j<ans[0].length;j++){
-				 ans[i][j]=matrixFft[i][2*j];
+				 
+				 switch(CALCULATE_TYPE){
+				 case REAL:
+					 ans[i][j]=matrixFft[i][2*j];
+					 break;
+				 case COMPLEX:
+					 ans[i][j]=matrixFft[i][2*j+1];
+					 break;
+				 case ABS:
+					 ans[i][j]=Math.hypot(matrixFft[i][2*j],matrixFft[i][2*j+1]);
+					 break;
+				 case ABS_SQR:
+					 ans[i][j]=Math.pow(matrixFft[i][2*j],2)+Math.pow(matrixFft[i][2*j+1],2);
+					 break;
+				 }
+				 
+//				 
 					
 //				 ans[i][j]=Math.hypot(matrixFft[i][2*j],matrixFft[i][2*j+1]);
 			 }
@@ -137,6 +172,23 @@ public class IrisDescriptorGenerator {
 		 
 		 return ans;
 	}
+	private int[][][] ifft2(double[][] matrixFft){
+		 DoubleFFT_2D fft=new DoubleFFT_2D(matrixFft.length, matrixFft[0].length/2);
+
+		 fft.complexInverse(matrixFft, false);
+		 int[][][] ans=new int[matrixFft.length][matrixFft[0].length/2][2];
+		 
+		 for(int i=0;i<ans.length;i++){
+			 for(int j=0;j<ans[0].length;j++){
+				 ans[i][j][0]=matrixFft[i][2*j]>0?1:0;
+				 ans[i][j][1]=matrixFft[i][2*j+1]>0?1:0;
+			 }
+		 }
+		 
+		 
+		 return ans;
+	}
+
 	
 	private void filterLogGabor(double[][] matrixFft) {
 		for(int i=0;i<matrixFft.length;i++) {

@@ -1,0 +1,45 @@
+6,18-,32,34-,36-,37--,62+-,76-,79+-,83+-,84+-,86--,88,92
+
+,102--
+
+se puede
+17 
+,75 pero mínimo 100 iteraciones.
+,93++ buscar otra foto
+
+perfecto
+,33+++
+
+
+
+17_1_1
+17_1_2  seleccionar por abajo y luego en las pestañas de arriba.
+
+33_1_1 perfecto
+33_1_2 marcar fuera, borde de arriba.
+33_2_3 perfecto
+
+88_1_1 mal tomado, en un borde abajo der, luego borde izq.
+88_1_2 mal tomado, en un borde abajo der, luego borde izq.
+88_2_1 mal tomado, en un borde abajo der, luego borde izq.
+
+93_1_2 perfecto
+93_2_2 perfecto
+93_2_4 perfecto
+
+
+
+parece bueno
+ f0=65 sigma=5
+
+70,9
+0.22 0.41
+
+
+ver
+f0=1/18= 0,0555 sigma=0,0305
+
+recomiendan f0=1/18 y sigmaR=0.5
+
+
+el mejor es 70,9

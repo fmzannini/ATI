@@ -73,7 +73,7 @@ public class ButtonLevelSetToEyeImage implements MouseSelectionListener{
 			message=OUTER_IRIS_MESSAGE;
 		else
 			message=INNER_IRIS_MESSAGE;
-		UtilsDialogs.showAlert(headerText, message + "Seleccione un área DENTRO del iris.");
+		UtilsDialogs.showAlert(headerText, message + "Seleccione un área DENTRO.");
 
 		currentLevelSetState = StateLevelSet.SELECTION_IN;
 	}
@@ -209,7 +209,7 @@ public class ButtonLevelSetToEyeImage implements MouseSelectionListener{
 				else
 					message=INNER_IRIS_MESSAGE;
 				
-				UtilsDialogs.showAlert(headerText, message + "Seleccione un área FUERA del iris.");
+				UtilsDialogs.showAlert(headerText, message + "Seleccione un área FUERA.");
 				currentLevelSetState = StateLevelSet.SELECTION_OUT;
 				controller.getMouseSelectionController().resetSelection();
 				break;

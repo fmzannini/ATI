@@ -1,0 +1,25 @@
+
+
+METHOD: ABS
+
+=person:17 =photo:0 hamming:1.0
+person1:17 photo1:0 person2:33 photo2:0
+ hamming:0.932791832010582
+person1:17 photo1:0 person2:33 photo2:1
+ hamming:0.9310598544973545
+person1:17 photo1:0 person2:33 photo2:2
+ hamming:0.9315000826719577
+person1:17 photo1:0 person2:93 photo2:0
+ hamming:0.9329096395502645
+person1:17 photo1:0 person2:93 photo2:1
+ hamming:0.9334986772486773
+person1:17 photo1:0 person2:93 photo2:2
+ hamming:0.9322069279100529
+person1:33 photo1:0 person2:17 photo2:0
+ hamming:0.932791832010582
+=person:33 =photo:0 hamming:1.0
+=person:33 photo1:0 photo2:1 hamming:0.9310875896057348
+=person:33 photo1:0 photo2:2 hamming:0.9313140707671957
+person1:33 photo1:0 person2:93 photo2:0
+ hamming:0.9325696844598055
+person1:33 photo1:0 person2:93 photo2:1

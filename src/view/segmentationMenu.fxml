@@ -7,7 +7,10 @@
 	
 	<MenuItem text="LevelSet a la imagen" fx:id="levelSetToImage"/>
 	<MenuItem text="LevelSet a una secuencia" fx:id="levelSetToVideo"/>	
-	<MenuItem text="LevelSet a iris" fx:id="levelSetToIris"/>	
+	<MenuItem text="LevelSet a iris" fx:id="levelSetToIris"/>
+	<MenuItem text="normalizar iris" fx:id="generatePattern"/>	
+	<MenuItem text="codificar iris" fx:id="encodeIris"/>	
+	<MenuItem text="codificar v2 iris" fx:id="encode2Iris"/>
 	<MenuItem text="Generar descriptores iris" fx:id="processIris"/>	
 	<MenuItem text="Hamming distance" fx:id="hammingDistance"/>	
 	

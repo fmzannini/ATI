@@ -28,6 +28,7 @@ import model.image.ImageGray;
 import model.iris.HammingDistanceData;
 import model.iris.InfoIris;
 import model.iris.IrisDescriptorGenerator;
+import model.iris.IrisDescriptorGenerator.CalculateType;
 import model.mask.edge_detector.gradient.PrewittOp;
 import utils.HammingDistance;
 
@@ -47,6 +48,15 @@ public class SegmentationMenu extends Menu{
 	@FXML
 	private MenuItem levelSetToIris;
 
+	@FXML
+	private MenuItem generatePattern;
+
+	@FXML
+	private MenuItem encodeIris;
+
+	@FXML
+	private MenuItem encode2Iris;
+	
 	@FXML
 	private MenuItem processIris;
 	
@@ -307,7 +317,27 @@ public class SegmentationMenu extends Menu{
 					return;
 				imgGray=(ImageGray)(img.copy());
 				
-				
+				String[] input=UtilsDialogs.getInputs("Generar descriptor de iris", ""
+						+ "Ingrese metodo:"
+						+ "\nREAL\nCOMPLEX\nABS\nABS_SQR", ",");
+				if(input==null || input.length!=1)
+					return;
+				String met=input[0];
+				switch(met.toUpperCase()){
+				case "REAL":
+					IrisDescriptorGenerator.CALCULATE_TYPE=CalculateType.REAL;
+					break;
+				case "COMPLEX":
+					IrisDescriptorGenerator.CALCULATE_TYPE=CalculateType.COMPLEX;
+					break;
+					
+				case "ABS":
+					IrisDescriptorGenerator.CALCULATE_TYPE=CalculateType.ABS;
+					break;
+				case "ABS_SQR":
+					IrisDescriptorGenerator.CALCULATE_TYPE=CalculateType.ABS_SQR;
+					break;
+				}
 				String[] inputs=UtilsDialogs.getInputs("Generar descriptor de iris", ""
 						+ "Ingrese frecuencia central y ancho de banda del filtro log-gabor (f0,sigma)."
 						+ "\n ej: 0.16,0.125", ",");
@@ -319,7 +349,9 @@ public class SegmentationMenu extends Menu{
 
 				IrisDescriptorGenerator irisDescriptorGenerator=new IrisDescriptorGenerator(imgGray,info, f0,sigma);
 				
-				ImageGray rect=irisDescriptorGenerator.process();
+				ImageGray pattern=irisDescriptorGenerator.process();
+				
+				ImageGray rect=irisDescriptorGenerator.encode(pattern);
 				
 				if(data.getImg1()==null){
 					data.setImg1(rect);
@@ -339,7 +371,163 @@ public class SegmentationMenu extends Menu{
 				
 			}
 		});
+
+		generatePattern.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				InfoIris info=levelSetToIrisHandler.getInfoIris();
+				Image img=controller.getImage();
+				ImageGray imgGray;
+				if(img==null || img.getType()!=ImageType.IMAGE_GRAY)
+					return;
+				imgGray=(ImageGray)(img.copy());
+				
+
+				IrisDescriptorGenerator irisDescriptorGenerator=new IrisDescriptorGenerator(imgGray,info, 0,0);
+				
+				ImageGray pattern=irisDescriptorGenerator.process();
+				
+
+			
+				
+				controller.setSecondaryImage(pattern);
+				controller.refreshImage();
+				controller.refreshSecondaryImage();
+				
+			}
+		});
+		encodeIris.setOnAction(new EventHandler<ActionEvent>() {
+			HammingDistanceData data=new HammingDistanceData();
+			@Override
+			public void handle(ActionEvent event) {
+				InfoIris info=levelSetToIrisHandler.getInfoIris();
+				Image img=controller.getImage();
+				ImageGray imgGray;
+				if(img==null || img.getType()!=ImageType.IMAGE_GRAY)
+					return;
+				imgGray=(ImageGray)(img.copy());
+			
+				String[] input=UtilsDialogs.getInputs("Generar descriptor de iris", ""
+						+ "Ingrese metodo:"
+						+ "\nREAL\nCOMPLEX\nABS\nABS_SQR", ",");
+				if(input==null || input.length!=1)
+					return;
+				String met=input[0];
+				switch(met.toUpperCase()){
+				case "REAL":
+					IrisDescriptorGenerator.CALCULATE_TYPE=CalculateType.REAL;
+					break;
+				case "COMPLEX":
+					IrisDescriptorGenerator.CALCULATE_TYPE=CalculateType.COMPLEX;
+					break;
+					
+				case "ABS":
+					IrisDescriptorGenerator.CALCULATE_TYPE=CalculateType.ABS;
+					break;
+				case "ABS_SQR":
+					IrisDescriptorGenerator.CALCULATE_TYPE=CalculateType.ABS_SQR;
+					break;
+				}
+
+				
+				String[] inputs=UtilsDialogs.getInputs("Generar descriptor de iris", ""
+				+ "Ingrese frecuencia central y ancho de banda del filtro log-gabor (f0,sigma)."
+				+ "\n ej: 0.16,0.125", ",");
+				if(inputs==null || inputs.length!=2)
+					return;
 		
+				double f0=Double.parseDouble(inputs[0]);
+				double sigma=Double.parseDouble(inputs[1]);
+		
+				IrisDescriptorGenerator irisDescriptorGenerator=new IrisDescriptorGenerator(null,null, f0,sigma);
+
+
+				
+				ImageGray rect=irisDescriptorGenerator.encode(imgGray);
+				
+
+				if(data.getImg1()==null){
+					data.setImg1(rect);
+				}else if(data.getImg2()==null){
+					data.setImg2(rect);
+					double distance=HammingDistance.compare(data.getImg1(), data.getImg2());
+					System.out.println("Hamming distance:"+distance);
+				}else{
+					data.setImg1(rect);
+					data.setImg2(null);
+				}
+
+				
+				controller.setSecondaryImage(rect);
+				controller.refreshImage();
+				controller.refreshSecondaryImage();
+				
+			}
+		});
+
+		encode2Iris.setOnAction(new EventHandler<ActionEvent>() {
+			int[][][] pattern1=null;
+			int[][][] pattern2=null;
+			@Override
+			public void handle(ActionEvent event) {
+				InfoIris info=levelSetToIrisHandler.getInfoIris();
+				Image img=controller.getImage();
+				ImageGray imgGray;
+				if(img==null || img.getType()!=ImageType.IMAGE_GRAY)
+					return;
+				imgGray=(ImageGray)(img.copy());
+			
+				String[] inputs=UtilsDialogs.getInputs("Generar descriptor de iris", ""
+				+ "Ingrese frecuencia central y ancho de banda del filtro log-gabor (f0,sigma)."
+				+ "\n ej: 0.16,0.125", ",");
+				if(inputs==null || inputs.length!=2)
+					return;
+		
+				double f0=Double.parseDouble(inputs[0]);
+				double sigma=Double.parseDouble(inputs[1]);
+		
+				IrisDescriptorGenerator irisDescriptorGenerator=new IrisDescriptorGenerator(null,null, f0,sigma);
+
+
+				
+				int[][][] enc=irisDescriptorGenerator.encode2(imgGray);
+				
+
+				if(pattern1==null){
+					pattern1=enc;
+				}else if(pattern2==null){
+					pattern2=enc;
+					double distance=calculateHamming();
+					System.out.println("Hamming distance:"+distance);
+				}else{
+					pattern1=enc;
+					pattern2=null;
+				}
+
+				
+				controller.setSecondaryImage(imgGray);
+				controller.refreshImage();
+				controller.refreshSecondaryImage();
+				
+			}
+			private double calculateHamming() {
+				int width=Math.min(pattern1.length, pattern2.length);
+				int height=Math.min(pattern1[0].length, pattern2[0].length);
+				int hammingSum=0;
+				int N=0;
+				for(int i=0;i<width;i++){
+					for(int j=0;j<height;j++){
+						hammingSum+=pattern1[i][j][0]^pattern2[i][j][0];
+						N++;
+						hammingSum+=pattern1[i][j][1]^pattern2[i][j][1];
+						N++;
+					}
+				}
+				return ((double)hammingSum)/((double)N);
+			}
+		});
+
 		hammingDistance.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
